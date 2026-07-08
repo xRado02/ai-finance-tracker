@@ -14,6 +14,7 @@ AI Finance Tracker is a local-first personal finance MVP. Treat @context/foundat
 - `ai-finance-tracker.csproj` is the ASP.NET Core Web API project file targeting `net9.0`.
 - `Program.cs` currently contains the generated minimal API starter endpoint; replace the weather sample as finance features land.
 - `Properties/launchSettings.json` controls local launch profiles.
+- `tests/AiFinanceTracker.Tests/AiFinanceTracker.Tests.csproj` is the dedicated xUnit test project for backend tests.
 - `context/foundation/` holds living product docs: PRD, shape notes, and tech-stack hand-off.
 - `context/changes/bootstrap-verification/verification.md` records scaffold, restore, build, and audit results.
 
@@ -23,6 +24,7 @@ Run these from the repository root:
 
 - `dotnet restore .\ai-finance-tracker.csproj` restores NuGet packages.
 - `dotnet build .\ai-finance-tracker.csproj --no-restore` builds after restore.
+- `dotnet test .\tests\AiFinanceTracker.Tests\AiFinanceTracker.Tests.csproj` runs the backend test suite.
 - `dotnet list .\ai-finance-tracker.csproj package --vulnerable --include-transitive` audits direct and transitive NuGet packages.
 
 ## Coding Conventions
@@ -34,7 +36,7 @@ Run these from the repository root:
 
 ## Testing Guidelines
 
-No test project exists yet. When adding tests, create a dedicated test project instead of mixing tests into the API project, and document the exact test command here.
+Use the dedicated xUnit test project at `tests/AiFinanceTracker.Tests/AiFinanceTracker.Tests.csproj`; do not mix tests into the API project. Run tests with `dotnet test .\tests\AiFinanceTracker.Tests\AiFinanceTracker.Tests.csproj`.
 
 ## Commit And PR Notes
 
