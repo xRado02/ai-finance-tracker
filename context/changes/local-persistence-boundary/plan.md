@@ -325,13 +325,13 @@ This change creates the first migration for a greenfield project, so there is no
 
 #### Automated
 
-- [x] 2.1 Initial migration exists
-- [x] 2.2 Migration applies to a local Development database
-- [x] 2.3 API project builds after migration
+- [x] 2.1 Initial migration exists — a959810
+- [x] 2.2 Migration applies to a local Development database — a959810
+- [x] 2.3 API project builds after migration — a959810
 
 #### Manual
 
-- [x] 2.4 Migration scope excludes goals, dashboard, statistics, currency, and recurring fields
+- [x] 2.4 Migration scope excludes goals, dashboard, statistics, currency, and recurring fields — a959810
 
 ### Phase 3: Persistence Smoke Tests
 
