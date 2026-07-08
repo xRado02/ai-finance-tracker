@@ -1,0 +1,16 @@
+bin/
+obj/
+
+.agents/
+
+.vs/
+.vscode/
+*.user
+*.suo
+
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+*.log
