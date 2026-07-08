@@ -337,14 +337,14 @@ This change creates the first migration for a greenfield project, so there is no
 
 #### Automated
 
-- [ ] 3.1 Test project restores
-- [ ] 3.2 Test project builds
-- [ ] 3.3 Persistence smoke tests pass
-- [ ] 3.4 API project still builds
+- [x] 3.1 Test project restores
+- [x] 3.2 Test project builds
+- [x] 3.3 Persistence smoke tests pass
+- [x] 3.4 API project still builds
 
 #### Manual
 
-- [ ] 3.5 Tests do not depend on endpoints, cloud services, AI services, or external finance data
+- [x] 3.5 Tests do not depend on endpoints, cloud services, AI services, or external finance data
 
 ### Phase 4: Verification And Documentation Touch-Up
 
