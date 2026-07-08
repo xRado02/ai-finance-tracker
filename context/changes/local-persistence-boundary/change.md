@@ -11,3 +11,4 @@ archived_at: null
 
 - Phase 1 commit: `470380b` - persistence model and configuration.
 - Phase 2 commit: `a959810` - initial migration and deterministic seed data.
+- Phase 3 commit: `06fea94` - persistence smoke tests.
