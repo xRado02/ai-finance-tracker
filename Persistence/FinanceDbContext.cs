@@ -5,6 +5,18 @@ namespace AiFinanceTracker.Persistence;
 
 public sealed class FinanceDbContext(DbContextOptions<FinanceDbContext> options) : DbContext(options)
 {
+    public static readonly Guid DefaultLocalProfileId = new("11111111-1111-1111-1111-111111111111");
+
+    public static readonly Guid OtherCategoryId = new("20000000-0000-0000-0000-000000000001");
+    public static readonly Guid FoodCategoryId = new("20000000-0000-0000-0000-000000000002");
+    public static readonly Guid TransportCategoryId = new("20000000-0000-0000-0000-000000000003");
+    public static readonly Guid HousingCategoryId = new("20000000-0000-0000-0000-000000000004");
+    public static readonly Guid BillsCategoryId = new("20000000-0000-0000-0000-000000000005");
+    public static readonly Guid EntertainmentCategoryId = new("20000000-0000-0000-0000-000000000006");
+    public static readonly Guid HealthCategoryId = new("20000000-0000-0000-0000-000000000007");
+    public static readonly Guid SalaryCategoryId = new("20000000-0000-0000-0000-000000000008");
+    public static readonly Guid OtherIncomeCategoryId = new("20000000-0000-0000-0000-000000000009");
+
     public DbSet<LocalProfile> LocalProfiles => Set<LocalProfile>();
 
     public DbSet<Category> Categories => Set<Category>();
@@ -57,5 +69,31 @@ public sealed class FinanceDbContext(DbContextOptions<FinanceDbContext> options)
                 .HasForeignKey(t => t.LocalProfileId)
                 .OnDelete(DeleteBehavior.Cascade);
         });
+
+        SeedLocalProfile(modelBuilder);
+        SeedCategories(modelBuilder);
+    }
+
+    private static void SeedLocalProfile(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<LocalProfile>().HasData(new LocalProfile
+        {
+            Id = DefaultLocalProfileId,
+            DisplayName = "Default Local Profile"
+        });
+    }
+
+    private static void SeedCategories(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<Category>().HasData(
+            new Category { Id = OtherCategoryId, Name = "Other", AppliesTo = null },
+            new Category { Id = FoodCategoryId, Name = "Food", AppliesTo = TransactionType.Expense },
+            new Category { Id = TransportCategoryId, Name = "Transport", AppliesTo = TransactionType.Expense },
+            new Category { Id = HousingCategoryId, Name = "Housing", AppliesTo = TransactionType.Expense },
+            new Category { Id = BillsCategoryId, Name = "Bills", AppliesTo = TransactionType.Expense },
+            new Category { Id = EntertainmentCategoryId, Name = "Entertainment", AppliesTo = TransactionType.Expense },
+            new Category { Id = HealthCategoryId, Name = "Health", AppliesTo = TransactionType.Expense },
+            new Category { Id = SalaryCategoryId, Name = "Salary", AppliesTo = TransactionType.Income },
+            new Category { Id = OtherIncomeCategoryId, Name = "Other Income", AppliesTo = TransactionType.Income });
     }
 }
