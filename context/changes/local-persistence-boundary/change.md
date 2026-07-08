@@ -9,4 +9,4 @@ archived_at: null
 
 ## Notes
 
-<!-- Free-form notes for this change: links, ad-hoc context, decisions that don't belong in research/frame/plan. -->
+- Phase 1 commit: `470380b` - persistence model and configuration.

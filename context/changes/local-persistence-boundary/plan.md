@@ -313,13 +313,13 @@ This change creates the first migration for a greenfield project, so there is no
 
 #### Automated
 
-- [x] 1.1 Package restore succeeds
-- [x] 1.2 API project builds
+- [x] 1.1 Package restore succeeds — 470380b
+- [x] 1.2 API project builds — 470380b
 
 #### Manual
 
-- [x] 1.3 Development connection string is local-only
-- [x] 1.4 No finance endpoints or UI were added
+- [x] 1.3 Development connection string is local-only — 470380b
+- [x] 1.4 No finance endpoints or UI were added — 470380b
 
 ### Phase 2: Initial Migration And Seed Contract
 
