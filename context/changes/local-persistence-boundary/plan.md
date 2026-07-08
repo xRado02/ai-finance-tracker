@@ -350,12 +350,12 @@ This change creates the first migration for a greenfield project, so there is no
 
 #### Automated
 
-- [x] 4.1 Restore succeeds
-- [x] 4.2 Build succeeds
-- [x] 4.3 Test command succeeds
-- [x] 4.4 Vulnerability audit succeeds
+- [x] 4.1 Restore succeeds â€” e633418
+- [x] 4.2 Build succeeds â€” e633418
+- [x] 4.3 Test command succeeds â€” e633418
+- [x] 4.4 Vulnerability audit succeeds â€” e633418
 
 #### Manual
 
-- [x] 4.5 Documentation preserves local-first MVP scope
-- [x] 4.6 No out-of-scope features slipped into implementation
+- [x] 4.5 Documentation preserves local-first MVP scope â€” e633418
+- [x] 4.6 No out-of-scope features slipped into implementation â€” e633418
