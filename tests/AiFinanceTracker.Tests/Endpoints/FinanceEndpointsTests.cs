@@ -116,6 +116,7 @@ public sealed class FinanceEndpointsTests
         var response = await client.GetAsync($"/api/transactions?limit={limit}");
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        await AssertValidationProblemAsync(response, "limit");
     }
 
     [Fact]
@@ -133,6 +134,7 @@ public sealed class FinanceEndpointsTests
         var response = await client.PostAsJsonAsync("/api/transactions", request, JsonOptions);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        await AssertValidationProblemAsync(response, "Amount", "TransactionDate", "Description");
     }
 
     [Fact]
@@ -150,6 +152,7 @@ public sealed class FinanceEndpointsTests
         var response = await client.PostAsJsonAsync("/api/transactions", request, JsonOptions);
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        await AssertProblemAsync(response, HttpStatusCode.NotFound, "Category not found");
     }
 
     [Fact]
@@ -167,6 +170,7 @@ public sealed class FinanceEndpointsTests
         var response = await client.PostAsJsonAsync("/api/transactions", request, JsonOptions);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        await AssertValidationProblemAsync(response, "CategoryId");
     }
 
     [Theory]
@@ -211,6 +215,40 @@ public sealed class FinanceEndpointsTests
         options.Converters.Add(new JsonStringEnumConverter());
 
         return options;
+    }
+
+    private static async Task AssertValidationProblemAsync(HttpResponseMessage response, params string[] errorKeys)
+    {
+        using var json = await ReadJsonAsync(response);
+        var root = json.RootElement;
+
+        Assert.Equal((int)HttpStatusCode.BadRequest, root.GetProperty("status").GetInt32());
+        var errors = root.GetProperty("errors");
+        foreach (var errorKey in errorKeys)
+        {
+            Assert.True(
+                errors.TryGetProperty(errorKey, out var messages),
+                $"Expected validation problem to include '{errorKey}'.");
+            Assert.True(messages.GetArrayLength() > 0, $"Expected '{errorKey}' to include at least one message.");
+        }
+    }
+
+    private static async Task AssertProblemAsync(
+        HttpResponseMessage response,
+        HttpStatusCode expectedStatus,
+        string expectedTitle)
+    {
+        using var json = await ReadJsonAsync(response);
+        var root = json.RootElement;
+
+        Assert.Equal((int)expectedStatus, root.GetProperty("status").GetInt32());
+        Assert.Equal(expectedTitle, root.GetProperty("title").GetString());
+    }
+
+    private static async Task<JsonDocument> ReadJsonAsync(HttpResponseMessage response)
+    {
+        var content = await response.Content.ReadAsStringAsync();
+        return JsonDocument.Parse(content);
     }
 
     private sealed class FinanceApiFactory : WebApplicationFactory<Program>

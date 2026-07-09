@@ -47,4 +47,4 @@
 - **Location**: `tests/AiFinanceTracker.Tests/Endpoints/FinanceEndpointsTests.cs:103`
 - **Detail**: The plan selected idiomatic `ProblemDetails` / `ValidationProblem` responses and Phase 3 asks for validation/problem responses. The tests for invalid limit, invalid request, missing category, and category/type mismatch assert only `400` or `404`, so a future change could return plain text or a different error body while the test suite still passes.
 - **Fix**: Deserialize `ValidationProblemDetails` or `ProblemDetails` in the failing-path tests and assert key fields such as `status`, `errors`, and the expected error keys.
-- **Decision**: PENDING
+- **Decision**: FIXED - endpoint tests now assert `ProblemDetails` / validation error body fields in addition to HTTP status codes.
