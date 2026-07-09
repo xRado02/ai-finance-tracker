@@ -1,5 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using AiFinanceTracker.Contracts;
 using AiFinanceTracker.Domain;
 using AiFinanceTracker.Persistence;
@@ -15,6 +17,8 @@ namespace AiFinanceTracker.Tests.Endpoints;
 
 public sealed class FinanceEndpointsTests
 {
+    private static readonly JsonSerializerOptions JsonOptions = CreateJsonOptions();
+
     [Fact]
     public async Task Get_categories_returns_seeded_categories_including_other()
     {
@@ -24,7 +28,7 @@ public sealed class FinanceEndpointsTests
         var response = await client.GetAsync("/api/categories");
 
         response.EnsureSuccessStatusCode();
-        var categories = await response.Content.ReadFromJsonAsync<List<CategoryResponse>>();
+        var categories = await response.Content.ReadFromJsonAsync<List<CategoryResponse>>(JsonOptions);
 
         Assert.NotNull(categories);
         Assert.Equal(
@@ -58,10 +62,14 @@ public sealed class FinanceEndpointsTests
             "Groceries",
             FinanceDbContext.FoodCategoryId);
 
-        var response = await client.PostAsJsonAsync("/api/transactions", request);
+        var response = await client.PostAsJsonAsync("/api/transactions", request, JsonOptions);
 
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-        var created = await response.Content.ReadFromJsonAsync<TransactionResponse>();
+        var content = await response.Content.ReadAsStringAsync();
+        using var json = JsonDocument.Parse(content);
+        Assert.Equal("Expense", json.RootElement.GetProperty("type").GetString());
+
+        var created = JsonSerializer.Deserialize<TransactionResponse>(content, JsonOptions);
         Assert.NotNull(created);
         Assert.Equal(125.50m, created.Amount);
         Assert.Equal(TransactionType.Expense, created.Type);
@@ -87,7 +95,7 @@ public sealed class FinanceEndpointsTests
             CreateTransaction("30000000-0000-0000-0000-000000000003", 30m, new DateOnly(2026, 7, 2)));
         using var client = app.CreateClient();
 
-        var transactions = await client.GetFromJsonAsync<List<TransactionResponse>>("/api/transactions?limit=2");
+        var transactions = await client.GetFromJsonAsync<List<TransactionResponse>>("/api/transactions?limit=2", JsonOptions);
 
         Assert.NotNull(transactions);
         Assert.Equal(2, transactions.Count);
@@ -122,7 +130,7 @@ public sealed class FinanceEndpointsTests
             new string('x', 501),
             FinanceDbContext.FoodCategoryId);
 
-        var response = await client.PostAsJsonAsync("/api/transactions", request);
+        var response = await client.PostAsJsonAsync("/api/transactions", request, JsonOptions);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -139,7 +147,7 @@ public sealed class FinanceEndpointsTests
             null,
             Guid.Parse("99999999-9999-9999-9999-999999999999"));
 
-        var response = await client.PostAsJsonAsync("/api/transactions", request);
+        var response = await client.PostAsJsonAsync("/api/transactions", request, JsonOptions);
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
@@ -156,7 +164,7 @@ public sealed class FinanceEndpointsTests
             null,
             FinanceDbContext.SalaryCategoryId);
 
-        var response = await client.PostAsJsonAsync("/api/transactions", request);
+        var response = await client.PostAsJsonAsync("/api/transactions", request, JsonOptions);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -175,10 +183,10 @@ public sealed class FinanceEndpointsTests
             null,
             FinanceDbContext.OtherCategoryId);
 
-        var response = await client.PostAsJsonAsync("/api/transactions", request);
+        var response = await client.PostAsJsonAsync("/api/transactions", request, JsonOptions);
 
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-        var created = await response.Content.ReadFromJsonAsync<TransactionResponse>();
+        var created = await response.Content.ReadFromJsonAsync<TransactionResponse>(JsonOptions);
         Assert.NotNull(created);
         Assert.Equal("Other", created.CategoryName);
         Assert.Equal(type, created.Type);
@@ -195,6 +203,14 @@ public sealed class FinanceEndpointsTests
             CategoryId = FinanceDbContext.FoodCategoryId,
             LocalProfileId = FinanceDbContext.DefaultLocalProfileId
         };
+    }
+
+    private static JsonSerializerOptions CreateJsonOptions()
+    {
+        var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+        options.Converters.Add(new JsonStringEnumConverter());
+
+        return options;
     }
 
     private sealed class FinanceApiFactory : WebApplicationFactory<Program>
