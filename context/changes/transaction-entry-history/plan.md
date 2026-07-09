@@ -375,13 +375,13 @@ No schema migration is expected. This change should use the existing `LocalProfi
 
 #### Automated
 
-- [ ] 4.1 Restore succeeds
-- [ ] 4.2 API build succeeds
-- [ ] 4.3 Test suite succeeds
-- [ ] 4.4 Vulnerability audit succeeds
+- [x] 4.1 Restore succeeds
+- [x] 4.2 API build succeeds
+- [x] 4.3 Test suite succeeds
+- [x] 4.4 Vulnerability audit succeeds
 
 #### Manual
 
-- [ ] 4.5 MVP remains local-first and backend-only for this change
-- [ ] 4.6 API contract covers category list, transaction creation, and transaction history
-- [ ] 4.7 No out-of-scope features slipped in
+- [x] 4.5 MVP remains local-first and backend-only for this change
+- [x] 4.6 API contract covers category list, transaction creation, and transaction history
+- [x] 4.7 No out-of-scope features slipped in

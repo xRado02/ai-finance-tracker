@@ -12,7 +12,9 @@ AI Finance Tracker is a local-first personal finance MVP. Treat @context/foundat
 ## Project Structure
 
 - `ai-finance-tracker.csproj` is the ASP.NET Core Web API project file targeting `net9.0`.
-- `Program.cs` currently contains the generated minimal API starter endpoint; replace the weather sample as finance features land.
+- `Program.cs` wires API services and maps finance endpoints; keep feature route handlers out of `Program.cs`.
+- `Endpoints/FinanceEndpoints.cs` maps `GET /api/categories`, `POST /api/transactions`, and `GET /api/transactions`.
+- `Contracts/FinanceContracts.cs` contains public finance API DTOs; do not expose EF entities directly from endpoints.
 - `Properties/launchSettings.json` controls local launch profiles.
 - `tests/AiFinanceTracker.Tests/AiFinanceTracker.Tests.csproj` is the dedicated xUnit test project for backend tests.
 - `context/foundation/` holds living product docs: PRD, shape notes, and tech-stack hand-off.
@@ -32,7 +34,7 @@ Run these from the repository root:
 - Keep C# nullable reference types and implicit usings enabled as configured in @ai-finance-tracker.csproj.
 - Use `AiFinanceTracker` as the root namespace for new backend code.
 - Prefer feature-oriented names tied to the PRD nouns: transactions, categories, dashboard summaries, and financial goals.
-- Do not keep generated weather sample names or endpoints once real finance API work starts.
+- Do not reintroduce generated weather sample names or endpoints.
 
 ## Testing Guidelines
 
