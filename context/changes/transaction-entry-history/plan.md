@@ -361,15 +361,15 @@ No schema migration is expected. This change should use the existing `LocalProfi
 
 #### Automated
 
-- [x] 3.1 Test project restores
-- [x] 3.2 Test project builds
-- [x] 3.3 Endpoint integration tests pass
-- [x] 3.4 API project still builds
+- [x] 3.1 Test project restores - f47bd44
+- [x] 3.2 Test project builds - f47bd44
+- [x] 3.3 Endpoint integration tests pass - f47bd44
+- [x] 3.4 API project still builds - f47bd44
 
 #### Manual
 
-- [x] 3.5 Tests exercise HTTP endpoints, not only EF persistence
-- [x] 3.6 Tests do not require real user finance data or external services
+- [x] 3.5 Tests exercise HTTP endpoints, not only EF persistence - f47bd44
+- [x] 3.6 Tests do not require real user finance data or external services - f47bd44
 
 ### Phase 4: Verification And Documentation Touch-Up
 
