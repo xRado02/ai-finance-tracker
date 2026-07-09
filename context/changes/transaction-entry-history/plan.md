@@ -349,13 +349,13 @@ No schema migration is expected. This change should use the existing `LocalProfi
 
 #### Automated
 
-- [ ] 2.1 API project builds
-- [ ] 2.2 Existing persistence tests still pass
+- [x] 2.1 API project builds
+- [x] 2.2 Existing persistence tests still pass
 
 #### Manual
 
-- [ ] 2.3 Endpoint behavior remains local-only and uses the default local profile
-- [ ] 2.4 No goals, dashboard, statistics, edit/delete, auth, cloud, or AI scope was introduced
+- [x] 2.3 Endpoint behavior remains local-only and uses the default local profile
+- [x] 2.4 No goals, dashboard, statistics, edit/delete, auth, cloud, or AI scope was introduced
 
 ### Phase 3: Endpoint Integration Tests
 
