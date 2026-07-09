@@ -12,3 +12,4 @@ archived_at: null
 - Roadmap item: `S-01 Transaction Entry And History`.
 - Plan created: `context/changes/transaction-entry-history/plan.md`.
 - Plan review: `context/changes/transaction-entry-history/reviews/plan-review.md` - sound after triage fixes.
+- Phase 1 commit: `f681759` - API structure and contracts.

@@ -337,13 +337,13 @@ No schema migration is expected. This change should use the existing `LocalProfi
 
 #### Automated
 
-- [x] 1.1 API project builds after route and DTO structure changes
-- [x] 1.2 Test project builds after test-host changes
+- [x] 1.1 API project builds after route and DTO structure changes - f681759
+- [x] 1.2 Test project builds after test-host changes - f681759
 
 #### Manual
 
-- [x] 1.3 No React frontend or UI files were added
-- [x] 1.4 Weather sample removed only as part of adding real finance API endpoints
+- [x] 1.3 No React frontend or UI files were added - f681759
+- [x] 1.4 Weather sample removed only as part of adding real finance API endpoints - f681759
 
 ### Phase 2: Categories And Transaction Endpoints
 
