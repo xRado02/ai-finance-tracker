@@ -356,32 +356,32 @@ Ten change nie wymaga migracji bazy danych. Uzywa istniejacych tabel profilu lok
 
 #### Automated
 
-- [x] 3.1 `npm run typecheck` w `frontend/` przechodzi
-- [x] 3.2 `npm run build` w `frontend/` przechodzi
+- [x] 3.1 `npm run typecheck` w `frontend/` przechodzi - 84ff874
+- [x] 3.2 `npm run build` w `frontend/` przechodzi - 84ff874
 
 #### Manual
 
-- [x] 3.3 Uzytkownik moze uruchomic backend i frontend lokalnie, otworzyc ekran i zobaczyc formularz oraz historie
-- [x] 3.4 Uzytkownik moze dodac `Income` z kategoria dochodowa i zobaczyc transakcje w historii
-- [x] 3.5 Uzytkownik moze dodac `Expense` z kategoria wydatkowa i zobaczyc transakcje w historii
-- [x] 3.6 `Other` jest dostepne jako fallback dla obu typow transakcji
-- [x] 3.7 Niepoprawna transakcja pokazuje czytelny blad z backendu lub walidacji UI
-- [x] 3.8 UI nie pokazuje goals, dashboardu, auth, AI, chmury, edycji/usuwania ani custom kategorii
+- [x] 3.3 Uzytkownik moze uruchomic backend i frontend lokalnie, otworzyc ekran i zobaczyc formularz oraz historie - 84ff874
+- [x] 3.4 Uzytkownik moze dodac `Income` z kategoria dochodowa i zobaczyc transakcje w historii - 84ff874
+- [x] 3.5 Uzytkownik moze dodac `Expense` z kategoria wydatkowa i zobaczyc transakcje w historii - 84ff874
+- [x] 3.6 `Other` jest dostepne jako fallback dla obu typow transakcji - 84ff874
+- [x] 3.7 Niepoprawna transakcja pokazuje czytelny blad z backendu lub walidacji UI - 84ff874
+- [x] 3.8 UI nie pokazuje goals, dashboardu, auth, AI, chmury, edycji/usuwania ani custom kategorii - 84ff874
 
 ### Phase 4: Verification And Repository Guidance
 
 #### Automated
 
-- [ ] 4.1 `dotnet restore .\ai-finance-tracker.csproj` przechodzi
-- [ ] 4.2 `dotnet build .\ai-finance-tracker.csproj --no-restore` przechodzi
-- [ ] 4.3 `dotnet test .\tests\AiFinanceTracker.Tests\AiFinanceTracker.Tests.csproj` przechodzi
-- [ ] 4.4 `dotnet list .\ai-finance-tracker.csproj package --vulnerable --include-transitive` przechodzi
-- [ ] 4.5 `npm run typecheck` w `frontend/` przechodzi
-- [ ] 4.6 `npm run build` w `frontend/` przechodzi
+- [x] 4.1 `dotnet restore .\ai-finance-tracker.csproj` przechodzi
+- [x] 4.2 `dotnet build .\ai-finance-tracker.csproj --no-restore` przechodzi
+- [x] 4.3 `dotnet test .\tests\AiFinanceTracker.Tests\AiFinanceTracker.Tests.csproj` przechodzi
+- [x] 4.4 `dotnet list .\ai-finance-tracker.csproj package --vulnerable --include-transitive` przechodzi
+- [x] 4.5 `npm run typecheck` w `frontend/` przechodzi
+- [x] 4.6 `npm run build` w `frontend/` przechodzi
 
 #### Manual
 
-- [ ] 4.7 Backend i frontend uruchamiaja sie lokalnie razem
-- [ ] 4.8 Smoke test w przegladarce potwierdza pobranie kategorii, dodanie transakcji i odswiezenie historii
-- [ ] 4.9 Dokumentacja repo opisuje nowe frontendowe komendy
-- [ ] 4.10 Zakres change'a nadal odpowiada tylko obecnemu backendowi
+- [x] 4.7 Backend i frontend uruchamiaja sie lokalnie razem
+- [x] 4.8 Smoke test w przegladarce potwierdza pobranie kategorii, dodanie transakcji i odswiezenie historii
+- [x] 4.9 Dokumentacja repo opisuje nowe frontendowe komendy
+- [x] 4.10 Zakres change'a nadal odpowiada tylko obecnemu backendowi
