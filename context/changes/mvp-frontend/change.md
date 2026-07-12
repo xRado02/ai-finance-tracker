@@ -1,7 +1,7 @@
 ---
 change_id: mvp-frontend
 title: Frontend dla transakcji MVP
-status: implementing
+status: implemented
 created: 2026-07-09
 updated: 2026-07-12
 archived_at: null

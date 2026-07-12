@@ -372,16 +372,16 @@ Ten change nie wymaga migracji bazy danych. Uzywa istniejacych tabel profilu lok
 
 #### Automated
 
-- [x] 4.1 `dotnet restore .\ai-finance-tracker.csproj` przechodzi
-- [x] 4.2 `dotnet build .\ai-finance-tracker.csproj --no-restore` przechodzi
-- [x] 4.3 `dotnet test .\tests\AiFinanceTracker.Tests\AiFinanceTracker.Tests.csproj` przechodzi
-- [x] 4.4 `dotnet list .\ai-finance-tracker.csproj package --vulnerable --include-transitive` przechodzi
-- [x] 4.5 `npm run typecheck` w `frontend/` przechodzi
-- [x] 4.6 `npm run build` w `frontend/` przechodzi
+- [x] 4.1 `dotnet restore .\ai-finance-tracker.csproj` przechodzi - bb04ea1
+- [x] 4.2 `dotnet build .\ai-finance-tracker.csproj --no-restore` przechodzi - bb04ea1
+- [x] 4.3 `dotnet test .\tests\AiFinanceTracker.Tests\AiFinanceTracker.Tests.csproj` przechodzi - bb04ea1
+- [x] 4.4 `dotnet list .\ai-finance-tracker.csproj package --vulnerable --include-transitive` przechodzi - bb04ea1
+- [x] 4.5 `npm run typecheck` w `frontend/` przechodzi - bb04ea1
+- [x] 4.6 `npm run build` w `frontend/` przechodzi - bb04ea1
 
 #### Manual
 
-- [x] 4.7 Backend i frontend uruchamiaja sie lokalnie razem
-- [x] 4.8 Smoke test w przegladarce potwierdza pobranie kategorii, dodanie transakcji i odswiezenie historii
-- [x] 4.9 Dokumentacja repo opisuje nowe frontendowe komendy
-- [x] 4.10 Zakres change'a nadal odpowiada tylko obecnemu backendowi
+- [x] 4.7 Backend i frontend uruchamiaja sie lokalnie razem - bb04ea1
+- [x] 4.8 Smoke test w przegladarce potwierdza pobranie kategorii, dodanie transakcji i odswiezenie historii - bb04ea1
+- [x] 4.9 Dokumentacja repo opisuje nowe frontendowe komendy - bb04ea1
+- [x] 4.10 Zakres change'a nadal odpowiada tylko obecnemu backendowi - bb04ea1
