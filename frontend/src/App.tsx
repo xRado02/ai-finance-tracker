@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import { getCategories, getTransactions, isApiError } from './api/financeApi';
 import type { CategoryResponse, TransactionResponse } from './api/financeTypes';
+import { TransactionForm } from './components/TransactionForm';
+import { TransactionHistory } from './components/TransactionHistory';
 
 type ApiStatus =
   | { state: 'loading' }
@@ -11,32 +13,32 @@ type ApiStatus =
 export default function App() {
   const [apiStatus, setApiStatus] = useState<ApiStatus>({ state: 'loading' });
 
+  async function loadFinanceData(isActive = true) {
+    try {
+      const [categories, transactions] = await Promise.all([
+        getCategories(),
+        getTransactions(),
+      ]);
+
+      if (isActive) {
+        setApiStatus({ state: 'ready', categories, transactions });
+      }
+    } catch (error) {
+      if (isActive) {
+        setApiStatus({
+          state: 'error',
+          message: isApiError(error)
+            ? error.message
+            : 'Cannot connect to the local finance API.',
+        });
+      }
+    }
+  }
+
   useEffect(() => {
     let isActive = true;
 
-    async function loadFinanceData() {
-      try {
-        const [categories, transactions] = await Promise.all([
-          getCategories(),
-          getTransactions(),
-        ]);
-
-        if (isActive) {
-          setApiStatus({ state: 'ready', categories, transactions });
-        }
-      } catch (error) {
-        if (isActive) {
-          setApiStatus({
-            state: 'error',
-            message: isApiError(error)
-              ? error.message
-              : 'Cannot connect to the local finance API.',
-          });
-        }
-      }
-    }
-
-    void loadFinanceData();
+    void loadFinanceData(isActive);
 
     return () => {
       isActive = false;
@@ -51,7 +53,7 @@ export default function App() {
             <p className="workspace__eyebrow">Local finance</p>
             <h1>AI Finance Tracker</h1>
           </div>
-          <span className="workspace__status">Frontend scaffold</span>
+          <span className="workspace__status">Local API</span>
         </header>
 
         <section className={`api-status api-status--${apiStatus.state}`}>
@@ -62,15 +64,16 @@ export default function App() {
         </section>
 
         <div className="workspace__grid">
-          <section className="panel">
-            <h2>Add transaction</h2>
-            <p>Transaction form will connect to the existing finance API in the next phases.</p>
-          </section>
+          <TransactionForm
+            categories={apiStatus.state === 'ready' ? apiStatus.categories : []}
+            disabled={apiStatus.state !== 'ready'}
+            onTransactionCreated={() => loadFinanceData()}
+          />
 
-          <section className="panel">
-            <h2>Transaction history</h2>
-            <p>History will load from <code>/api/transactions</code>.</p>
-          </section>
+          <TransactionHistory
+            transactions={apiStatus.state === 'ready' ? apiStatus.transactions : []}
+            isLoading={apiStatus.state === 'loading'}
+          />
         </div>
       </section>
     </main>

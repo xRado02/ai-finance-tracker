@@ -344,29 +344,29 @@ Ten change nie wymaga migracji bazy danych. Uzywa istniejacych tabel profilu lok
 
 #### Automated
 
-- [x] 2.1 `npm run typecheck` w `frontend/` przechodzi
-- [x] 2.2 `npm run build` w `frontend/` przechodzi
+- [x] 2.1 `npm run typecheck` w `frontend/` przechodzi - fad20f2
+- [x] 2.2 `npm run build` w `frontend/` przechodzi - fad20f2
 
 #### Manual
 
-- [x] 2.3 Przy dzialajacym backendzie `GET /api/categories` i `GET /api/transactions` sa wykonywane z frontendu przez proxy
-- [x] 2.4 Przy zatrzymanym backendzie UI pokazuje czytelny stan bledu zamiast pustego lub zawieszonego ekranu
+- [x] 2.3 Przy dzialajacym backendzie `GET /api/categories` i `GET /api/transactions` sa wykonywane z frontendu przez proxy - fad20f2
+- [x] 2.4 Przy zatrzymanym backendzie UI pokazuje czytelny stan bledu zamiast pustego lub zawieszonego ekranu - fad20f2
 
 ### Phase 3: Single Transaction Workspace UI
 
 #### Automated
 
-- [ ] 3.1 `npm run typecheck` w `frontend/` przechodzi
-- [ ] 3.2 `npm run build` w `frontend/` przechodzi
+- [x] 3.1 `npm run typecheck` w `frontend/` przechodzi
+- [x] 3.2 `npm run build` w `frontend/` przechodzi
 
 #### Manual
 
-- [ ] 3.3 Uzytkownik moze uruchomic backend i frontend lokalnie, otworzyc ekran i zobaczyc formularz oraz historie
-- [ ] 3.4 Uzytkownik moze dodac `Income` z kategoria dochodowa i zobaczyc transakcje w historii
-- [ ] 3.5 Uzytkownik moze dodac `Expense` z kategoria wydatkowa i zobaczyc transakcje w historii
-- [ ] 3.6 `Other` jest dostepne jako fallback dla obu typow transakcji
-- [ ] 3.7 Niepoprawna transakcja pokazuje czytelny blad z backendu lub walidacji UI
-- [ ] 3.8 UI nie pokazuje goals, dashboardu, auth, AI, chmury, edycji/usuwania ani custom kategorii
+- [x] 3.3 Uzytkownik moze uruchomic backend i frontend lokalnie, otworzyc ekran i zobaczyc formularz oraz historie
+- [x] 3.4 Uzytkownik moze dodac `Income` z kategoria dochodowa i zobaczyc transakcje w historii
+- [x] 3.5 Uzytkownik moze dodac `Expense` z kategoria wydatkowa i zobaczyc transakcje w historii
+- [x] 3.6 `Other` jest dostepne jako fallback dla obu typow transakcji
+- [x] 3.7 Niepoprawna transakcja pokazuje czytelny blad z backendu lub walidacji UI
+- [x] 3.8 UI nie pokazuje goals, dashboardu, auth, AI, chmury, edycji/usuwania ani custom kategorii
 
 ### Phase 4: Verification And Repository Guidance
 
