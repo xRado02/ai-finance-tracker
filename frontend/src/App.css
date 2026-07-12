@@ -47,6 +47,28 @@
   gap: 24px;
 }
 
+.api-status {
+  margin-bottom: 24px;
+  padding: 14px 16px;
+  border-radius: 8px;
+  border: 1px solid #bfd0df;
+  background: #ffffff;
+  color: #2d4d68;
+  font-weight: 650;
+}
+
+.api-status--error {
+  border-color: #e0a4a4;
+  background: #fff5f5;
+  color: #8b2c2c;
+}
+
+.api-status--ready {
+  border-color: #9bc3ad;
+  background: #f4fbf6;
+  color: #24553b;
+}
+
 .panel {
   min-height: 220px;
   padding: 24px;

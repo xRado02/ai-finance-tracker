@@ -330,27 +330,27 @@ Ten change nie wymaga migracji bazy danych. Uzywa istniejacych tabel profilu lok
 
 #### Automated
 
-- [x] 1.1 `dotnet build .\ai-finance-tracker.csproj --no-restore` przechodzi po dodaniu katalogu frontendowego
-- [x] 1.2 `npm install` w `frontend/` instaluje zaleznosci projektu
-- [x] 1.3 `npm run typecheck` w `frontend/` przechodzi
-- [x] 1.4 `npm run build` w `frontend/` przechodzi
+- [x] 1.1 `dotnet build .\ai-finance-tracker.csproj --no-restore` przechodzi po dodaniu katalogu frontendowego - 6571177
+- [x] 1.2 `npm install` w `frontend/` instaluje zaleznosci projektu - 6571177
+- [x] 1.3 `npm run typecheck` w `frontend/` przechodzi - 6571177
+- [x] 1.4 `npm run build` w `frontend/` przechodzi - 6571177
 
 #### Manual
 
-- [x] 1.5 Frontend uruchamia sie przez `npm run dev` w `frontend/`
-- [x] 1.6 Kod frontendowy nie zawiera goals, dashboardu, auth, AI, chmury, edycji/usuwania ani custom kategorii
+- [x] 1.5 Frontend uruchamia sie przez `npm run dev` w `frontend/` - 6571177
+- [x] 1.6 Kod frontendowy nie zawiera goals, dashboardu, auth, AI, chmury, edycji/usuwania ani custom kategorii - 6571177
 
 ### Phase 2: API Client And Typed Finance Contracts
 
 #### Automated
 
-- [ ] 2.1 `npm run typecheck` w `frontend/` przechodzi
-- [ ] 2.2 `npm run build` w `frontend/` przechodzi
+- [x] 2.1 `npm run typecheck` w `frontend/` przechodzi
+- [x] 2.2 `npm run build` w `frontend/` przechodzi
 
 #### Manual
 
-- [ ] 2.3 Przy dzialajacym backendzie `GET /api/categories` i `GET /api/transactions` sa wykonywane z frontendu przez proxy
-- [ ] 2.4 Przy zatrzymanym backendzie UI pokazuje czytelny stan bledu zamiast pustego lub zawieszonego ekranu
+- [x] 2.3 Przy dzialajacym backendzie `GET /api/categories` i `GET /api/transactions` sa wykonywane z frontendu przez proxy
+- [x] 2.4 Przy zatrzymanym backendzie UI pokazuje czytelny stan bledu zamiast pustego lub zawieszonego ekranu
 
 ### Phase 3: Single Transaction Workspace UI
 
