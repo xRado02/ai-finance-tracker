@@ -121,10 +121,10 @@ Uruchomic typecheck/build, sprawdzic integracje z transakcjami i zapisac Progres
 
 #### Automated
 
-- [x] 3.1 `npm run typecheck` przechodzi
-- [x] 3.2 `npm run build` przechodzi
+- [x] 3.1 `npm run typecheck` przechodzi - ecf5d89
+- [x] 3.2 `npm run build` przechodzi - ecf5d89
 
 #### Manual
 
-- [x] 3.3 Reczny smoke test goals UI przechodzi
-- [x] 3.4 Dokumentacja zmiany i Progress sa kompletne
+- [x] 3.3 Reczny smoke test goals UI przechodzi - ecf5d89
+- [x] 3.4 Dokumentacja zmiany i Progress sa kompletne - ecf5d89
