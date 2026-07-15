@@ -116,9 +116,9 @@ Wykonać ręczny smoke całego MVP, zapisać Progress, SHA, status i review impl
 
 #### Automated
 
-- [x] 3.1 Finalny zakres MVP jest spójny z PRD i roadmapą
-- [x] 3.2 Progress, SHA i status change'a są kompletne
+- [x] 3.1 Finalny zakres MVP jest spójny z PRD i roadmapą - 1178c10
+- [x] 3.2 Progress, SHA i status change'a są kompletne - 1178c10
 
 #### Manual
 
-- [x] 3.3 Finalny smoke test całej aplikacji przechodzi
+- [x] 3.3 Finalny smoke test całej aplikacji przechodzi - 1178c10
