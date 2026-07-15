@@ -148,24 +148,24 @@ Migracja tworzy tabele `Goals`, indeks po `LocalProfileId` i klucz obcy do `Loca
 
 #### Automated
 
-- [x] 2.1 `POST /api/goals` tworzy cel i zwraca progress
-- [x] 2.2 `GET /api/goals` zwraca cele default profilu z obliczonym saldem
-- [x] 2.3 Walidacja i izolacja profilu sa pokryte testami
-- [x] 2.4 Pelny backend test suite przechodzi
+- [x] 2.1 `POST /api/goals` tworzy cel i zwraca progress - 4c34221
+- [x] 2.2 `GET /api/goals` zwraca cele default profilu z obliczonym saldem - 4c34221
+- [x] 2.3 Walidacja i izolacja profilu sa pokryte testami - 4c34221
+- [x] 2.4 Pelny backend test suite przechodzi - 4c34221
 
 #### Manual
 
-- [x] 2.5 Progress zmienia sie po dodaniu transakcji
+- [x] 2.5 Progress zmienia sie po dodaniu transakcji - 4c34221
 
 ### Phase 3: Verification and change closeout
 
 #### Automated
 
-- [ ] 3.1 `dotnet restore .\ai-finance-tracker.csproj` przechodzi
-- [ ] 3.2 `dotnet build .\ai-finance-tracker.csproj --no-restore -p:UseAppHost=false` przechodzi
-- [ ] 3.3 `dotnet test .\tests\AiFinanceTracker.Tests\AiFinanceTracker.Tests.csproj -p:UseAppHost=false` przechodzi
+- [x] 3.1 `dotnet restore .\ai-finance-tracker.csproj` przechodzi
+- [x] 3.2 `dotnet build .\ai-finance-tracker.csproj --no-restore -p:UseAppHost=false` przechodzi
+- [x] 3.3 `dotnet test .\tests\AiFinanceTracker.Tests\AiFinanceTracker.Tests.csproj -p:UseAppHost=false` przechodzi
 
 #### Manual
 
-- [ ] 3.4 Reczny smoke test API celow przechodzi
-- [ ] 3.5 Dokumentacja zmiany i Progress sa kompletne
+- [x] 3.4 Reczny smoke test API celow przechodzi
+- [x] 3.5 Dokumentacja zmiany i Progress sa kompletne
