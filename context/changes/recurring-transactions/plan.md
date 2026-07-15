@@ -89,9 +89,9 @@ Uruchomić build/test/typecheck, sprawdzić migrację, zakres i przygotować man
 
 ### Phase 1: Persistence and contracts
 
-- [x] 1.1 Encja, relacje i konfiguracja EF są dodane
-- [x] 1.2 Migracja obejmuje recurring definitions i nullable link transakcji
-- [x] 1.3 Kontrakty request/response są dodane
+- [x] 1.1 Encja, relacje i konfiguracja EF są dodane - 922dba8
+- [x] 1.2 Migracja obejmuje recurring definitions i nullable link transakcji - 922dba8
+- [x] 1.3 Kontrakty request/response są dodane - 922dba8
 
 ### Phase 2: API and tests
 
