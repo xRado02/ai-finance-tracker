@@ -136,13 +136,13 @@ Migracja tworzy tabele `Goals`, indeks po `LocalProfileId` i klucz obcy do `Loca
 
 #### Automated
 
-- [ ] 1.1 Encja `Goal`, relacja profilu i konfiguracja precision sa obecne
-- [ ] 1.2 Test modelu i relacji celu przechodzi
-- [ ] 1.3 Migracja `AddFinancialGoals` i snapshot sa obecne
+- [x] 1.1 Encja `Goal`, relacja profilu i konfiguracja precision sa obecne
+- [x] 1.2 Test modelu i relacji celu przechodzi
+- [x] 1.3 Migracja `AddFinancialGoals` i snapshot sa obecne
 
 #### Manual
 
-- [ ] 1.4 Migracja nie zmienia tabel transakcji ani kategorii
+- [x] 1.4 Migracja nie zmienia tabel transakcji ani kategorii
 
 ### Phase 2: Goals API and tests
 

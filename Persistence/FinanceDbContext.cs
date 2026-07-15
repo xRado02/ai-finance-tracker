@@ -23,6 +23,8 @@ public sealed class FinanceDbContext(DbContextOptions<FinanceDbContext> options)
 
     public DbSet<Transaction> Transactions => Set<Transaction>();
 
+    public DbSet<Goal> Goals => Set<Goal>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<LocalProfile>(profile =>
@@ -68,6 +70,22 @@ public sealed class FinanceDbContext(DbContextOptions<FinanceDbContext> options)
                 .WithMany(p => p.Transactions)
                 .HasForeignKey(t => t.LocalProfileId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Goal>(goal =>
+        {
+            goal.HasKey(item => item.Id);
+            goal.Property(item => item.Name)
+                .HasMaxLength(120)
+                .IsRequired();
+            goal.Property(item => item.TargetAmount)
+                .HasPrecision(18, 2)
+                .IsRequired();
+            goal.HasOne(item => item.LocalProfile)
+                .WithMany(profile => profile.Goals)
+                .HasForeignKey(item => item.LocalProfileId)
+                .OnDelete(DeleteBehavior.Cascade);
+            goal.HasIndex(item => item.LocalProfileId);
         });
 
         SeedLocalProfile(modelBuilder);

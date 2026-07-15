@@ -15,17 +15,25 @@ public sealed class FinanceDbContextTests
 
         var model = context.Model;
         var transaction = model.FindEntityType(typeof(Transaction));
+        var goal = model.FindEntityType(typeof(Goal));
 
         Assert.NotNull(model.FindEntityType(typeof(LocalProfile)));
         Assert.NotNull(model.FindEntityType(typeof(Category)));
         Assert.NotNull(transaction);
+        Assert.NotNull(goal);
         Assert.NotNull(transaction.FindNavigation(nameof(Transaction.LocalProfile)));
         Assert.NotNull(transaction.FindNavigation(nameof(Transaction.Category)));
+        Assert.NotNull(goal.FindNavigation(nameof(Goal.LocalProfile)));
 
         var amount = transaction.FindProperty(nameof(Transaction.Amount));
         Assert.NotNull(amount);
         Assert.Equal(18, amount.GetPrecision());
         Assert.Equal(2, amount.GetScale());
+
+        var targetAmount = goal.FindProperty(nameof(Goal.TargetAmount));
+        Assert.NotNull(targetAmount);
+        Assert.Equal(18, targetAmount.GetPrecision());
+        Assert.Equal(2, targetAmount.GetScale());
     }
 
     [Fact]
