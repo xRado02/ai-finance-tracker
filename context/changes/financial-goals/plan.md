@@ -62,7 +62,7 @@ Response `201 Created`:
 
 ### `GET /api/goals`
 
-Zwraca cele default local profile posortowane od najnowszego oraz dla kazdego `currentAmount` i `progressPercentage` wyliczone z transakcji tego profilu. `currentAmount` jest `max(0, balance)`, aby ujemne saldo nie generowalo ujemnego postepu.
+Zwraca cele default local profile posortowane alfabetycznie po nazwie oraz dla kazdego `currentAmount` i `progressPercentage` wyliczone z transakcji tego profilu. `currentAmount` jest `max(0, balance)`, aby ujemne saldo nie generowalo ujemnego postepu.
 
 ## Decyzje techniczne
 
@@ -136,26 +136,26 @@ Migracja tworzy tabele `Goals`, indeks po `LocalProfileId` i klucz obcy do `Loca
 
 #### Automated
 
-- [x] 1.1 Encja `Goal`, relacja profilu i konfiguracja precision sa obecne
-- [x] 1.2 Test modelu i relacji celu przechodzi
-- [x] 1.3 Migracja `AddFinancialGoals` i snapshot sa obecne
+- [x] 1.1 Encja `Goal`, relacja profilu i konfiguracja precision sa obecne - aa712f6
+- [x] 1.2 Test modelu i relacji celu przechodzi - aa712f6
+- [x] 1.3 Migracja `AddFinancialGoals` i snapshot sa obecne - aa712f6
 
 #### Manual
 
-- [x] 1.4 Migracja nie zmienia tabel transakcji ani kategorii
+- [x] 1.4 Migracja nie zmienia tabel transakcji ani kategorii - aa712f6
 
 ### Phase 2: Goals API and tests
 
 #### Automated
 
-- [ ] 2.1 `POST /api/goals` tworzy cel i zwraca progress
-- [ ] 2.2 `GET /api/goals` zwraca cele default profilu z obliczonym saldem
-- [ ] 2.3 Walidacja i izolacja profilu sa pokryte testami
-- [ ] 2.4 Pelny backend test suite przechodzi
+- [x] 2.1 `POST /api/goals` tworzy cel i zwraca progress
+- [x] 2.2 `GET /api/goals` zwraca cele default profilu z obliczonym saldem
+- [x] 2.3 Walidacja i izolacja profilu sa pokryte testami
+- [x] 2.4 Pelny backend test suite przechodzi
 
 #### Manual
 
-- [ ] 2.5 Progress zmienia sie po dodaniu transakcji
+- [x] 2.5 Progress zmienia sie po dodaniu transakcji
 
 ### Phase 3: Verification and change closeout
 

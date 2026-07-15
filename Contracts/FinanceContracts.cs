@@ -22,3 +22,14 @@ public sealed record CategoryResponse(
     Guid Id,
     string Name,
     TransactionType? AppliesTo);
+
+public sealed record CreateGoalRequest(
+    string? Name,
+    decimal TargetAmount);
+
+public sealed record GoalResponse(
+    Guid Id,
+    string Name,
+    decimal TargetAmount,
+    decimal CurrentAmount,
+    decimal ProgressPercentage);

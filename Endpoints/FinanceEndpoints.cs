@@ -17,6 +17,8 @@ public static class FinanceEndpoints
         api.MapPost("/transactions", CreateTransaction);
         api.MapGet("/transactions", GetTransactions);
         api.MapDelete("/transactions/{id:guid}", DeleteTransaction);
+        api.MapGet("/goals", GetGoals);
+        api.MapPost("/goals", CreateGoal);
 
         return endpoints;
     }
@@ -146,6 +148,51 @@ public static class FinanceEndpoints
         return TypedResults.NoContent();
     }
 
+    private static async Task<Ok<IReadOnlyList<GoalResponse>>> GetGoals(FinanceDbContext dbContext)
+    {
+        var currentAmount = await GetCurrentAmount(dbContext);
+        var goals = await dbContext.Goals
+            .AsNoTracking()
+            .Where(goal => goal.LocalProfileId == FinanceDbContext.DefaultLocalProfileId)
+            .OrderBy(goal => goal.Name)
+            .Select(goal => new GoalResponse(
+                goal.Id,
+                goal.Name,
+                goal.TargetAmount,
+                currentAmount,
+                CalculateProgressPercentage(currentAmount, goal.TargetAmount)))
+            .ToListAsync();
+
+        return TypedResults.Ok<IReadOnlyList<GoalResponse>>(goals);
+    }
+
+    private static async Task<Results<Created<GoalResponse>, ValidationProblem>> CreateGoal(
+        CreateGoalRequest request,
+        FinanceDbContext dbContext)
+    {
+        var validationErrors = ValidateCreateGoalRequest(request);
+        if (validationErrors.Count > 0)
+        {
+            return TypedResults.ValidationProblem(validationErrors);
+        }
+
+        var goal = new Goal
+        {
+            Id = Guid.NewGuid(),
+            Name = request.Name!.Trim(),
+            TargetAmount = request.TargetAmount,
+            LocalProfileId = FinanceDbContext.DefaultLocalProfileId
+        };
+
+        dbContext.Goals.Add(goal);
+        await dbContext.SaveChangesAsync();
+
+        var currentAmount = await GetCurrentAmount(dbContext);
+        var response = ToGoalResponse(goal, currentAmount);
+
+        return TypedResults.Created($"/api/goals/{goal.Id}", response);
+    }
+
     private static Dictionary<string, string[]> ValidateCreateTransactionRequest(CreateTransactionRequest request)
     {
         var errors = new Dictionary<string, string[]>();
@@ -173,6 +220,53 @@ public static class FinanceEndpoints
         return errors;
     }
 
+    private static Dictionary<string, string[]> ValidateCreateGoalRequest(CreateGoalRequest request)
+    {
+        var errors = new Dictionary<string, string[]>();
+
+        if (string.IsNullOrWhiteSpace(request.Name))
+        {
+            errors[nameof(request.Name)] = ["Goal name is required."];
+        }
+        else if (request.Name.Trim().Length > 120)
+        {
+            errors[nameof(request.Name)] = ["Goal name must be 120 characters or fewer."];
+        }
+
+        if (request.TargetAmount <= 0)
+        {
+            errors[nameof(request.TargetAmount)] = ["Target amount must be greater than 0."];
+        }
+
+        return errors;
+    }
+
+    private static async Task<decimal> GetCurrentAmount(FinanceDbContext dbContext)
+    {
+        var income = await dbContext.Transactions
+            .Where(transaction =>
+                transaction.LocalProfileId == FinanceDbContext.DefaultLocalProfileId &&
+                transaction.Type == TransactionType.Income)
+            .SumAsync(transaction => transaction.Amount);
+        var expenses = await dbContext.Transactions
+            .Where(transaction =>
+                transaction.LocalProfileId == FinanceDbContext.DefaultLocalProfileId &&
+                transaction.Type == TransactionType.Expense)
+            .SumAsync(transaction => transaction.Amount);
+
+        return Math.Max(0m, income - expenses);
+    }
+
+    private static decimal CalculateProgressPercentage(decimal currentAmount, decimal targetAmount)
+    {
+        if (targetAmount <= 0)
+        {
+            return 0m;
+        }
+
+        return Math.Round(Math.Min(currentAmount / targetAmount * 100m, 100m), 2);
+    }
+
     private static bool CanUseCategoryForTransactionType(Category category, TransactionType transactionType)
     {
         return category.Id == FinanceDbContext.OtherCategoryId || category.AppliesTo == transactionType;
@@ -188,5 +282,15 @@ public static class FinanceEndpoints
             transaction.Description,
             transaction.CategoryId,
             categoryName);
+    }
+
+    private static GoalResponse ToGoalResponse(Goal goal, decimal currentAmount)
+    {
+        return new GoalResponse(
+            goal.Id,
+            goal.Name,
+            goal.TargetAmount,
+            currentAmount,
+            CalculateProgressPercentage(currentAmount, goal.TargetAmount));
     }
 }

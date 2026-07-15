@@ -181,6 +181,105 @@ public sealed class FinanceEndpointsTests
     }
 
     [Fact]
+    public async Task Post_goals_creates_goal_for_default_profile_with_initial_progress()
+    {
+        using var app = new FinanceApiFactory();
+        using var client = app.CreateClient();
+        var request = new CreateGoalRequest("Emergency fund", 10000m);
+
+        var response = await client.PostAsJsonAsync("/api/goals", request, JsonOptions);
+
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        var goal = await response.Content.ReadFromJsonAsync<GoalResponse>(JsonOptions);
+        Assert.NotNull(goal);
+        Assert.Equal("Emergency fund", goal.Name);
+        Assert.Equal(10000m, goal.TargetAmount);
+        Assert.Equal(0m, goal.CurrentAmount);
+        Assert.Equal(0m, goal.ProgressPercentage);
+
+        await using var dbContext = app.CreateDbContext();
+        var saved = await dbContext.Goals.SingleAsync(item => item.Id == goal.Id);
+        Assert.Equal(FinanceDbContext.DefaultLocalProfileId, saved.LocalProfileId);
+    }
+
+    [Fact]
+    public async Task Get_goals_calculates_current_amount_and_progress_from_default_profile_transactions()
+    {
+        using var app = new FinanceApiFactory();
+        var income = CreateTransaction(
+            "30000000-0000-0000-0000-000000000020",
+            1000m,
+            new DateOnly(2026, 7, 10));
+        income.Type = TransactionType.Income;
+        income.CategoryId = FinanceDbContext.SalaryCategoryId;
+        var expense = CreateTransaction(
+            "30000000-0000-0000-0000-000000000021",
+            200m,
+            new DateOnly(2026, 7, 11));
+        await app.SeedTransactionsAsync(income, expense);
+        using var client = app.CreateClient();
+        await client.PostAsJsonAsync(
+            "/api/goals",
+            new CreateGoalRequest("Emergency fund", 1600m),
+            JsonOptions);
+
+        var response = await client.GetAsync("/api/goals");
+
+        response.EnsureSuccessStatusCode();
+        var goals = await response.Content.ReadFromJsonAsync<List<GoalResponse>>(JsonOptions);
+        Assert.NotNull(goals);
+        var goal = Assert.Single(goals);
+        Assert.Equal(800m, goal.CurrentAmount);
+        Assert.Equal(50m, goal.ProgressPercentage);
+    }
+
+    [Fact]
+    public async Task Post_goals_rejects_invalid_name_and_target_amount()
+    {
+        using var app = new FinanceApiFactory();
+        using var client = app.CreateClient();
+
+        var response = await client.PostAsJsonAsync(
+            "/api/goals",
+            new CreateGoalRequest("", 0m),
+            JsonOptions);
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        await AssertValidationProblemAsync(response, "Name", "TargetAmount");
+    }
+
+    [Fact]
+    public async Task Get_goals_returns_only_goals_from_default_profile()
+    {
+        using var app = new FinanceApiFactory();
+        var otherProfileId = Guid.Parse("40000000-0000-0000-0000-000000000002");
+        await using (var dbContext = app.CreateDbContext())
+        {
+            dbContext.LocalProfiles.Add(new LocalProfile
+            {
+                Id = otherProfileId,
+                DisplayName = "Other Local Profile"
+            });
+            dbContext.Goals.Add(new Goal
+            {
+                Id = Guid.Parse("50000000-0000-0000-0000-000000000001"),
+                Name = "Other profile goal",
+                TargetAmount = 500m,
+                LocalProfileId = otherProfileId
+            });
+            await dbContext.SaveChangesAsync();
+        }
+
+        using var client = app.CreateClient();
+        var response = await client.GetAsync("/api/goals");
+
+        response.EnsureSuccessStatusCode();
+        var goals = await response.Content.ReadFromJsonAsync<List<GoalResponse>>(JsonOptions);
+        Assert.NotNull(goals);
+        Assert.Empty(goals);
+    }
+
+    [Fact]
     public async Task Post_transactions_rejects_invalid_request()
     {
         using var app = new FinanceApiFactory();
