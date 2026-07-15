@@ -1,14 +1,25 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import { deleteTransaction, getCategories, getTransactions, isApiError } from './api/financeApi';
-import type { CategoryResponse, TransactionResponse } from './api/financeTypes';
+import {
+  deleteTransaction,
+  getCategories,
+  getGoals,
+  getTransactions,
+  isApiError,
+} from './api/financeApi';
+import type { CategoryResponse, GoalResponse, TransactionResponse } from './api/financeTypes';
 import { TransactionForm } from './components/TransactionForm';
 import { TransactionHistory } from './components/TransactionHistory';
 import { polishApiMessage } from './labels';
 
 type ApiStatus =
   | { state: 'loading' }
-  | { state: 'ready'; categories: CategoryResponse[]; transactions: TransactionResponse[] }
+  | {
+      state: 'ready';
+      categories: CategoryResponse[];
+      transactions: TransactionResponse[];
+      goals: GoalResponse[];
+    }
   | { state: 'error'; message: string };
 
 export default function App() {
@@ -16,13 +27,14 @@ export default function App() {
 
   async function loadFinanceData(isActive = true) {
     try {
-      const [categories, transactions] = await Promise.all([
+      const [categories, transactions, goals] = await Promise.all([
         getCategories(),
         getTransactions(),
+        getGoals(),
       ]);
 
       if (isActive) {
-        setApiStatus({ state: 'ready', categories, transactions });
+        setApiStatus({ state: 'ready', categories, transactions, goals });
       }
     } catch (error) {
       if (isActive) {

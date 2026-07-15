@@ -24,6 +24,19 @@ export type TransactionResponse = {
   categoryName: string;
 };
 
+export type CreateGoalRequest = {
+  name: string;
+  targetAmount: number;
+};
+
+export type GoalResponse = {
+  id: string;
+  name: string;
+  targetAmount: number;
+  currentAmount: number;
+  progressPercentage: number;
+};
+
 export type ApiError = {
   message: string;
   status?: number;

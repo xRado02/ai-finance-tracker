@@ -1,7 +1,7 @@
 ---
 change_id: financial-goals-ui
 title: Polski interfejs celow finansowych
-status: plan_reviewed
+status: implementing
 created: 2026-07-15
 updated: 2026-07-15
 archived_at: null

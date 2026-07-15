@@ -1,7 +1,9 @@
 import type {
   ApiError,
   CategoryResponse,
+  CreateGoalRequest,
   CreateTransactionRequest,
+  GoalResponse,
   TransactionResponse,
 } from './financeTypes';
 
@@ -19,6 +21,20 @@ export async function getCategories(): Promise<CategoryResponse[]> {
 export async function getTransactions(limit?: number): Promise<TransactionResponse[]> {
   const query = typeof limit === 'number' ? `?limit=${encodeURIComponent(limit)}` : '';
   return getJson<TransactionResponse[]>(`/api/transactions${query}`);
+}
+
+export async function getGoals(): Promise<GoalResponse[]> {
+  return getJson<GoalResponse[]>('/api/goals');
+}
+
+export async function createGoal(request: CreateGoalRequest): Promise<GoalResponse> {
+  return getJson<GoalResponse>('/api/goals', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request),
+  });
 }
 
 export async function createTransaction(

@@ -96,13 +96,13 @@ Uruchomic typecheck/build, sprawdzic integracje z transakcjami i zapisac Progres
 
 #### Automated
 
-- [ ] 1.1 Typy i metody goals API sa obecne
-- [ ] 1.2 App laduje goals i odswieza je po zmianie transakcji
-- [ ] 1.3 `npm run typecheck` przechodzi
+- [x] 1.1 Typy i metody goals API sa obecne
+- [x] 1.2 App laduje goals i odswieza je po zmianie transakcji
+- [x] 1.3 `npm run typecheck` przechodzi
 
 #### Manual
 
-- [ ] 1.4 Frontend korzysta z istniejacego kontraktu `/api/goals` bez rozszerzania backendu
+- [x] 1.4 Frontend korzysta z istniejacego kontraktu `/api/goals` bez rozszerzania backendu
 
 ### Phase 2: Goal form and progress list
 
