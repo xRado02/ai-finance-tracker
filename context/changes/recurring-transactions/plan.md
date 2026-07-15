@@ -95,9 +95,9 @@ Uruchomić build/test/typecheck, sprawdzić migrację, zakres i przygotować man
 
 ### Phase 2: API and tests
 
-- [ ] 2.1 Lista, create i status działają tylko dla default profile
-- [ ] 2.2 Generowanie bieżącego miesiąca jest idempotentne i pomija inactive
-- [ ] 2.3 Testy API pokrywają walidację, duplikat i izolację profilu
+- [x] 2.1 Lista, create i status działają tylko dla default profile
+- [x] 2.2 Generowanie bieżącego miesiąca jest idempotentne i pomija inactive
+- [x] 2.3 Testy API pokrywają walidację, duplikat i izolację profilu
 
 ### Phase 3: Frontend
 

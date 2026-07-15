@@ -76,6 +76,9 @@ public sealed class FinanceDbContext(DbContextOptions<FinanceDbContext> options)
                 .WithMany(item => item.GeneratedTransactions)
                 .HasForeignKey(t => t.RecurringTransactionId)
                 .OnDelete(DeleteBehavior.SetNull);
+            transaction.HasIndex(t => new { t.RecurringTransactionId, t.TransactionDate })
+                .IsUnique()
+                .HasFilter("[RecurringTransactionId] IS NOT NULL");
         });
 
         modelBuilder.Entity<Goal>(goal =>

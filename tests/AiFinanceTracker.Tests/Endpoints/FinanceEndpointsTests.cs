@@ -353,6 +353,131 @@ public sealed class FinanceEndpointsTests
     }
 
     [Fact]
+    public async Task Post_recurring_transactions_creates_definition_for_default_profile()
+    {
+        using var app = new FinanceApiFactory();
+        using var client = app.CreateClient();
+        var request = new CreateRecurringTransactionRequest(
+            120m,
+            TransactionType.Expense,
+            FinanceDbContext.BillsCategoryId,
+            "Internet",
+            true);
+
+        var response = await client.PostAsJsonAsync("/api/recurring-transactions", request, JsonOptions);
+
+        Assert.Equal(HttpStatusCode.Created, response.StatusCode);
+        var recurring = await response.Content.ReadFromJsonAsync<RecurringTransactionResponse>(JsonOptions);
+        Assert.NotNull(recurring);
+        Assert.Equal(120m, recurring.Amount);
+        Assert.Equal(TransactionType.Expense, recurring.Type);
+        Assert.Equal("Bills", recurring.CategoryName);
+        Assert.True(recurring.IsActive);
+
+        await using var dbContext = app.CreateDbContext();
+        var saved = await dbContext.RecurringTransactions.SingleAsync(item => item.Id == recurring.Id);
+        Assert.Equal(FinanceDbContext.DefaultLocalProfileId, saved.LocalProfileId);
+    }
+
+    [Fact]
+    public async Task Patch_recurring_transaction_status_updates_default_profile_definition()
+    {
+        using var app = new FinanceApiFactory();
+        var recurring = CreateRecurringTransaction(
+            "60000000-0000-0000-0000-000000000001",
+            90m,
+            FinanceDbContext.BillsCategoryId,
+            true);
+        await app.SeedRecurringTransactionsAsync(recurring);
+        using var client = app.CreateClient();
+
+        var response = await client.PatchAsJsonAsync(
+            $"/api/recurring-transactions/{recurring.Id}/status",
+            new UpdateRecurringTransactionStatusRequest(false),
+            JsonOptions);
+
+        response.EnsureSuccessStatusCode();
+        var updated = await response.Content.ReadFromJsonAsync<RecurringTransactionResponse>(JsonOptions);
+        Assert.NotNull(updated);
+        Assert.False(updated.IsActive);
+    }
+
+    [Fact]
+    public async Task Generate_current_month_creates_active_definitions_once_and_skips_inactive()
+    {
+        using var app = new FinanceApiFactory();
+        var active = CreateRecurringTransaction(
+            "60000000-0000-0000-0000-000000000002",
+            250m,
+            FinanceDbContext.SalaryCategoryId,
+            true);
+        active.Type = TransactionType.Income;
+        var inactive = CreateRecurringTransaction(
+            "60000000-0000-0000-0000-000000000003",
+            80m,
+            FinanceDbContext.FoodCategoryId,
+            false);
+        await app.SeedRecurringTransactionsAsync(active, inactive);
+        using var client = app.CreateClient();
+
+        var firstResponse = await client.PostAsync("/api/recurring-transactions/generate-current-month", null);
+        firstResponse.EnsureSuccessStatusCode();
+        var first = await firstResponse.Content.ReadFromJsonAsync<GenerateRecurringTransactionsResponse>(JsonOptions);
+        Assert.NotNull(first);
+        Assert.Equal(1, first.GeneratedCount);
+        Assert.Equal(0, first.SkippedCount);
+        var generatedTransaction = Assert.Single(first.Transactions);
+        Assert.Equal(active.Id, (await ReadGeneratedTransactionAsync(app, generatedTransaction.Id)).RecurringTransactionId);
+
+        var secondResponse = await client.PostAsync("/api/recurring-transactions/generate-current-month", null);
+        secondResponse.EnsureSuccessStatusCode();
+        var second = await secondResponse.Content.ReadFromJsonAsync<GenerateRecurringTransactionsResponse>(JsonOptions);
+        Assert.NotNull(second);
+        Assert.Equal(0, second.GeneratedCount);
+        Assert.Equal(1, second.SkippedCount);
+
+        await using var dbContext = app.CreateDbContext();
+        Assert.Equal(1, await dbContext.Transactions.CountAsync());
+        var monthStart = new DateOnly(DateTime.Today.Year, DateTime.Today.Month, 1);
+        Assert.Equal(monthStart, (await dbContext.Transactions.SingleAsync()).TransactionDate);
+    }
+
+    [Fact]
+    public async Task Generate_current_month_ignores_recurring_definitions_from_another_profile()
+    {
+        using var app = new FinanceApiFactory();
+        var otherProfileId = Guid.Parse("40000000-0000-0000-0000-000000000004");
+        await using (var dbContext = app.CreateDbContext())
+        {
+            dbContext.LocalProfiles.Add(new LocalProfile
+            {
+                Id = otherProfileId,
+                DisplayName = "Other Local Profile"
+            });
+            dbContext.RecurringTransactions.Add(new RecurringTransaction
+            {
+                Id = Guid.Parse("60000000-0000-0000-0000-000000000004"),
+                Amount = 999m,
+                Type = TransactionType.Income,
+                CategoryId = FinanceDbContext.SalaryCategoryId,
+                IsActive = true,
+                LocalProfileId = otherProfileId
+            });
+            await dbContext.SaveChangesAsync();
+        }
+
+        using var client = app.CreateClient();
+        var response = await client.PostAsync("/api/recurring-transactions/generate-current-month", null);
+
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<GenerateRecurringTransactionsResponse>(JsonOptions);
+        Assert.NotNull(result);
+        Assert.Equal(0, result.GeneratedCount);
+        await using var verificationContext = app.CreateDbContext();
+        Assert.Empty(await verificationContext.Transactions.ToListAsync());
+    }
+
+    [Fact]
     public async Task Post_transactions_rejects_invalid_request()
     {
         using var app = new FinanceApiFactory();
@@ -442,6 +567,30 @@ public sealed class FinanceEndpointsTests
         };
     }
 
+    private static RecurringTransaction CreateRecurringTransaction(
+        string id,
+        decimal amount,
+        Guid categoryId,
+        bool isActive)
+    {
+        return new RecurringTransaction
+        {
+            Id = Guid.Parse(id),
+            Amount = amount,
+            Type = TransactionType.Expense,
+            CategoryId = categoryId,
+            Description = "Recurring",
+            IsActive = isActive,
+            LocalProfileId = FinanceDbContext.DefaultLocalProfileId
+        };
+    }
+
+    private static async Task<Transaction> ReadGeneratedTransactionAsync(FinanceApiFactory app, Guid id)
+    {
+        await using var dbContext = app.CreateDbContext();
+        return await dbContext.Transactions.SingleAsync(item => item.Id == id);
+    }
+
     private static JsonSerializerOptions CreateJsonOptions()
     {
         var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
@@ -509,6 +658,13 @@ public sealed class FinanceEndpointsTests
         {
             await using var dbContext = CreateDbContext();
             dbContext.Transactions.AddRange(transactions);
+            await dbContext.SaveChangesAsync();
+        }
+
+        public async Task SeedRecurringTransactionsAsync(params RecurringTransaction[] recurringTransactions)
+        {
+            await using var dbContext = CreateDbContext();
+            dbContext.RecurringTransactions.AddRange(recurringTransactions);
             await dbContext.SaveChangesAsync();
         }
 

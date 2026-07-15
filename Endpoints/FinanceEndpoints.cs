@@ -20,6 +20,10 @@ public static class FinanceEndpoints
         api.MapGet("/goals", GetGoals);
         api.MapPost("/goals", CreateGoal);
         api.MapGet("/dashboard/summary", GetDashboardSummary);
+        api.MapGet("/recurring-transactions", GetRecurringTransactions);
+        api.MapPost("/recurring-transactions", CreateRecurringTransaction);
+        api.MapPatch("/recurring-transactions/{id:guid}/status", UpdateRecurringTransactionStatus);
+        api.MapPost("/recurring-transactions/generate-current-month", GenerateCurrentMonthRecurringTransactions);
 
         return endpoints;
     }
@@ -242,6 +246,172 @@ public static class FinanceEndpoints
             goals));
     }
 
+    private static async Task<Ok<IReadOnlyList<RecurringTransactionResponse>>> GetRecurringTransactions(
+        FinanceDbContext dbContext)
+    {
+        var recurringTransactions = await dbContext.RecurringTransactions
+            .AsNoTracking()
+            .Where(item => item.LocalProfileId == FinanceDbContext.DefaultLocalProfileId)
+            .OrderByDescending(item => item.IsActive)
+            .ThenBy(item => item.Type)
+            .ThenBy(item => item.Id)
+            .Select(item => new RecurringTransactionResponse(
+                item.Id,
+                item.Amount,
+                item.Type,
+                item.CategoryId,
+                item.Category!.Name,
+                item.Description,
+                item.IsActive))
+            .ToListAsync();
+
+        return TypedResults.Ok<IReadOnlyList<RecurringTransactionResponse>>(recurringTransactions);
+    }
+
+    private static async Task<Results<Created<RecurringTransactionResponse>, ValidationProblem, NotFound<ProblemDetails>>> CreateRecurringTransaction(
+        CreateRecurringTransactionRequest request,
+        FinanceDbContext dbContext)
+    {
+        var validationErrors = ValidateCreateRecurringTransactionRequest(request);
+        if (validationErrors.Count > 0)
+        {
+            return TypedResults.ValidationProblem(validationErrors);
+        }
+
+        var category = await dbContext.Categories
+            .SingleOrDefaultAsync(item => item.Id == request.CategoryId);
+
+        if (category is null)
+        {
+            return TypedResults.NotFound(new ProblemDetails
+            {
+                Title = "Category not found",
+                Detail = "The selected category does not exist.",
+                Status = StatusCodes.Status404NotFound
+            });
+        }
+
+        if (!CanUseCategoryForTransactionType(category, request.Type))
+        {
+            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+            {
+                [nameof(request.CategoryId)] = ["The selected category does not apply to the transaction type."]
+            });
+        }
+
+        var recurring = new RecurringTransaction
+        {
+            Id = Guid.NewGuid(),
+            Amount = request.Amount,
+            Type = request.Type,
+            CategoryId = category.Id,
+            Description = request.Description,
+            IsActive = request.IsActive,
+            LocalProfileId = FinanceDbContext.DefaultLocalProfileId
+        };
+
+        dbContext.RecurringTransactions.Add(recurring);
+        await dbContext.SaveChangesAsync();
+
+        return TypedResults.Created(
+            $"/api/recurring-transactions/{recurring.Id}",
+            ToRecurringTransactionResponse(recurring, category.Name));
+    }
+
+    private static async Task<Results<Ok<RecurringTransactionResponse>, NotFound<ProblemDetails>>> UpdateRecurringTransactionStatus(
+        Guid id,
+        UpdateRecurringTransactionStatusRequest request,
+        FinanceDbContext dbContext)
+    {
+        var recurring = await dbContext.RecurringTransactions
+            .Include(item => item.Category)
+            .SingleOrDefaultAsync(item =>
+                item.Id == id &&
+                item.LocalProfileId == FinanceDbContext.DefaultLocalProfileId);
+
+        if (recurring is null)
+        {
+            return TypedResults.NotFound(new ProblemDetails
+            {
+                Title = "Recurring transaction not found",
+                Detail = "The recurring transaction does not exist in the default local profile.",
+                Status = StatusCodes.Status404NotFound
+            });
+        }
+
+        recurring.IsActive = request.IsActive;
+        await dbContext.SaveChangesAsync();
+
+        return TypedResults.Ok(ToRecurringTransactionResponse(recurring, recurring.Category!.Name));
+    }
+
+    private static async Task<Ok<GenerateRecurringTransactionsResponse>> GenerateCurrentMonthRecurringTransactions(
+        FinanceDbContext dbContext)
+    {
+        var today = DateOnly.FromDateTime(DateTime.Today);
+        var monthStart = new DateOnly(today.Year, today.Month, 1);
+        var nextMonthStart = monthStart.AddMonths(1);
+
+        var recurringTransactions = await dbContext.RecurringTransactions
+            .Where(item =>
+                item.LocalProfileId == FinanceDbContext.DefaultLocalProfileId &&
+                item.IsActive)
+            .Include(item => item.Category)
+            .OrderBy(item => item.Id)
+            .ToListAsync();
+
+        var generatedRecurringIds = (await dbContext.Transactions
+                .Where(item =>
+                    item.LocalProfileId == FinanceDbContext.DefaultLocalProfileId &&
+                    item.RecurringTransactionId != null &&
+                    item.TransactionDate >= monthStart &&
+                    item.TransactionDate < nextMonthStart)
+                .Select(item => item.RecurringTransactionId!.Value)
+                .ToListAsync())
+            .ToHashSet();
+
+        var generated = new List<Transaction>();
+        var skippedCount = 0;
+        foreach (var recurring in recurringTransactions)
+        {
+            if (generatedRecurringIds.Contains(recurring.Id))
+            {
+                skippedCount++;
+                continue;
+            }
+
+            generated.Add(new Transaction
+            {
+                Id = Guid.NewGuid(),
+                Amount = recurring.Amount,
+                Type = recurring.Type,
+                TransactionDate = monthStart,
+                Description = recurring.Description,
+                CategoryId = recurring.CategoryId,
+                RecurringTransactionId = recurring.Id,
+                LocalProfileId = FinanceDbContext.DefaultLocalProfileId
+            });
+        }
+
+        if (generated.Count > 0)
+        {
+            dbContext.Transactions.AddRange(generated);
+            await dbContext.SaveChangesAsync();
+        }
+
+        var generatedResponses = generated
+            .Select(item => ToTransactionResponse(
+                item,
+                recurringTransactions.Single(recurring => recurring.Id == item.RecurringTransactionId).Category!.Name))
+            .ToList();
+
+        return TypedResults.Ok(new GenerateRecurringTransactionsResponse(
+            $"{monthStart.Year:D4}-{monthStart.Month:D2}",
+            generated.Count,
+            skippedCount,
+            generatedResponses));
+    }
+
     private static Dictionary<string, string[]> ValidateCreateTransactionRequest(CreateTransactionRequest request)
     {
         var errors = new Dictionary<string, string[]>();
@@ -285,6 +455,29 @@ public static class FinanceEndpoints
         if (request.TargetAmount <= 0)
         {
             errors[nameof(request.TargetAmount)] = ["Target amount must be greater than 0."];
+        }
+
+        return errors;
+    }
+
+    private static Dictionary<string, string[]> ValidateCreateRecurringTransactionRequest(
+        CreateRecurringTransactionRequest request)
+    {
+        var errors = new Dictionary<string, string[]>();
+
+        if (request.Amount <= 0)
+        {
+            errors[nameof(request.Amount)] = ["Amount must be greater than 0."];
+        }
+
+        if (!Enum.IsDefined(request.Type))
+        {
+            errors[nameof(request.Type)] = ["Type must be Income or Expense."];
+        }
+
+        if (request.Description?.Length > 500)
+        {
+            errors[nameof(request.Description)] = ["Description must be 500 characters or fewer."];
         }
 
         return errors;
@@ -341,5 +534,19 @@ public static class FinanceEndpoints
             goal.TargetAmount,
             currentAmount,
             CalculateProgressPercentage(currentAmount, goal.TargetAmount));
+    }
+
+    private static RecurringTransactionResponse ToRecurringTransactionResponse(
+        RecurringTransaction recurring,
+        string categoryName)
+    {
+        return new RecurringTransactionResponse(
+            recurring.Id,
+            recurring.Amount,
+            recurring.Type,
+            recurring.CategoryId,
+            categoryName,
+            recurring.Description,
+            recurring.IsActive);
     }
 }
