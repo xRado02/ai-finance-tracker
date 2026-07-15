@@ -478,6 +478,24 @@ public sealed class FinanceEndpointsTests
     }
 
     [Fact]
+    public async Task Post_recurring_transactions_rejects_invalid_amount_and_description()
+    {
+        using var app = new FinanceApiFactory();
+        using var client = app.CreateClient();
+        var request = new CreateRecurringTransactionRequest(
+            0m,
+            TransactionType.Expense,
+            FinanceDbContext.FoodCategoryId,
+            new string('x', 501),
+            true);
+
+        var response = await client.PostAsJsonAsync("/api/recurring-transactions", request, JsonOptions);
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        await AssertValidationProblemAsync(response, "Amount", "Description");
+    }
+
+    [Fact]
     public async Task Post_transactions_rejects_invalid_request()
     {
         using var app = new FinanceApiFactory();
