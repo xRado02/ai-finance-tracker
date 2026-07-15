@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import './App.css';
 import {
   deleteTransaction,
+  createGoal,
   getCategories,
   getGoals,
   getTransactions,
@@ -10,6 +11,8 @@ import {
 import type { CategoryResponse, GoalResponse, TransactionResponse } from './api/financeTypes';
 import { TransactionForm } from './components/TransactionForm';
 import { TransactionHistory } from './components/TransactionHistory';
+import { GoalForm } from './components/GoalForm';
+import { GoalList } from './components/GoalList';
 import { polishApiMessage } from './labels';
 
 type ApiStatus =
@@ -90,6 +93,20 @@ export default function App() {
               await deleteTransaction(id);
               await loadFinanceData();
             }}
+          />
+        </div>
+
+        <div className="goals__grid">
+          <GoalForm
+            disabled={apiStatus.state !== 'ready'}
+            onGoalCreated={async (request) => {
+              await createGoal(request);
+              await loadFinanceData();
+            }}
+          />
+          <GoalList
+            goals={apiStatus.state === 'ready' ? apiStatus.goals : []}
+            isLoading={apiStatus.state === 'loading'}
           />
         </div>
       </section>
