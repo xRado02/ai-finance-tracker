@@ -136,25 +136,25 @@ Uruchomic backend/frontend verification, sprawdzic zakres i zapisac Progress, SH
 
 #### Automated
 
-- [x] 2.1 `npm run typecheck` przechodzi
-- [x] 2.2 `npm run build` przechodzi
+- [x] 2.1 `npm run typecheck` przechodzi - d215a62
+- [x] 2.2 `npm run build` przechodzi - d215a62
 
 #### Manual
 
-- [x] 2.3 Metryki i listy dashboardu sa po polsku
-- [x] 2.4 Refresh transakcji aktualizuje dashboard
-- [x] 2.5 UI nie zawiera zaawansowanych wykresow ani scope creep
+- [x] 2.3 Metryki i listy dashboardu sa po polsku - d215a62
+- [x] 2.4 Refresh transakcji aktualizuje dashboard - d215a62
+- [x] 2.5 UI nie zawiera zaawansowanych wykresow ani scope creep - d215a62
 
 ### Phase 3: Verification and change closeout
 
 #### Automated
 
-- [ ] 3.1 Backend build przechodzi
-- [ ] 3.2 Backend test suite przechodzi
-- [ ] 3.3 Frontend typecheck przechodzi
-- [ ] 3.4 Frontend build przechodzi
+- [x] 3.1 Backend build przechodzi
+- [x] 3.2 Backend test suite przechodzi
+- [x] 3.3 Frontend typecheck przechodzi
+- [x] 3.4 Frontend build przechodzi
 
 #### Manual
 
-- [ ] 3.5 Reczny smoke test dashboardu przechodzi
-- [ ] 3.6 Dokumentacja zmiany i Progress sa kompletne
+- [x] 3.5 Reczny smoke test dashboardu przechodzi
+- [x] 3.6 Dokumentacja zmiany i Progress sa kompletne
