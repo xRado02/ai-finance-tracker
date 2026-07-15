@@ -108,23 +108,23 @@ Uruchomic typecheck/build, sprawdzic integracje z transakcjami i zapisac Progres
 
 #### Automated
 
-- [x] 2.1 `npm run typecheck` przechodzi po dodaniu komponentow celow
-- [x] 2.2 `npm run build` przechodzi po dodaniu komponentow celow
+- [x] 2.1 `npm run typecheck` przechodzi po dodaniu komponentow celow - ebc3008
+- [x] 2.2 `npm run build` przechodzi po dodaniu komponentow celow - ebc3008
 
 #### Manual
 
-- [x] 2.3 Formularz celu, lista, progress bar i komunikaty sa po polsku
-- [x] 2.4 Utworzenie celu pokazuje dane zwrocone przez API
-- [x] 2.5 Zmiana transakcji odswieza progress celu
+- [x] 2.3 Formularz celu, lista, progress bar i komunikaty sa po polsku - ebc3008
+- [x] 2.4 Utworzenie celu pokazuje dane zwrocone przez API - ebc3008
+- [x] 2.5 Zmiana transakcji odswieza progress celu - ebc3008
 
 ### Phase 3: Verification and change closeout
 
 #### Automated
 
-- [ ] 3.1 `npm run typecheck` przechodzi
-- [ ] 3.2 `npm run build` przechodzi
+- [x] 3.1 `npm run typecheck` przechodzi
+- [x] 3.2 `npm run build` przechodzi
 
 #### Manual
 
-- [ ] 3.3 Reczny smoke test goals UI przechodzi
-- [ ] 3.4 Dokumentacja zmiany i Progress sa kompletne
+- [x] 3.3 Reczny smoke test goals UI przechodzi
+- [x] 3.4 Dokumentacja zmiany i Progress sa kompletne
