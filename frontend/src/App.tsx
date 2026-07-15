@@ -4,15 +4,22 @@ import {
   deleteTransaction,
   createGoal,
   getCategories,
+  getDashboardSummary,
   getGoals,
   getTransactions,
   isApiError,
 } from './api/financeApi';
-import type { CategoryResponse, GoalResponse, TransactionResponse } from './api/financeTypes';
+import type {
+  CategoryResponse,
+  DashboardSummaryResponse,
+  GoalResponse,
+  TransactionResponse,
+} from './api/financeTypes';
 import { TransactionForm } from './components/TransactionForm';
 import { TransactionHistory } from './components/TransactionHistory';
 import { GoalForm } from './components/GoalForm';
 import { GoalList } from './components/GoalList';
+import { DashboardSummary } from './components/DashboardSummary';
 import { polishApiMessage } from './labels';
 
 type ApiStatus =
@@ -22,6 +29,7 @@ type ApiStatus =
       categories: CategoryResponse[];
       transactions: TransactionResponse[];
       goals: GoalResponse[];
+      dashboard: DashboardSummaryResponse;
     }
   | { state: 'error'; message: string };
 
@@ -30,14 +38,15 @@ export default function App() {
 
   async function loadFinanceData(isActive = true) {
     try {
-      const [categories, transactions, goals] = await Promise.all([
+      const [categories, transactions, goals, dashboard] = await Promise.all([
         getCategories(),
         getTransactions(),
         getGoals(),
+        getDashboardSummary(),
       ]);
 
       if (isActive) {
-        setApiStatus({ state: 'ready', categories, transactions, goals });
+        setApiStatus({ state: 'ready', categories, transactions, goals, dashboard });
       }
     } catch (error) {
       if (isActive) {
@@ -78,6 +87,11 @@ export default function App() {
           {apiStatus.state === 'ready' &&
             `Załadowano ${apiStatus.categories.length} kategorii, znaleziono ${apiStatus.transactions.length} transakcji.`}
         </section>
+
+        <DashboardSummary
+          dashboard={apiStatus.state === 'ready' ? apiStatus.dashboard : null}
+          isLoading={apiStatus.state === 'loading'}
+        />
 
         <div className="workspace__grid">
           <TransactionForm

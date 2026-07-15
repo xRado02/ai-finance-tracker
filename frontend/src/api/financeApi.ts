@@ -3,6 +3,7 @@ import type {
   CategoryResponse,
   CreateGoalRequest,
   CreateTransactionRequest,
+  DashboardSummaryResponse,
   GoalResponse,
   TransactionResponse,
 } from './financeTypes';
@@ -35,6 +36,10 @@ export async function createGoal(request: CreateGoalRequest): Promise<GoalRespon
     },
     body: JSON.stringify(request),
   });
+}
+
+export async function getDashboardSummary(): Promise<DashboardSummaryResponse> {
+  return getJson<DashboardSummaryResponse>('/api/dashboard/summary');
 }
 
 export async function createTransaction(

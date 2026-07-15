@@ -124,26 +124,26 @@ Uruchomic backend/frontend verification, sprawdzic zakres i zapisac Progress, SH
 
 #### Automated
 
-- [x] 1.1 Endpoint zwraca metryki przychodow, wydatkow i salda
-- [x] 1.2 Endpoint zwraca kategorie wydatkow i progress celow
-- [x] 1.3 Testy API pokrywaja agregacje i izolacje profilu
+- [x] 1.1 Endpoint zwraca metryki przychodow, wydatkow i salda - 7b74e97
+- [x] 1.2 Endpoint zwraca kategorie wydatkow i progress celow - 7b74e97
+- [x] 1.3 Testy API pokrywaja agregacje i izolacje profilu - 7b74e97
 
 #### Manual
 
-- [x] 1.4 Dashboard contract korzysta tylko z default local profile
+- [x] 1.4 Dashboard contract korzysta tylko z default local profile - 7b74e97
 
 ### Phase 2: Dashboard UI integration
 
 #### Automated
 
-- [ ] 2.1 `npm run typecheck` przechodzi
-- [ ] 2.2 `npm run build` przechodzi
+- [x] 2.1 `npm run typecheck` przechodzi
+- [x] 2.2 `npm run build` przechodzi
 
 #### Manual
 
-- [ ] 2.3 Metryki i listy dashboardu sa po polsku
-- [ ] 2.4 Refresh transakcji aktualizuje dashboard
-- [ ] 2.5 UI nie zawiera zaawansowanych wykresow ani scope creep
+- [x] 2.3 Metryki i listy dashboardu sa po polsku
+- [x] 2.4 Refresh transakcji aktualizuje dashboard
+- [x] 2.5 UI nie zawiera zaawansowanych wykresow ani scope creep
 
 ### Phase 3: Verification and change closeout
 

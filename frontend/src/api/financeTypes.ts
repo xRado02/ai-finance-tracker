@@ -37,6 +37,21 @@ export type GoalResponse = {
   progressPercentage: number;
 };
 
+export type ExpenseCategorySummary = {
+  categoryName: string;
+  amount: number;
+};
+
+export type DashboardGoalSummary = GoalResponse;
+
+export type DashboardSummaryResponse = {
+  totalIncome: number;
+  totalExpenses: number;
+  balance: number;
+  expenseCategories: ExpenseCategorySummary[];
+  goals: DashboardGoalSummary[];
+};
+
 export type ApiError = {
   message: string;
   status?: number;
