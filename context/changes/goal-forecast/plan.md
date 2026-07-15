@@ -92,9 +92,9 @@ Uruchomić build/test/typecheck, sprawdzić brak duplikacji Goals i przygotować
 
 ### Phase 1: Forecast API
 
-- [x] 1.1 Kontrakt i statusy forecastu są dodane
-- [x] 1.2 Endpoint liczy miesięczną nadwyżkę i termin dla existing goals
-- [x] 1.3 Testy API pokrywają forecast, achieved, no data i non-positive surplus
+- [x] 1.1 Kontrakt i statusy forecastu są dodane - 805b2a0
+- [x] 1.2 Endpoint liczy miesięczną nadwyżkę i termin dla existing goals - 805b2a0
+- [x] 1.3 Testy API pokrywają forecast, achieved, no data i non-positive surplus - 805b2a0
 
 ### Phase 2: Forecast UI
 
@@ -104,6 +104,6 @@ Uruchomić build/test/typecheck, sprawdzić brak duplikacji Goals i przygotować
 
 ### Phase 3: Verification and closeout
 
-- [x] 3.1 Backend build/test oraz frontend typecheck/build przechodzą
-- [x] 3.2 Brak duplikacji Goals i scope creep jest sprawdzony
-- [x] 3.3 Manual smoke test jest gotowy do potwierdzenia
+- [x] 3.1 Backend build/test oraz frontend typecheck/build przechodzą - 1bdddd5
+- [x] 3.2 Brak duplikacji Goals i scope creep jest sprawdzony - 1bdddd5
+- [x] 3.3 Manual smoke test jest gotowy do potwierdzenia - 1bdddd5
