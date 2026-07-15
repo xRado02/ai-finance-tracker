@@ -104,21 +104,21 @@ Wykonać ręczny smoke całego MVP, zapisać Progress, SHA, status i review impl
 
 #### Automated
 
-- [x] 2.1 Backend restore/build/test przechodzi - 335ae97
-- [x] 2.2 Frontend typecheck/build przechodzi - 335ae97
-- [x] 2.3 Migracje zawierają InitialCreate i AddFinancialGoals - 335ae97
+- [x] 2.1 Backend restore/build/test przechodzi - f386477
+- [x] 2.2 Frontend typecheck/build przechodzi - f386477
+- [x] 2.3 Migracje zawierają InitialCreate i AddFinancialGoals - f386477
 
 #### Manual
 
-- [x] 2.4 Komendy z README odpowiadają lokalnemu workflow - 335ae97
+- [x] 2.4 Komendy z README odpowiadają lokalnemu workflow - f386477
 
 ### Phase 3: Final smoke and change closeout
 
 #### Automated
 
-- [ ] 3.1 Finalny zakres MVP jest spójny z PRD i roadmapą
-- [ ] 3.2 Progress, SHA i status change'a są kompletne
+- [x] 3.1 Finalny zakres MVP jest spójny z PRD i roadmapą
+- [x] 3.2 Progress, SHA i status change'a są kompletne
 
 #### Manual
 
-- [ ] 3.3 Finalny smoke test całej aplikacji przechodzi
+- [x] 3.3 Finalny smoke test całej aplikacji przechodzi
