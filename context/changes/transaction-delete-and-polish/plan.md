@@ -162,13 +162,13 @@ Brak migracji. Usuwanie korzysta z istniejacej tabeli transakcji i nie zmienia s
 
 #### Automated
 
-- [x] 4.1 `dotnet restore .\ai-finance-tracker.csproj` przechodzi
-- [x] 4.2 `dotnet build .\ai-finance-tracker.csproj --no-restore -p:UseAppHost=false` przechodzi
-- [x] 4.3 `dotnet test .\tests\AiFinanceTracker.Tests\AiFinanceTracker.Tests.csproj -p:UseAppHost=false` przechodzi
-- [x] 4.4 `npm run typecheck` przechodzi
-- [x] 4.5 `npm run build` przechodzi
+- [x] 4.1 `dotnet restore .\ai-finance-tracker.csproj` przechodzi - cb93918
+- [x] 4.2 `dotnet build .\ai-finance-tracker.csproj --no-restore -p:UseAppHost=false` przechodzi - cb93918
+- [x] 4.3 `dotnet test .\tests\AiFinanceTracker.Tests\AiFinanceTracker.Tests.csproj -p:UseAppHost=false` przechodzi - cb93918
+- [x] 4.4 `npm run typecheck` przechodzi - cb93918
+- [x] 4.5 `npm run build` przechodzi - cb93918
 
 #### Manual
 
-- [x] 4.6 Reczny smoke test usuwania i polskiego UI przechodzi
-- [x] 4.7 Dokumentacja zmiany i Progress sa kompletne
+- [x] 4.6 Reczny smoke test usuwania i polskiego UI przechodzi - cb93918
+- [x] 4.7 Dokumentacja zmiany i Progress sa kompletne - cb93918

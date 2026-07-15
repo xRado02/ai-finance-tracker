@@ -1,7 +1,7 @@
 ---
 change_id: transaction-delete-and-polish
 title: Usuwanie transakcji i spolszczenie obecnego przeplywu
-status: implementing
+status: implemented
 created: 2026-07-15
 updated: 2026-07-15
 archived_at: null
