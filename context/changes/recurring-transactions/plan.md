@@ -101,12 +101,12 @@ Uruchomić build/test/typecheck, sprawdzić migrację, zakres i przygotować man
 
 ### Phase 3: Frontend
 
-- [x] 3.1 API client i stan App są zintegrowane
-- [x] 3.2 Formularz/lista/status/generowanie są po polsku
-- [x] 3.3 Refresh historii i dashboardu działa po generowaniu
+- [x] 3.1 API client i stan App są zintegrowane - e8dbddd
+- [x] 3.2 Formularz/lista/status/generowanie są po polsku - e8dbddd
+- [x] 3.3 Refresh historii i dashboardu działa po generowaniu - e8dbddd
 
 ### Phase 4: Verification and closeout
 
-- [ ] 4.1 Backend build/test oraz frontend typecheck/build przechodzą
-- [ ] 4.2 Migracja i zakres są sprawdzone
-- [ ] 4.3 Manual smoke test jest gotowy do potwierdzenia
+- [x] 4.1 Backend build/test oraz frontend typecheck/build przechodzą
+- [x] 4.2 Migracja i zakres są sprawdzone
+- [x] 4.3 Manual smoke test jest gotowy do potwierdzenia

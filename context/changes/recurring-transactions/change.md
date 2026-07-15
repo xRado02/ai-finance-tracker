@@ -1,7 +1,7 @@
 ---
 change_id: recurring-transactions
 title: Stałe przychody i wydatki
-status: planned
+status: implemented
 created: 2026-07-15
 updated: 2026-07-15
 archived_at: null
