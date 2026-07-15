@@ -1,7 +1,7 @@
 ---
 change_id: goal-forecast
 title: Prognoza osiągnięcia celu
-status: planned
+status: implemented
 created: 2026-07-15
 updated: 2026-07-15
 archived_at: null

@@ -98,12 +98,12 @@ Uruchomić build/test/typecheck, sprawdzić brak duplikacji Goals i przygotować
 
 ### Phase 2: Forecast UI
 
-- [x] 2.1 API client i App state są zintegrowane z istniejącymi goals
-- [x] 2.2 Komunikaty forecastu i remaining amount są po polsku
-- [x] 2.3 CSS/SVG trend jest widoczny bez biblioteki wykresów
+- [x] 2.1 API client i App state są zintegrowane z istniejącymi goals - 9e3ec3b
+- [x] 2.2 Komunikaty forecastu i remaining amount są po polsku - 9e3ec3b
+- [x] 2.3 CSS/SVG trend jest widoczny bez biblioteki wykresów - 9e3ec3b
 
 ### Phase 3: Verification and closeout
 
-- [ ] 3.1 Backend build/test oraz frontend typecheck/build przechodzą
-- [ ] 3.2 Brak duplikacji Goals i scope creep jest sprawdzony
-- [ ] 3.3 Manual smoke test jest gotowy do potwierdzenia
+- [x] 3.1 Backend build/test oraz frontend typecheck/build przechodzą
+- [x] 3.2 Brak duplikacji Goals i scope creep jest sprawdzony
+- [x] 3.3 Manual smoke test jest gotowy do potwierdzenia
