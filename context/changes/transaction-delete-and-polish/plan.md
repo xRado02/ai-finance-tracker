@@ -137,26 +137,26 @@ Brak migracji. Usuwanie korzysta z istniejacej tabeli transakcji i nie zmienia s
 
 #### Automated
 
-- [x] 2.1 `npm run typecheck` przechodzi po dodaniu operacji delete
-- [x] 2.2 `npm run build` przechodzi po dodaniu operacji delete
+- [x] 2.1 `npm run typecheck` przechodzi po dodaniu operacji delete - 086dae2
+- [x] 2.2 `npm run build` przechodzi po dodaniu operacji delete - 086dae2
 
 #### Manual
 
-- [x] 2.3 Historia pokazuje przycisk `Usuń`, confirm i odswiezenie po sukcesie
-- [x] 2.4 Anulowanie confirm nie usuwa transakcji
+- [x] 2.3 Historia pokazuje przycisk `Usuń`, confirm i odswiezenie po sukcesie - 086dae2
+- [x] 2.4 Anulowanie confirm nie usuwa transakcji - 086dae2
 
 ### Phase 3: Polish current transaction UI
 
 #### Automated
 
-- [ ] 3.1 `npm run typecheck` przechodzi po spolszczeniu UI
-- [ ] 3.2 `npm run build` przechodzi po spolszczeniu UI
+- [x] 3.1 `npm run typecheck` przechodzi po spolszczeniu UI
+- [x] 3.2 `npm run build` przechodzi po spolszczeniu UI
 
 #### Manual
 
-- [ ] 3.3 Obecny ekran transakcji jest po polsku, wlacznie z kategoriami, statusami i bledami
-- [ ] 3.4 Dodawanie przychodu, wydatku i `Inne` nadal dziala
-- [ ] 3.5 Zakres nadal nie zawiera nowych obszarow MVP
+- [x] 3.3 Obecny ekran transakcji jest po polsku, wlacznie z kategoriami, statusami i bledami
+- [x] 3.4 Dodawanie przychodu, wydatku i `Inne` nadal dziala
+- [x] 3.5 Zakres nadal nie zawiera nowych obszarow MVP
 
 ### Phase 4: Verification and change closeout
 

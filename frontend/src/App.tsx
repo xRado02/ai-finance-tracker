@@ -4,6 +4,7 @@ import { deleteTransaction, getCategories, getTransactions, isApiError } from '.
 import type { CategoryResponse, TransactionResponse } from './api/financeTypes';
 import { TransactionForm } from './components/TransactionForm';
 import { TransactionHistory } from './components/TransactionHistory';
+import { polishApiMessage } from './labels';
 
 type ApiStatus =
   | { state: 'loading' }
@@ -28,8 +29,8 @@ export default function App() {
         setApiStatus({
           state: 'error',
           message: isApiError(error)
-            ? error.message
-            : 'Cannot connect to the local finance API.',
+            ? polishApiMessage(error.message)
+            : 'Nie można połączyć się z lokalnym API finansowym.',
         });
       }
     }
@@ -50,17 +51,17 @@ export default function App() {
       <section className="workspace">
         <header className="workspace__header">
           <div>
-            <p className="workspace__eyebrow">Local finance</p>
+            <p className="workspace__eyebrow">Finanse lokalne</p>
             <h1>AI Finance Tracker</h1>
           </div>
-          <span className="workspace__status">Local API</span>
+          <span className="workspace__status">Lokalne API</span>
         </header>
 
         <section className={`api-status api-status--${apiStatus.state}`}>
-          {apiStatus.state === 'loading' && 'Loading local finance API...'}
+          {apiStatus.state === 'loading' && 'Ładowanie lokalnego API finansowego...'}
           {apiStatus.state === 'error' && apiStatus.message}
           {apiStatus.state === 'ready' &&
-            `${apiStatus.categories.length} categories loaded, ${apiStatus.transactions.length} transactions found.`}
+            `Załadowano ${apiStatus.categories.length} kategorii, znaleziono ${apiStatus.transactions.length} transakcji.`}
         </section>
 
         <div className="workspace__grid">

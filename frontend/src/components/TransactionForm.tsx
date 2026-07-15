@@ -1,6 +1,7 @@
 import { FormEvent, useMemo, useState } from 'react';
 import { createTransaction, isApiError } from '../api/financeApi';
 import type { CategoryResponse, TransactionType } from '../api/financeTypes';
+import { getCategoryLabel, getTransactionTypeLabel, polishApiMessage } from '../labels';
 
 type TransactionFormProps = {
   categories: CategoryResponse[];
@@ -40,17 +41,17 @@ export function TransactionForm({
 
     const parsedAmount = Number(amount);
     if (!Number.isFinite(parsedAmount) || parsedAmount <= 0) {
-      setMessage('Amount must be greater than 0.');
+      setMessage('Kwota musi być większa od 0.');
       return;
     }
 
     if (!transactionDate) {
-      setMessage('Transaction date is required.');
+      setMessage('Data transakcji jest wymagana.');
       return;
     }
 
     if (!selectedCategoryId) {
-      setMessage('Select a category before saving.');
+      setMessage('Wybierz kategorię przed zapisaniem.');
       return;
     }
 
@@ -66,10 +67,12 @@ export function TransactionForm({
 
       setAmount('');
       setDescription('');
-      setMessage('Transaction saved.');
+      setMessage('Transakcja została zapisana.');
       await onTransactionCreated();
     } catch (error) {
-      setMessage(isApiError(error) ? error.message : 'Could not save the transaction.');
+      setMessage(
+        isApiError(error) ? polishApiMessage(error.message) : 'Nie można zapisać transakcji.',
+      );
     } finally {
       setIsSaving(false);
     }
@@ -78,35 +81,35 @@ export function TransactionForm({
   return (
     <section className="panel transaction-form-panel">
       <div className="panel__header">
-        <h2>Add transaction</h2>
+        <h2>Dodaj transakcję</h2>
       </div>
 
       <form className="transaction-form" onSubmit={handleSubmit}>
-        <div className="segmented-control" aria-label="Transaction type">
+        <div className="segmented-control" aria-label="Typ transakcji">
           <button
             type="button"
             className={type === 'Expense' ? 'segment segment--active' : 'segment'}
             onClick={() => setType('Expense')}
           >
-            Expense
+            {getTransactionTypeLabel('Expense')}
           </button>
           <button
             type="button"
             className={type === 'Income' ? 'segment segment--active' : 'segment'}
             onClick={() => setType('Income')}
           >
-            Income
+            {getTransactionTypeLabel('Income')}
           </button>
         </div>
 
         <label className="field">
-          <span>Amount</span>
+          <span>Kwota</span>
           <input
             inputMode="decimal"
             min="0.01"
             name="amount"
             onChange={(event) => setAmount(event.target.value)}
-            placeholder="0.00"
+            placeholder="0,00"
             required
             step="0.01"
             type="number"
@@ -115,7 +118,7 @@ export function TransactionForm({
         </label>
 
         <label className="field">
-          <span>Date</span>
+          <span>Data</span>
           <input
             name="transactionDate"
             onChange={(event) => setTransactionDate(event.target.value)}
@@ -126,7 +129,7 @@ export function TransactionForm({
         </label>
 
         <label className="field">
-          <span>Category</span>
+          <span>Kategoria</span>
           <select
             disabled={disabled || availableCategories.length === 0}
             name="categoryId"
@@ -134,22 +137,22 @@ export function TransactionForm({
             required
             value={selectedCategoryId}
           >
-            <option value="">Select category</option>
+            <option value="">Wybierz kategorię</option>
             {availableCategories.map((category) => (
               <option key={category.id} value={category.id}>
-                {category.name}
+                {getCategoryLabel(category.name)}
               </option>
             ))}
           </select>
         </label>
 
         <label className="field">
-          <span>Description</span>
+          <span>Opis</span>
           <textarea
             maxLength={500}
             name="description"
             onChange={(event) => setDescription(event.target.value)}
-            placeholder="Optional note"
+            placeholder="Opcjonalna notatka"
             rows={4}
             value={description}
           />
@@ -162,7 +165,7 @@ export function TransactionForm({
           disabled={disabled || isSaving || availableCategories.length === 0}
           type="submit"
         >
-          {isSaving ? 'Saving...' : 'Save transaction'}
+          {isSaving ? 'Zapisywanie...' : 'Zapisz transakcję'}
         </button>
       </form>
     </section>

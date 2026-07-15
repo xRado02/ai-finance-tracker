@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { isApiError } from '../api/financeApi';
 import type { TransactionResponse } from '../api/financeTypes';
+import { formatDate, getCategoryLabel, getTransactionTypeLabel, polishApiMessage } from '../labels';
 
 type TransactionHistoryProps = {
   transactions: TransactionResponse[];
@@ -8,7 +9,7 @@ type TransactionHistoryProps = {
   onDeleteTransaction: (id: string) => Promise<void>;
 };
 
-const moneyFormatter = new Intl.NumberFormat('en-US', {
+const moneyFormatter = new Intl.NumberFormat('pl-PL', {
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 });
@@ -23,7 +24,7 @@ export function TransactionHistory({
 
   async function handleDelete(transaction: TransactionResponse) {
     const confirmed = window.confirm(
-      `Delete transaction ${transaction.categoryName} for ${moneyFormatter.format(transaction.amount)}?`,
+      `Czy na pewno usunąć transakcję "${getCategoryLabel(transaction.categoryName)}" za ${moneyFormatter.format(transaction.amount)}?`,
     );
 
     if (!confirmed) {
@@ -35,9 +36,11 @@ export function TransactionHistory({
 
     try {
       await onDeleteTransaction(transaction.id);
-      setMessage('Transaction deleted.');
+      setMessage('Transakcja została usunięta.');
     } catch (error) {
-      setMessage(isApiError(error) ? error.message : 'Could not delete the transaction.');
+      setMessage(
+        isApiError(error) ? polishApiMessage(error.message) : 'Nie można usunąć transakcji.',
+      );
     } finally {
       setDeletingId(null);
     }
@@ -46,16 +49,16 @@ export function TransactionHistory({
   return (
     <section className="panel history-panel">
       <div className="panel__header">
-        <h2>Transaction history</h2>
-        <span>{transactions.length} items</span>
+        <h2>Historia transakcji</h2>
+        <span>{transactions.length} pozycji</span>
       </div>
 
-      {isLoading && <p className="empty-state">Loading history...</p>}
+      {isLoading && <p className="empty-state">Ładowanie historii...</p>}
 
       {message && <p className="history-message">{message}</p>}
 
       {!isLoading && transactions.length === 0 && (
-        <p className="empty-state">No transactions yet.</p>
+        <p className="empty-state">Brak transakcji.</p>
       )}
 
       {!isLoading && transactions.length > 0 && (
@@ -63,15 +66,15 @@ export function TransactionHistory({
           {transactions.map((transaction) => (
             <article className="transaction-row" key={transaction.id}>
               <div>
-                <p className="transaction-row__title">{transaction.categoryName}</p>
+                <p className="transaction-row__title">{getCategoryLabel(transaction.categoryName)}</p>
                 <p className="transaction-row__meta">
-                  {transaction.transactionDate}
+                  {formatDate(transaction.transactionDate)}
                   {transaction.description ? ` - ${transaction.description}` : ''}
                 </p>
               </div>
               <div className="transaction-row__amount">
                 <span className={`type-pill type-pill--${transaction.type.toLowerCase()}`}>
-                  {transaction.type}
+                  {getTransactionTypeLabel(transaction.type)}
                 </span>
                 <strong>
                   {transaction.type === 'Expense' ? '-' : '+'}
@@ -83,7 +86,7 @@ export function TransactionHistory({
                   onClick={() => void handleDelete(transaction)}
                   type="button"
                 >
-                  Delete
+                  Usuń
                 </button>
               </div>
             </article>
