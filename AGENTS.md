@@ -13,9 +13,10 @@ AI Finance Tracker is a local-first personal finance MVP. Treat @context/foundat
 
 - `ai-finance-tracker.csproj` is the ASP.NET Core Web API project file targeting `net9.0`.
 - `Program.cs` wires API services and maps finance endpoints; keep feature route handlers out of `Program.cs`.
-- `Endpoints/FinanceEndpoints.cs` maps `GET /api/categories`, `POST /api/transactions`, and `GET /api/transactions`.
+- `Endpoints/FinanceEndpoints.cs` maps categories, transactions, goals and `GET /api/dashboard/summary`.
 - `Contracts/FinanceContracts.cs` contains public finance API DTOs; do not expose EF entities directly from endpoints.
-- `frontend/` is the Vite + React + TypeScript frontend for the current transaction/category API.
+- `frontend/` is the Vite + React + TypeScript frontend for the transaction, goals and dashboard API.
+- `Migrations/` contains the EF Core schema history; run `dotnet ef database update` after restoring packages.
 - `Properties/launchSettings.json` controls local launch profiles.
 - `tests/AiFinanceTracker.Tests/AiFinanceTracker.Tests.csproj` is the dedicated xUnit test project for backend tests.
 - `context/foundation/` holds living product docs: PRD, shape notes, and tech-stack hand-off.
@@ -26,8 +27,9 @@ AI Finance Tracker is a local-first personal finance MVP. Treat @context/foundat
 Run these from the repository root:
 
 - `dotnet restore .\ai-finance-tracker.csproj` restores NuGet packages.
-- `dotnet build .\ai-finance-tracker.csproj --no-restore` builds after restore.
-- `dotnet test .\tests\AiFinanceTracker.Tests\AiFinanceTracker.Tests.csproj` runs the backend test suite.
+- `dotnet build .\ai-finance-tracker.csproj --no-restore -p:UseAppHost=false` builds after restore on Windows.
+- `dotnet test .\tests\AiFinanceTracker.Tests\AiFinanceTracker.Tests.csproj -p:UseAppHost=false` runs the backend test suite on Windows.
+- `dotnet ef database update --project .\ai-finance-tracker.csproj` applies local migrations.
 - `dotnet list .\ai-finance-tracker.csproj package --vulnerable --include-transitive` audits direct and transitive NuGet packages.
 - `npm install --no-audit --no-fund` from `frontend/` installs frontend dependencies.
 - `npm run dev` from `frontend/` starts the frontend dev server.

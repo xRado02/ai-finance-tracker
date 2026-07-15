@@ -92,13 +92,13 @@ Wykonać ręczny smoke całego MVP, zapisać Progress, SHA, status i review impl
 
 #### Automated
 
-- [ ] 1.1 README opisuje uruchomienie, migrację, testy i zakres MVP
-- [ ] 1.2 AGENTS opisuje aktualną strukturę i komendy
-- [ ] 1.3 Stary scaffold HTTP i logi smoke są usunięte
+- [x] 1.1 README opisuje uruchomienie, migrację, testy i zakres MVP
+- [x] 1.2 AGENTS opisuje aktualną strukturę i komendy
+- [x] 1.3 Stary scaffold HTTP i logi smoke są usunięte
 
 #### Manual
 
-- [ ] 1.4 Dokumentacja nie obiecuje funkcji poza MVP
+- [x] 1.4 Dokumentacja nie obiecuje funkcji poza MVP
 
 ### Phase 2: Final verification
 
