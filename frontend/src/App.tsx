@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import './App.css';
-import { getCategories, getTransactions, isApiError } from './api/financeApi';
+import { deleteTransaction, getCategories, getTransactions, isApiError } from './api/financeApi';
 import type { CategoryResponse, TransactionResponse } from './api/financeTypes';
 import { TransactionForm } from './components/TransactionForm';
 import { TransactionHistory } from './components/TransactionHistory';
@@ -73,6 +73,10 @@ export default function App() {
           <TransactionHistory
             transactions={apiStatus.state === 'ready' ? apiStatus.transactions : []}
             isLoading={apiStatus.state === 'loading'}
+            onDeleteTransaction={async (id) => {
+              await deleteTransaction(id);
+              await loadFinanceData();
+            }}
           />
         </div>
       </section>

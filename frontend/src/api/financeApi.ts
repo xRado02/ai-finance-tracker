@@ -33,6 +33,16 @@ export async function createTransaction(
   });
 }
 
+export async function deleteTransaction(id: string): Promise<void> {
+  const response = await fetch(`/api/transactions/${encodeURIComponent(id)}`, {
+    method: 'DELETE',
+  });
+
+  if (!response.ok) {
+    throw await normalizeApiError(response);
+  }
+}
+
 export function isApiError(error: unknown): error is ApiError {
   return typeof error === 'object' && error !== null && 'message' in error;
 }

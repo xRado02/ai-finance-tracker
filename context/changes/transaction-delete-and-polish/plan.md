@@ -125,25 +125,25 @@ Brak migracji. Usuwanie korzysta z istniejacej tabeli transakcji i nie zmienia s
 
 #### Automated
 
-- [x] 1.1 `DELETE /api/transactions/{id}` zwraca 204 i usuwa wpis default local profile
-- [x] 1.2 Brakujacy lub obcy profilowo wpis zwraca 404
-- [x] 1.3 Testy backendowe dla delete przechodza
+- [x] 1.1 `DELETE /api/transactions/{id}` zwraca 204 i usuwa wpis default local profile - 475dd31
+- [x] 1.2 Brakujacy lub obcy profilowo wpis zwraca 404 - 475dd31
+- [x] 1.3 Testy backendowe dla delete przechodza - 475dd31
 
 #### Manual
 
-- [x] 1.4 Endpoint pozostaje ograniczony do default local profile
+- [x] 1.4 Endpoint pozostaje ograniczony do default local profile - 475dd31
 
 ### Phase 2: Frontend delete integration
 
 #### Automated
 
-- [ ] 2.1 `npm run typecheck` przechodzi po dodaniu operacji delete
-- [ ] 2.2 `npm run build` przechodzi po dodaniu operacji delete
+- [x] 2.1 `npm run typecheck` przechodzi po dodaniu operacji delete
+- [x] 2.2 `npm run build` przechodzi po dodaniu operacji delete
 
 #### Manual
 
-- [ ] 2.3 Historia pokazuje przycisk `Usuń`, confirm i odswiezenie po sukcesie
-- [ ] 2.4 Anulowanie confirm nie usuwa transakcji
+- [x] 2.3 Historia pokazuje przycisk `Usuń`, confirm i odswiezenie po sukcesie
+- [x] 2.4 Anulowanie confirm nie usuwa transakcji
 
 ### Phase 3: Polish current transaction UI
 
