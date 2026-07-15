@@ -67,7 +67,7 @@ namespace AiFinanceTracker.Migrations
                 column: "RecurringTransactionId",
                 principalTable: "RecurringTransactions",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.SetNull);
+                onDelete: ReferentialAction.NoAction);
         }
 
         /// <inheritdoc />

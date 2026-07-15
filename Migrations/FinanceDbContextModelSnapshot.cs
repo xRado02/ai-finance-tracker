@@ -276,7 +276,7 @@ namespace AiFinanceTracker.Migrations
                     b.HasOne("AiFinanceTracker.Domain.RecurringTransaction", "RecurringTransaction")
                         .WithMany("GeneratedTransactions")
                         .HasForeignKey("RecurringTransactionId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Category");
 
