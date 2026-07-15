@@ -92,9 +92,9 @@ Uruchomić build/test/typecheck, sprawdzić brak duplikacji Goals i przygotować
 
 ### Phase 1: Forecast API
 
-- [ ] 1.1 Kontrakt i statusy forecastu są dodane
-- [ ] 1.2 Endpoint liczy miesięczną nadwyżkę i termin dla existing goals
-- [ ] 1.3 Testy API pokrywają forecast, achieved, no data i non-positive surplus
+- [x] 1.1 Kontrakt i statusy forecastu są dodane
+- [x] 1.2 Endpoint liczy miesięczną nadwyżkę i termin dla existing goals
+- [x] 1.3 Testy API pokrywają forecast, achieved, no data i non-positive surplus
 
 ### Phase 2: Forecast UI
 

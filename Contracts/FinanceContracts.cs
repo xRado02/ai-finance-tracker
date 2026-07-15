@@ -75,3 +75,14 @@ public sealed record GenerateRecurringTransactionsResponse(
     int GeneratedCount,
     int SkippedCount,
     IReadOnlyList<TransactionResponse> Transactions);
+
+public sealed record GoalForecastResponse(
+    Guid GoalId,
+    string Name,
+    decimal TargetAmount,
+    decimal CurrentAmount,
+    decimal RemainingAmount,
+    decimal? AverageMonthlySurplus,
+    int? EstimatedMonths,
+    DateOnly? EstimatedDate,
+    GoalForecastStatus Status);

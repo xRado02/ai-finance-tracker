@@ -19,6 +19,7 @@ public static class FinanceEndpoints
         api.MapDelete("/transactions/{id:guid}", DeleteTransaction);
         api.MapGet("/goals", GetGoals);
         api.MapPost("/goals", CreateGoal);
+        api.MapGet("/goals/forecast", GetGoalForecast);
         api.MapGet("/dashboard/summary", GetDashboardSummary);
         api.MapGet("/recurring-transactions", GetRecurringTransactions);
         api.MapPost("/recurring-transactions", CreateRecurringTransaction);
@@ -196,6 +197,48 @@ public static class FinanceEndpoints
         var response = ToGoalResponse(goal, currentAmount);
 
         return TypedResults.Created($"/api/goals/{goal.Id}", response);
+    }
+
+    private static async Task<Ok<IReadOnlyList<GoalForecastResponse>>> GetGoalForecast(FinanceDbContext dbContext)
+    {
+        var transactions = await dbContext.Transactions
+            .AsNoTracking()
+            .Where(item => item.LocalProfileId == FinanceDbContext.DefaultLocalProfileId)
+            .Select(item => new
+            {
+                item.Amount,
+                item.Type,
+                item.TransactionDate
+            })
+            .ToListAsync();
+
+        var totalIncome = transactions
+            .Where(item => item.Type == TransactionType.Income)
+            .Sum(item => item.Amount);
+        var totalExpenses = transactions
+            .Where(item => item.Type == TransactionType.Expense)
+            .Sum(item => item.Amount);
+        var currentAmount = Math.Max(0m, totalIncome - totalExpenses);
+        var monthlySurpluses = transactions
+            .GroupBy(item => new { item.TransactionDate.Year, item.TransactionDate.Month })
+            .Select(group => group.Sum(item =>
+                item.Type == TransactionType.Income ? item.Amount : -item.Amount))
+            .ToList();
+        decimal? averageMonthlySurplus = monthlySurpluses.Count == 0
+            ? null
+            : monthlySurpluses.Average();
+
+        var goals = await dbContext.Goals
+            .AsNoTracking()
+            .Where(item => item.LocalProfileId == FinanceDbContext.DefaultLocalProfileId)
+            .OrderBy(item => item.Name)
+            .ToListAsync();
+
+        var forecasts = goals
+            .Select(goal => BuildGoalForecastResponse(goal, currentAmount, averageMonthlySurplus, transactions.Count))
+            .ToList();
+
+        return TypedResults.Ok<IReadOnlyList<GoalForecastResponse>>(forecasts);
     }
 
     private static async Task<Ok<DashboardSummaryResponse>> GetDashboardSummary(FinanceDbContext dbContext)
@@ -548,5 +591,69 @@ public static class FinanceEndpoints
             categoryName,
             recurring.Description,
             recurring.IsActive);
+    }
+
+    private static GoalForecastResponse BuildGoalForecastResponse(
+        Goal goal,
+        decimal currentAmount,
+        decimal? averageMonthlySurplus,
+        int transactionCount)
+    {
+        var remainingAmount = Math.Max(0m, goal.TargetAmount - currentAmount);
+        if (remainingAmount == 0m)
+        {
+            return new GoalForecastResponse(
+                goal.Id,
+                goal.Name,
+                goal.TargetAmount,
+                currentAmount,
+                remainingAmount,
+                averageMonthlySurplus,
+                null,
+                null,
+                GoalForecastStatus.Achieved);
+        }
+
+        if (transactionCount == 0)
+        {
+            return new GoalForecastResponse(
+                goal.Id,
+                goal.Name,
+                goal.TargetAmount,
+                currentAmount,
+                remainingAmount,
+                null,
+                null,
+                null,
+                GoalForecastStatus.NoData);
+        }
+
+        if (averageMonthlySurplus is null or <= 0m)
+        {
+            return new GoalForecastResponse(
+                goal.Id,
+                goal.Name,
+                goal.TargetAmount,
+                currentAmount,
+                remainingAmount,
+                averageMonthlySurplus,
+                null,
+                null,
+                GoalForecastStatus.NoPositiveSurplus);
+        }
+
+        var estimatedMonths = (int)Math.Ceiling(remainingAmount / averageMonthlySurplus.Value);
+        var estimatedDate = DateOnly.FromDateTime(DateTime.Today).AddMonths(estimatedMonths);
+
+        return new GoalForecastResponse(
+            goal.Id,
+            goal.Name,
+            goal.TargetAmount,
+            currentAmount,
+            remainingAmount,
+            averageMonthlySurplus,
+            estimatedMonths,
+            estimatedDate,
+            GoalForecastStatus.Forecastable);
     }
 }
