@@ -1,7 +1,7 @@
 ---
 change_id: dashboard-summary
 title: Podsumowanie finansow i dashboard MVP
-status: implementing
+status: implemented
 created: 2026-07-15
 updated: 2026-07-15
 archived_at: null

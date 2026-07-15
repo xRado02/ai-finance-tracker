@@ -149,12 +149,12 @@ Uruchomic backend/frontend verification, sprawdzic zakres i zapisac Progress, SH
 
 #### Automated
 
-- [x] 3.1 Backend build przechodzi
-- [x] 3.2 Backend test suite przechodzi
-- [x] 3.3 Frontend typecheck przechodzi
-- [x] 3.4 Frontend build przechodzi
+- [x] 3.1 Backend build przechodzi - 45ce105
+- [x] 3.2 Backend test suite przechodzi - 45ce105
+- [x] 3.3 Frontend typecheck przechodzi - 45ce105
+- [x] 3.4 Frontend build przechodzi - 45ce105
 
 #### Manual
 
-- [x] 3.5 Reczny smoke test dashboardu przechodzi
-- [x] 3.6 Dokumentacja zmiany i Progress sa kompletne
+- [x] 3.5 Reczny smoke test dashboardu przechodzi - 45ce105
+- [x] 3.6 Dokumentacja zmiany i Progress sa kompletne - 45ce105
