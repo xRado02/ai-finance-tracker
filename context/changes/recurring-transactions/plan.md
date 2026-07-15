@@ -107,6 +107,6 @@ Uruchomić build/test/typecheck, sprawdzić migrację, zakres i przygotować man
 
 ### Phase 4: Verification and closeout
 
-- [x] 4.1 Backend build/test oraz frontend typecheck/build przechodzą
-- [x] 4.2 Migracja i zakres są sprawdzone
-- [x] 4.3 Manual smoke test jest gotowy do potwierdzenia
+- [x] 4.1 Backend build/test oraz frontend typecheck/build przechodzą - 2ec917d
+- [x] 4.2 Migracja i zakres są sprawdzone - 2ec917d
+- [x] 4.3 Manual smoke test jest gotowy do potwierdzenia - 2ec917d
