@@ -161,11 +161,11 @@ Migracja tworzy tabele `Goals`, indeks po `LocalProfileId` i klucz obcy do `Loca
 
 #### Automated
 
-- [x] 3.1 `dotnet restore .\ai-finance-tracker.csproj` przechodzi
-- [x] 3.2 `dotnet build .\ai-finance-tracker.csproj --no-restore -p:UseAppHost=false` przechodzi
-- [x] 3.3 `dotnet test .\tests\AiFinanceTracker.Tests\AiFinanceTracker.Tests.csproj -p:UseAppHost=false` przechodzi
+- [x] 3.1 `dotnet restore .\ai-finance-tracker.csproj` przechodzi - 34db1a0
+- [x] 3.2 `dotnet build .\ai-finance-tracker.csproj --no-restore -p:UseAppHost=false` przechodzi - 34db1a0
+- [x] 3.3 `dotnet test .\tests\AiFinanceTracker.Tests\AiFinanceTracker.Tests.csproj -p:UseAppHost=false` przechodzi - 34db1a0
 
 #### Manual
 
-- [x] 3.4 Reczny smoke test API celow przechodzi
-- [x] 3.5 Dokumentacja zmiany i Progress sa kompletne
+- [x] 3.4 Reczny smoke test API celow przechodzi - 34db1a0
+- [x] 3.5 Dokumentacja zmiany i Progress sa kompletne - 34db1a0
