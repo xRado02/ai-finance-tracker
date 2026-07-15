@@ -125,13 +125,13 @@ Brak migracji. Usuwanie korzysta z istniejacej tabeli transakcji i nie zmienia s
 
 #### Automated
 
-- [ ] 1.1 `DELETE /api/transactions/{id}` zwraca 204 i usuwa wpis default local profile
-- [ ] 1.2 Brakujacy lub obcy profilowo wpis zwraca 404
-- [ ] 1.3 Testy backendowe dla delete przechodza
+- [x] 1.1 `DELETE /api/transactions/{id}` zwraca 204 i usuwa wpis default local profile
+- [x] 1.2 Brakujacy lub obcy profilowo wpis zwraca 404
+- [x] 1.3 Testy backendowe dla delete przechodza
 
 #### Manual
 
-- [ ] 1.4 Endpoint pozostaje ograniczony do default local profile
+- [x] 1.4 Endpoint pozostaje ograniczony do default local profile
 
 ### Phase 2: Frontend delete integration
 

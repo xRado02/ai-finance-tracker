@@ -120,6 +120,67 @@ public sealed class FinanceEndpointsTests
     }
 
     [Fact]
+    public async Task Delete_transactions_removes_transaction_from_default_profile()
+    {
+        using var app = new FinanceApiFactory();
+        var transaction = CreateTransaction(
+            "30000000-0000-0000-0000-000000000010",
+            42m,
+            new DateOnly(2026, 7, 8));
+        await app.SeedTransactionsAsync(transaction);
+        using var client = app.CreateClient();
+
+        var response = await client.DeleteAsync($"/api/transactions/{transaction.Id}");
+
+        Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
+        await using var dbContext = app.CreateDbContext();
+        Assert.False(await dbContext.Transactions.AnyAsync(item => item.Id == transaction.Id));
+    }
+
+    [Fact]
+    public async Task Delete_transactions_returns_not_found_for_missing_transaction()
+    {
+        using var app = new FinanceApiFactory();
+        using var client = app.CreateClient();
+        var id = Guid.Parse("30000000-0000-0000-0000-000000000011");
+
+        var response = await client.DeleteAsync($"/api/transactions/{id}");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        await AssertProblemAsync(response, HttpStatusCode.NotFound, "Transaction not found");
+    }
+
+    [Fact]
+    public async Task Delete_transactions_does_not_remove_transaction_from_another_profile()
+    {
+        using var app = new FinanceApiFactory();
+        var otherProfileId = Guid.Parse("40000000-0000-0000-0000-000000000001");
+        var transaction = CreateTransaction(
+            "30000000-0000-0000-0000-000000000012",
+            84m,
+            new DateOnly(2026, 7, 9));
+        transaction.LocalProfileId = otherProfileId;
+
+        await using (var dbContext = app.CreateDbContext())
+        {
+            dbContext.LocalProfiles.Add(new LocalProfile
+            {
+                Id = otherProfileId,
+                DisplayName = "Other Local Profile"
+            });
+            dbContext.Transactions.Add(transaction);
+            await dbContext.SaveChangesAsync();
+        }
+
+        using var client = app.CreateClient();
+        var response = await client.DeleteAsync($"/api/transactions/{transaction.Id}");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+        await using var verificationContext = app.CreateDbContext();
+        Assert.True(await verificationContext.Transactions.AnyAsync(item => item.Id == transaction.Id));
+    }
+
+    [Fact]
     public async Task Post_transactions_rejects_invalid_request()
     {
         using var app = new FinanceApiFactory();

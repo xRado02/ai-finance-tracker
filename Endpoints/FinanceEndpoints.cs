@@ -16,6 +16,7 @@ public static class FinanceEndpoints
         api.MapGet("/categories", GetCategories);
         api.MapPost("/transactions", CreateTransaction);
         api.MapGet("/transactions", GetTransactions);
+        api.MapDelete("/transactions/{id:guid}", DeleteTransaction);
 
         return endpoints;
     }
@@ -118,6 +119,31 @@ public static class FinanceEndpoints
             .ToListAsync();
 
         return TypedResults.Ok<IReadOnlyList<TransactionResponse>>(transactions);
+    }
+
+    private static async Task<Results<NoContent, NotFound<ProblemDetails>>> DeleteTransaction(
+        Guid id,
+        FinanceDbContext dbContext)
+    {
+        var transaction = await dbContext.Transactions
+            .SingleOrDefaultAsync(item =>
+                item.Id == id &&
+                item.LocalProfileId == FinanceDbContext.DefaultLocalProfileId);
+
+        if (transaction is null)
+        {
+            return TypedResults.NotFound(new ProblemDetails
+            {
+                Title = "Transaction not found",
+                Detail = "The transaction does not exist in the default local profile.",
+                Status = StatusCodes.Status404NotFound
+            });
+        }
+
+        dbContext.Transactions.Remove(transaction);
+        await dbContext.SaveChangesAsync();
+
+        return TypedResults.NoContent();
     }
 
     private static Dictionary<string, string[]> ValidateCreateTransactionRequest(CreateTransactionRequest request)
