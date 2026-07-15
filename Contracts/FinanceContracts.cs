@@ -33,3 +33,21 @@ public sealed record GoalResponse(
     decimal TargetAmount,
     decimal CurrentAmount,
     decimal ProgressPercentage);
+
+public sealed record ExpenseCategorySummary(
+    string CategoryName,
+    decimal Amount);
+
+public sealed record DashboardGoalSummary(
+    Guid Id,
+    string Name,
+    decimal TargetAmount,
+    decimal CurrentAmount,
+    decimal ProgressPercentage);
+
+public sealed record DashboardSummaryResponse(
+    decimal TotalIncome,
+    decimal TotalExpenses,
+    decimal Balance,
+    IReadOnlyList<ExpenseCategorySummary> ExpenseCategories,
+    IReadOnlyList<DashboardGoalSummary> Goals);

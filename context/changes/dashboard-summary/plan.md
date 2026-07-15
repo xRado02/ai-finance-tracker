@@ -124,13 +124,13 @@ Uruchomic backend/frontend verification, sprawdzic zakres i zapisac Progress, SH
 
 #### Automated
 
-- [ ] 1.1 Endpoint zwraca metryki przychodow, wydatkow i salda
-- [ ] 1.2 Endpoint zwraca kategorie wydatkow i progress celow
-- [ ] 1.3 Testy API pokrywaja agregacje i izolacje profilu
+- [x] 1.1 Endpoint zwraca metryki przychodow, wydatkow i salda
+- [x] 1.2 Endpoint zwraca kategorie wydatkow i progress celow
+- [x] 1.3 Testy API pokrywaja agregacje i izolacje profilu
 
 #### Manual
 
-- [ ] 1.4 Dashboard contract korzysta tylko z default local profile
+- [x] 1.4 Dashboard contract korzysta tylko z default local profile
 
 ### Phase 2: Dashboard UI integration
 

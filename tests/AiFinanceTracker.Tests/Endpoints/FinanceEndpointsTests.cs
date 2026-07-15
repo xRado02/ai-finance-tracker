@@ -280,6 +280,79 @@ public sealed class FinanceEndpointsTests
     }
 
     [Fact]
+    public async Task Get_dashboard_summary_returns_totals_categories_and_goal_progress()
+    {
+        using var app = new FinanceApiFactory();
+        var income = CreateTransaction(
+            "30000000-0000-0000-0000-000000000030",
+            1000m,
+            new DateOnly(2026, 7, 12));
+        income.Type = TransactionType.Income;
+        income.CategoryId = FinanceDbContext.SalaryCategoryId;
+        var food = CreateTransaction(
+            "30000000-0000-0000-0000-000000000031",
+            200m,
+            new DateOnly(2026, 7, 13));
+        await app.SeedTransactionsAsync(income, food);
+        using var client = app.CreateClient();
+        await client.PostAsJsonAsync(
+            "/api/goals",
+            new CreateGoalRequest("Emergency fund", 1600m),
+            JsonOptions);
+
+        var response = await client.GetAsync("/api/dashboard/summary");
+
+        response.EnsureSuccessStatusCode();
+        var summary = await response.Content.ReadFromJsonAsync<DashboardSummaryResponse>(JsonOptions);
+        Assert.NotNull(summary);
+        Assert.Equal(1000m, summary.TotalIncome);
+        Assert.Equal(200m, summary.TotalExpenses);
+        Assert.Equal(800m, summary.Balance);
+        var category = Assert.Single(summary.ExpenseCategories);
+        Assert.Equal("Food", category.CategoryName);
+        Assert.Equal(200m, category.Amount);
+        var goal = Assert.Single(summary.Goals);
+        Assert.Equal(800m, goal.CurrentAmount);
+        Assert.Equal(50m, goal.ProgressPercentage);
+    }
+
+    [Fact]
+    public async Task Get_dashboard_summary_ignores_transactions_from_another_profile()
+    {
+        using var app = new FinanceApiFactory();
+        var otherProfileId = Guid.Parse("40000000-0000-0000-0000-000000000003");
+        await using (var dbContext = app.CreateDbContext())
+        {
+            dbContext.LocalProfiles.Add(new LocalProfile
+            {
+                Id = otherProfileId,
+                DisplayName = "Other Local Profile"
+            });
+            dbContext.Transactions.Add(new Transaction
+            {
+                Id = Guid.Parse("30000000-0000-0000-0000-000000000032"),
+                Amount = 999m,
+                Type = TransactionType.Income,
+                TransactionDate = new DateOnly(2026, 7, 13),
+                CategoryId = FinanceDbContext.SalaryCategoryId,
+                LocalProfileId = otherProfileId
+            });
+            await dbContext.SaveChangesAsync();
+        }
+
+        using var client = app.CreateClient();
+        var response = await client.GetAsync("/api/dashboard/summary");
+
+        response.EnsureSuccessStatusCode();
+        var summary = await response.Content.ReadFromJsonAsync<DashboardSummaryResponse>(JsonOptions);
+        Assert.NotNull(summary);
+        Assert.Equal(0m, summary.TotalIncome);
+        Assert.Equal(0m, summary.TotalExpenses);
+        Assert.Equal(0m, summary.Balance);
+        Assert.Empty(summary.ExpenseCategories);
+    }
+
+    [Fact]
     public async Task Post_transactions_rejects_invalid_request()
     {
         using var app = new FinanceApiFactory();

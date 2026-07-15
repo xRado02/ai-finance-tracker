@@ -19,6 +19,7 @@ public static class FinanceEndpoints
         api.MapDelete("/transactions/{id:guid}", DeleteTransaction);
         api.MapGet("/goals", GetGoals);
         api.MapPost("/goals", CreateGoal);
+        api.MapGet("/dashboard/summary", GetDashboardSummary);
 
         return endpoints;
     }
@@ -191,6 +192,54 @@ public static class FinanceEndpoints
         var response = ToGoalResponse(goal, currentAmount);
 
         return TypedResults.Created($"/api/goals/{goal.Id}", response);
+    }
+
+    private static async Task<Ok<DashboardSummaryResponse>> GetDashboardSummary(FinanceDbContext dbContext)
+    {
+        var transactions = await dbContext.Transactions
+            .AsNoTracking()
+            .Where(transaction => transaction.LocalProfileId == FinanceDbContext.DefaultLocalProfileId)
+            .Select(transaction => new
+            {
+                transaction.Amount,
+                transaction.Type,
+                CategoryName = transaction.Category!.Name
+            })
+            .ToListAsync();
+
+        var totalIncome = transactions
+            .Where(transaction => transaction.Type == TransactionType.Income)
+            .Sum(transaction => transaction.Amount);
+        var totalExpenses = transactions
+            .Where(transaction => transaction.Type == TransactionType.Expense)
+            .Sum(transaction => transaction.Amount);
+        var balance = totalIncome - totalExpenses;
+        var currentAmount = Math.Max(0m, balance);
+        var expenseCategories = transactions
+            .Where(transaction => transaction.Type == TransactionType.Expense)
+            .GroupBy(transaction => transaction.CategoryName)
+            .Select(group => new ExpenseCategorySummary(group.Key, group.Sum(item => item.Amount)))
+            .OrderByDescending(category => category.Amount)
+            .ThenBy(category => category.CategoryName)
+            .ToList();
+        var goals = await dbContext.Goals
+            .AsNoTracking()
+            .Where(goal => goal.LocalProfileId == FinanceDbContext.DefaultLocalProfileId)
+            .OrderBy(goal => goal.Name)
+            .Select(goal => new DashboardGoalSummary(
+                goal.Id,
+                goal.Name,
+                goal.TargetAmount,
+                currentAmount,
+                CalculateProgressPercentage(currentAmount, goal.TargetAmount)))
+            .ToListAsync();
+
+        return TypedResults.Ok(new DashboardSummaryResponse(
+            totalIncome,
+            totalExpenses,
+            balance,
+            expenseCategories,
+            goals));
     }
 
     private static Dictionary<string, string[]> ValidateCreateTransactionRequest(CreateTransactionRequest request)
