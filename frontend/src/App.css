@@ -1058,3 +1058,102 @@
   .transaction-row { align-items: flex-start; flex-direction: column; gap: 10px; }
   .transaction-row__amount { justify-items: start; }
 }
+
+.section-heading--recurring { margin-top: 48px; }
+
+.recurring-section-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.7fr) minmax(0, 1.3fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.recurring-list-panel { min-height: 100%; }
+
+.recurring-toolbar { align-items: flex-start; }
+
+.secondary-action {
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid rgba(125, 223, 193, 0.28);
+  border-radius: 7px;
+  background: rgba(125, 223, 193, 0.08);
+  color: var(--mint);
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.secondary-action:disabled { cursor: not-allowed; opacity: 0.5; }
+
+.checkbox-field {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--muted-strong);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.checkbox-field input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--lime);
+}
+
+.recurring-list { gap: 0; }
+
+.recurring-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.recurring-row:last-child { border-bottom: 0; }
+
+.recurring-row__title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.recurring-row__title strong {
+  color: var(--ink);
+  font-size: 0.88rem;
+}
+
+.recurring-row p {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.recurring-row__actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+}
+
+.recurring-status {
+  color: var(--mint);
+  font-size: 0.73rem;
+  font-weight: 800;
+}
+
+.recurring-status--inactive { color: var(--muted); }
+
+@media (max-width: 980px) {
+  .recurring-section-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 720px) {
+  .recurring-toolbar { align-items: flex-start; flex-direction: column; }
+  .secondary-action { width: 100%; }
+  .recurring-row { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .recurring-row__actions { justify-content: space-between; width: 100%; }
+}

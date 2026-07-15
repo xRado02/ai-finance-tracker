@@ -7,12 +7,14 @@ import {
   getDashboardSummary,
   getGoals,
   getTransactions,
+  getRecurringTransactions,
   isApiError,
 } from './api/financeApi';
 import type {
   CategoryResponse,
   DashboardSummaryResponse,
   GoalResponse,
+  RecurringTransactionResponse,
   TransactionResponse,
 } from './api/financeTypes';
 import { DashboardSummary } from './components/DashboardSummary';
@@ -20,6 +22,7 @@ import { GoalForm } from './components/GoalForm';
 import { GoalList } from './components/GoalList';
 import { TransactionForm } from './components/TransactionForm';
 import { TransactionHistory } from './components/TransactionHistory';
+import { RecurringTransactionPanel } from './components/RecurringTransactionPanel';
 import { polishApiMessage } from './labels';
 
 type ApiStatus =
@@ -29,6 +32,7 @@ type ApiStatus =
       categories: CategoryResponse[];
       transactions: TransactionResponse[];
       goals: GoalResponse[];
+      recurringTransactions: RecurringTransactionResponse[];
       dashboard: DashboardSummaryResponse;
     }
   | { state: 'error'; message: string };
@@ -39,15 +43,16 @@ export default function App() {
 
   async function loadFinanceData(isActive = true) {
     try {
-      const [categories, transactions, goals, dashboard] = await Promise.all([
+      const [categories, transactions, goals, dashboard, recurringTransactions] = await Promise.all([
         getCategories(),
         getTransactions(),
         getGoals(),
         getDashboardSummary(),
+        getRecurringTransactions(),
       ]);
 
       if (isActive) {
-        setApiStatus({ state: 'ready', categories, transactions, goals, dashboard });
+        setApiStatus({ state: 'ready', categories, transactions, goals, dashboard, recurringTransactions });
       }
     } catch (error) {
       if (isActive) {
@@ -97,6 +102,10 @@ export default function App() {
           <a className="sidebar__link" href="#transactions" onClick={() => setIsNavOpen(false)}>
             <span aria-hidden="true">↗</span>
             Transakcje
+          </a>
+          <a className="sidebar__link" href="#recurring" onClick={() => setIsNavOpen(false)}>
+            <span aria-hidden="true">↻</span>
+            Stałe transakcje
           </a>
           <a className="sidebar__link" href="#goals" onClick={() => setIsNavOpen(false)}>
             <span aria-hidden="true">◎</span>
@@ -192,6 +201,22 @@ export default function App() {
               }}
             />
           </div>
+
+          <div className="section-heading section-heading--recurring" id="recurring">
+            <div>
+              <span className="section-heading__eyebrow">Powtarzalne</span>
+              <h2>Stałe transakcje</h2>
+            </div>
+            <span>Generuj ręcznie raz na miesiąc</span>
+          </div>
+
+          <RecurringTransactionPanel
+            categories={apiStatus.state === 'ready' ? apiStatus.categories : []}
+            recurringTransactions={apiStatus.state === 'ready' ? apiStatus.recurringTransactions : []}
+            disabled={apiStatus.state !== 'ready'}
+            isLoading={apiStatus.state === 'loading'}
+            onChanged={() => loadFinanceData()}
+          />
 
           <div className="section-heading section-heading--goals" id="goals">
             <div>

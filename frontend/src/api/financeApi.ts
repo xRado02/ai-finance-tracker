@@ -2,10 +2,14 @@ import type {
   ApiError,
   CategoryResponse,
   CreateGoalRequest,
+  CreateRecurringTransactionRequest,
   CreateTransactionRequest,
   DashboardSummaryResponse,
+  GenerateRecurringTransactionsResponse,
   GoalResponse,
+  RecurringTransactionResponse,
   TransactionResponse,
+  UpdateRecurringTransactionStatusRequest,
 } from './financeTypes';
 
 type ProblemDetails = {
@@ -52,6 +56,45 @@ export async function createTransaction(
     },
     body: JSON.stringify(request),
   });
+}
+
+export async function getRecurringTransactions(): Promise<RecurringTransactionResponse[]> {
+  return getJson<RecurringTransactionResponse[]>('/api/recurring-transactions');
+}
+
+export async function createRecurringTransaction(
+  request: CreateRecurringTransactionRequest,
+): Promise<RecurringTransactionResponse> {
+  return getJson<RecurringTransactionResponse>('/api/recurring-transactions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(request),
+  });
+}
+
+export async function updateRecurringTransactionStatus(
+  id: string,
+  request: UpdateRecurringTransactionStatusRequest,
+): Promise<RecurringTransactionResponse> {
+  return getJson<RecurringTransactionResponse>(
+    `/api/recurring-transactions/${encodeURIComponent(id)}/status`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(request),
+    },
+  );
+}
+
+export async function generateCurrentMonthRecurringTransactions(): Promise<GenerateRecurringTransactionsResponse> {
+  return getJson<GenerateRecurringTransactionsResponse>(
+    '/api/recurring-transactions/generate-current-month',
+    { method: 'POST' },
+  );
 }
 
 export async function deleteTransaction(id: string): Promise<void> {

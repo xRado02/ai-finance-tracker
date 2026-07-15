@@ -24,6 +24,35 @@ export type TransactionResponse = {
   categoryName: string;
 };
 
+export type CreateRecurringTransactionRequest = {
+  amount: number;
+  type: TransactionType;
+  categoryId: string;
+  description: string | null;
+  isActive: boolean;
+};
+
+export type UpdateRecurringTransactionStatusRequest = {
+  isActive: boolean;
+};
+
+export type RecurringTransactionResponse = {
+  id: string;
+  amount: number;
+  type: TransactionType;
+  categoryId: string;
+  categoryName: string;
+  description: string | null;
+  isActive: boolean;
+};
+
+export type GenerateRecurringTransactionsResponse = {
+  month: string;
+  generatedCount: number;
+  skippedCount: number;
+  transactions: TransactionResponse[];
+};
+
 export type CreateGoalRequest = {
   name: string;
   targetAmount: number;

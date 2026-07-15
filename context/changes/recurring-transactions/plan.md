@@ -95,15 +95,15 @@ Uruchomić build/test/typecheck, sprawdzić migrację, zakres i przygotować man
 
 ### Phase 2: API and tests
 
-- [x] 2.1 Lista, create i status działają tylko dla default profile
-- [x] 2.2 Generowanie bieżącego miesiąca jest idempotentne i pomija inactive
-- [x] 2.3 Testy API pokrywają walidację, duplikat i izolację profilu
+- [x] 2.1 Lista, create i status działają tylko dla default profile - e3c9ed6
+- [x] 2.2 Generowanie bieżącego miesiąca jest idempotentne i pomija inactive - e3c9ed6
+- [x] 2.3 Testy API pokrywają walidację, duplikat i izolację profilu - e3c9ed6
 
 ### Phase 3: Frontend
 
-- [ ] 3.1 API client i stan App są zintegrowane
-- [ ] 3.2 Formularz/lista/status/generowanie są po polsku
-- [ ] 3.3 Refresh historii i dashboardu działa po generowaniu
+- [x] 3.1 API client i stan App są zintegrowane
+- [x] 3.2 Formularz/lista/status/generowanie są po polsku
+- [x] 3.3 Refresh historii i dashboardu działa po generowaniu
 
 ### Phase 4: Verification and closeout
 
