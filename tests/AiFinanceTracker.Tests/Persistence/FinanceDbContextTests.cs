@@ -16,14 +16,18 @@ public sealed class FinanceDbContextTests
         var model = context.Model;
         var transaction = model.FindEntityType(typeof(Transaction));
         var goal = model.FindEntityType(typeof(Goal));
+        var recurring = model.FindEntityType(typeof(RecurringTransaction));
 
         Assert.NotNull(model.FindEntityType(typeof(LocalProfile)));
         Assert.NotNull(model.FindEntityType(typeof(Category)));
         Assert.NotNull(transaction);
         Assert.NotNull(goal);
+        Assert.NotNull(recurring);
         Assert.NotNull(transaction.FindNavigation(nameof(Transaction.LocalProfile)));
         Assert.NotNull(transaction.FindNavigation(nameof(Transaction.Category)));
         Assert.NotNull(goal.FindNavigation(nameof(Goal.LocalProfile)));
+        Assert.NotNull(transaction.FindNavigation(nameof(Transaction.RecurringTransaction)));
+        Assert.NotNull(recurring.FindNavigation(nameof(RecurringTransaction.LocalProfile)));
 
         var amount = transaction.FindProperty(nameof(Transaction.Amount));
         Assert.NotNull(amount);
@@ -34,6 +38,11 @@ public sealed class FinanceDbContextTests
         Assert.NotNull(targetAmount);
         Assert.Equal(18, targetAmount.GetPrecision());
         Assert.Equal(2, targetAmount.GetScale());
+
+        var recurringAmount = recurring.FindProperty(nameof(RecurringTransaction.Amount));
+        Assert.NotNull(recurringAmount);
+        Assert.Equal(18, recurringAmount.GetPrecision());
+        Assert.Equal(2, recurringAmount.GetScale());
     }
 
     [Fact]

@@ -25,6 +25,8 @@ public sealed class FinanceDbContext(DbContextOptions<FinanceDbContext> options)
 
     public DbSet<Goal> Goals => Set<Goal>();
 
+    public DbSet<RecurringTransaction> RecurringTransactions => Set<RecurringTransaction>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<LocalProfile>(profile =>
@@ -70,6 +72,10 @@ public sealed class FinanceDbContext(DbContextOptions<FinanceDbContext> options)
                 .WithMany(p => p.Transactions)
                 .HasForeignKey(t => t.LocalProfileId)
                 .OnDelete(DeleteBehavior.Cascade);
+            transaction.HasOne(t => t.RecurringTransaction)
+                .WithMany(item => item.GeneratedTransactions)
+                .HasForeignKey(t => t.RecurringTransactionId)
+                .OnDelete(DeleteBehavior.SetNull);
         });
 
         modelBuilder.Entity<Goal>(goal =>
@@ -86,6 +92,31 @@ public sealed class FinanceDbContext(DbContextOptions<FinanceDbContext> options)
                 .HasForeignKey(item => item.LocalProfileId)
                 .OnDelete(DeleteBehavior.Cascade);
             goal.HasIndex(item => item.LocalProfileId);
+        });
+
+        modelBuilder.Entity<RecurringTransaction>(recurring =>
+        {
+            recurring.HasKey(item => item.Id);
+            recurring.Property(item => item.Amount)
+                .HasPrecision(18, 2)
+                .IsRequired();
+            recurring.Property(item => item.Type)
+                .HasConversion<string>()
+                .HasMaxLength(20)
+                .IsRequired();
+            recurring.Property(item => item.Description)
+                .HasMaxLength(500);
+            recurring.Property(item => item.IsActive)
+                .IsRequired();
+            recurring.HasOne(item => item.Category)
+                .WithMany()
+                .HasForeignKey(item => item.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+            recurring.HasOne(item => item.LocalProfile)
+                .WithMany(profile => profile.RecurringTransactions)
+                .HasForeignKey(item => item.LocalProfileId)
+                .OnDelete(DeleteBehavior.Cascade);
+            recurring.HasIndex(item => item.LocalProfileId);
         });
 
         SeedLocalProfile(modelBuilder);

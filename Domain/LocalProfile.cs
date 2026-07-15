@@ -9,4 +9,6 @@ public sealed class LocalProfile
     public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 
     public ICollection<Goal> Goals { get; set; } = new List<Goal>();
+
+    public ICollection<RecurringTransaction> RecurringTransactions { get; set; } = new List<RecurringTransaction>();
 }
