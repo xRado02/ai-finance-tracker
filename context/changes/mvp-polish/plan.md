@@ -92,25 +92,25 @@ Wykonać ręczny smoke całego MVP, zapisać Progress, SHA, status i review impl
 
 #### Automated
 
-- [x] 1.1 README opisuje uruchomienie, migrację, testy i zakres MVP
-- [x] 1.2 AGENTS opisuje aktualną strukturę i komendy
-- [x] 1.3 Stary scaffold HTTP i logi smoke są usunięte
+- [x] 1.1 README opisuje uruchomienie, migrację, testy i zakres MVP - 335ae97
+- [x] 1.2 AGENTS opisuje aktualną strukturę i komendy - 335ae97
+- [x] 1.3 Stary scaffold HTTP i logi smoke są usunięte - 335ae97
 
 #### Manual
 
-- [x] 1.4 Dokumentacja nie obiecuje funkcji poza MVP
+- [x] 1.4 Dokumentacja nie obiecuje funkcji poza MVP - 335ae97
 
 ### Phase 2: Final verification
 
 #### Automated
 
-- [ ] 2.1 Backend restore/build/test przechodzi
-- [ ] 2.2 Frontend typecheck/build przechodzi
-- [ ] 2.3 Migracje zawierają InitialCreate i AddFinancialGoals
+- [x] 2.1 Backend restore/build/test przechodzi - 335ae97
+- [x] 2.2 Frontend typecheck/build przechodzi - 335ae97
+- [x] 2.3 Migracje zawierają InitialCreate i AddFinancialGoals - 335ae97
 
 #### Manual
 
-- [ ] 2.4 Komendy z README odpowiadają lokalnemu workflow
+- [x] 2.4 Komendy z README odpowiadają lokalnemu workflow - 335ae97
 
 ### Phase 3: Final smoke and change closeout
 
