@@ -149,26 +149,26 @@ Brak migracji. Usuwanie korzysta z istniejacej tabeli transakcji i nie zmienia s
 
 #### Automated
 
-- [x] 3.1 `npm run typecheck` przechodzi po spolszczeniu UI
-- [x] 3.2 `npm run build` przechodzi po spolszczeniu UI
+- [x] 3.1 `npm run typecheck` przechodzi po spolszczeniu UI - 4c45622
+- [x] 3.2 `npm run build` przechodzi po spolszczeniu UI - 4c45622
 
 #### Manual
 
-- [x] 3.3 Obecny ekran transakcji jest po polsku, wlacznie z kategoriami, statusami i bledami
-- [x] 3.4 Dodawanie przychodu, wydatku i `Inne` nadal dziala
-- [x] 3.5 Zakres nadal nie zawiera nowych obszarow MVP
+- [x] 3.3 Obecny ekran transakcji jest po polsku, wlacznie z kategoriami, statusami i bledami - 4c45622
+- [x] 3.4 Dodawanie przychodu, wydatku i `Inne` nadal dziala - 4c45622
+- [x] 3.5 Zakres nadal nie zawiera nowych obszarow MVP - 4c45622
 
 ### Phase 4: Verification and change closeout
 
 #### Automated
 
-- [ ] 4.1 `dotnet restore .\ai-finance-tracker.csproj` przechodzi
-- [ ] 4.2 `dotnet build .\ai-finance-tracker.csproj --no-restore -p:UseAppHost=false` przechodzi
-- [ ] 4.3 `dotnet test .\tests\AiFinanceTracker.Tests\AiFinanceTracker.Tests.csproj -p:UseAppHost=false` przechodzi
-- [ ] 4.4 `npm run typecheck` przechodzi
-- [ ] 4.5 `npm run build` przechodzi
+- [x] 4.1 `dotnet restore .\ai-finance-tracker.csproj` przechodzi
+- [x] 4.2 `dotnet build .\ai-finance-tracker.csproj --no-restore -p:UseAppHost=false` przechodzi
+- [x] 4.3 `dotnet test .\tests\AiFinanceTracker.Tests\AiFinanceTracker.Tests.csproj -p:UseAppHost=false` przechodzi
+- [x] 4.4 `npm run typecheck` przechodzi
+- [x] 4.5 `npm run build` przechodzi
 
 #### Manual
 
-- [ ] 4.6 Reczny smoke test usuwania i polskiego UI przechodzi
-- [ ] 4.7 Dokumentacja zmiany i Progress sa kompletne
+- [x] 4.6 Reczny smoke test usuwania i polskiego UI przechodzi
+- [x] 4.7 Dokumentacja zmiany i Progress sa kompletne
