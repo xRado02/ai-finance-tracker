@@ -98,9 +98,9 @@ Uruchomić build/test/typecheck, sprawdzić brak duplikacji Goals i przygotować
 
 ### Phase 2: Forecast UI
 
-- [ ] 2.1 API client i App state są zintegrowane z istniejącymi goals
-- [ ] 2.2 Komunikaty forecastu i remaining amount są po polsku
-- [ ] 2.3 CSS/SVG trend jest widoczny bez biblioteki wykresów
+- [x] 2.1 API client i App state są zintegrowane z istniejącymi goals
+- [x] 2.2 Komunikaty forecastu i remaining amount są po polsku
+- [x] 2.3 CSS/SVG trend jest widoczny bez biblioteki wykresów
 
 ### Phase 3: Verification and closeout
 

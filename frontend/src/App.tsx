@@ -6,6 +6,7 @@ import {
   getCategories,
   getDashboardSummary,
   getGoals,
+  getGoalForecast,
   getTransactions,
   getRecurringTransactions,
   isApiError,
@@ -14,6 +15,7 @@ import type {
   CategoryResponse,
   DashboardSummaryResponse,
   GoalResponse,
+  GoalForecastResponse,
   RecurringTransactionResponse,
   TransactionResponse,
 } from './api/financeTypes';
@@ -32,6 +34,7 @@ type ApiStatus =
       categories: CategoryResponse[];
       transactions: TransactionResponse[];
       goals: GoalResponse[];
+      goalForecasts: GoalForecastResponse[];
       recurringTransactions: RecurringTransactionResponse[];
       dashboard: DashboardSummaryResponse;
     }
@@ -43,16 +46,17 @@ export default function App() {
 
   async function loadFinanceData(isActive = true) {
     try {
-      const [categories, transactions, goals, dashboard, recurringTransactions] = await Promise.all([
+      const [categories, transactions, goals, dashboard, recurringTransactions, goalForecasts] = await Promise.all([
         getCategories(),
         getTransactions(),
         getGoals(),
         getDashboardSummary(),
         getRecurringTransactions(),
+        getGoalForecast(),
       ]);
 
       if (isActive) {
-        setApiStatus({ state: 'ready', categories, transactions, goals, dashboard, recurringTransactions });
+        setApiStatus({ state: 'ready', categories, transactions, goals, dashboard, recurringTransactions, goalForecasts });
       }
     } catch (error) {
       if (isActive) {
@@ -236,6 +240,7 @@ export default function App() {
             />
             <GoalList
               goals={apiStatus.state === 'ready' ? apiStatus.goals : []}
+              forecasts={apiStatus.state === 'ready' ? apiStatus.goalForecasts : []}
               isLoading={apiStatus.state === 'loading'}
             />
           </div>

@@ -1059,6 +1059,45 @@
   .transaction-row__amount { justify-items: start; }
 }
 
+.goal-forecast {
+  display: grid;
+  gap: 7px;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.goal-forecast__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 750;
+}
+
+.goal-forecast__header strong {
+  color: var(--muted-strong);
+  font-size: 0.7rem;
+}
+
+.forecast-chart {
+  display: block;
+  width: 100%;
+  height: 42px;
+}
+
+.goal-forecast__message {
+  margin: 0;
+  color: var(--muted-strong) !important;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.goal-forecast__message--achieved { color: var(--lime) !important; }
+.goal-forecast__message--nopositivesurplus { color: var(--coral) !important; }
+.goal-forecast__average { color: var(--muted); font-size: 0.7rem; }
+
 .section-heading--recurring { margin-top: 48px; }
 
 .recurring-section-grid {

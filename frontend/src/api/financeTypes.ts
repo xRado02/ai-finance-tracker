@@ -66,6 +66,20 @@ export type GoalResponse = {
   progressPercentage: number;
 };
 
+export type GoalForecastStatus = 'Forecastable' | 'Achieved' | 'NoData' | 'NoPositiveSurplus';
+
+export type GoalForecastResponse = {
+  goalId: string;
+  name: string;
+  targetAmount: number;
+  currentAmount: number;
+  remainingAmount: number;
+  averageMonthlySurplus: number | null;
+  estimatedMonths: number | null;
+  estimatedDate: string | null;
+  status: GoalForecastStatus;
+};
+
 export type ExpenseCategorySummary = {
   categoryName: string;
   amount: number;

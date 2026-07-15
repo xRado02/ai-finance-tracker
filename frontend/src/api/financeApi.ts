@@ -6,6 +6,7 @@ import type {
   CreateTransactionRequest,
   DashboardSummaryResponse,
   GenerateRecurringTransactionsResponse,
+  GoalForecastResponse,
   GoalResponse,
   RecurringTransactionResponse,
   TransactionResponse,
@@ -30,6 +31,10 @@ export async function getTransactions(limit?: number): Promise<TransactionRespon
 
 export async function getGoals(): Promise<GoalResponse[]> {
   return getJson<GoalResponse[]>('/api/goals');
+}
+
+export async function getGoalForecast(): Promise<GoalForecastResponse[]> {
+  return getJson<GoalForecastResponse[]>('/api/goals/forecast');
 }
 
 export async function createGoal(request: CreateGoalRequest): Promise<GoalResponse> {
