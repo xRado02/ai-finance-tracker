@@ -1059,6 +1059,57 @@
   .transaction-row__amount { justify-items: start; }
 }
 
+.period-picker {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+}
+
+.period-picker select {
+  min-height: 30px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.period-picker select option { background: var(--panel); color: var(--ink); }
+
+.period-picker__arrow {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 30px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--muted-strong);
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.period-picker__arrow:hover { background: rgba(185, 236, 114, 0.12); color: var(--lime); }
+
+.dashboard__details { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+@media (max-width: 980px) {
+  .dashboard__details { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 720px) {
+  .topbar__meta { gap: 8px; }
+  .period-picker { max-width: 210px; }
+  .period-picker select { max-width: 80px; }
+  .dashboard__details { grid-template-columns: 1fr; }
+}
+
 .goal-forecast {
   display: grid;
   gap: 7px;

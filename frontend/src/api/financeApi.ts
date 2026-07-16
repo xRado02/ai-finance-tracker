@@ -8,6 +8,7 @@ import type {
   GenerateRecurringTransactionsResponse,
   GoalForecastResponse,
   GoalResponse,
+  MonthlySummaryResponse,
   RecurringTransactionResponse,
   TransactionResponse,
   UpdateRecurringTransactionStatusRequest,
@@ -24,8 +25,16 @@ export async function getCategories(): Promise<CategoryResponse[]> {
   return getJson<CategoryResponse[]>('/api/categories');
 }
 
-export async function getTransactions(limit?: number): Promise<TransactionResponse[]> {
-  const query = typeof limit === 'number' ? `?limit=${encodeURIComponent(limit)}` : '';
+export async function getTransactions(
+  year?: number,
+  month?: number,
+  limit?: number,
+): Promise<TransactionResponse[]> {
+  const params = new URLSearchParams();
+  if (typeof year === 'number') params.set('year', String(year));
+  if (typeof month === 'number') params.set('month', String(month));
+  if (typeof limit === 'number') params.set('limit', String(limit));
+  const query = params.size > 0 ? `?${params.toString()}` : '';
   return getJson<TransactionResponse[]>(`/api/transactions${query}`);
 }
 
@@ -49,6 +58,12 @@ export async function createGoal(request: CreateGoalRequest): Promise<GoalRespon
 
 export async function getDashboardSummary(): Promise<DashboardSummaryResponse> {
   return getJson<DashboardSummaryResponse>('/api/dashboard/summary');
+}
+
+export async function getMonthlySummary(year: number, month: number): Promise<MonthlySummaryResponse> {
+  return getJson<MonthlySummaryResponse>(
+    `/api/dashboard/monthly-summary?year=${encodeURIComponent(year)}&month=${encodeURIComponent(month)}`,
+  );
 }
 
 export async function createTransaction(
@@ -95,9 +110,16 @@ export async function updateRecurringTransactionStatus(
   );
 }
 
-export async function generateCurrentMonthRecurringTransactions(): Promise<GenerateRecurringTransactionsResponse> {
+export async function generateCurrentMonthRecurringTransactions(
+  year?: number,
+  month?: number,
+): Promise<GenerateRecurringTransactionsResponse> {
+  const params = new URLSearchParams();
+  if (typeof year === 'number') params.set('year', String(year));
+  if (typeof month === 'number') params.set('month', String(month));
+  const query = params.size > 0 ? `?${params.toString()}` : '';
   return getJson<GenerateRecurringTransactionsResponse>(
-    '/api/recurring-transactions/generate-current-month',
+    `/api/recurring-transactions/generate-current-month${query}`,
     { method: 'POST' },
   );
 }

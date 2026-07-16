@@ -11,12 +11,14 @@ import type {
   TransactionType,
 } from '../api/financeTypes';
 import { getCategoryLabel, getTransactionTypeLabel, polishApiMessage } from '../labels';
+import type { PeriodSelection } from './PeriodPicker';
 
 type RecurringTransactionPanelProps = {
   categories: CategoryResponse[];
   recurringTransactions: RecurringTransactionResponse[];
   disabled: boolean;
   isLoading: boolean;
+  period: PeriodSelection;
   onChanged: () => Promise<void>;
 };
 
@@ -30,6 +32,7 @@ export function RecurringTransactionPanel({
   recurringTransactions,
   disabled,
   isLoading,
+  period,
   onChanged,
 }: RecurringTransactionPanelProps) {
   const [type, setType] = useState<TransactionType>('Expense');
@@ -90,7 +93,7 @@ export function RecurringTransactionPanel({
     setMessage('');
     setIsGenerating(true);
     try {
-      const result = await generateCurrentMonthRecurringTransactions();
+      const result = await generateCurrentMonthRecurringTransactions(period.year, period.month);
       setMessage(
         result.generatedCount > 0
           ? `Wygenerowano ${result.generatedCount} transakcji za ${result.month}. Pominięto: ${result.skippedCount}.`

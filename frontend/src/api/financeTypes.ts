@@ -85,6 +85,8 @@ export type ExpenseCategorySummary = {
   amount: number;
 };
 
+export type IncomeCategorySummary = ExpenseCategorySummary;
+
 export type DashboardGoalSummary = GoalResponse;
 
 export type DashboardSummaryResponse = {
@@ -93,6 +95,16 @@ export type DashboardSummaryResponse = {
   balance: number;
   expenseCategories: ExpenseCategorySummary[];
   goals: DashboardGoalSummary[];
+};
+
+export type MonthlySummaryResponse = {
+  year: number;
+  month: number;
+  totalIncome: number;
+  totalExpenses: number;
+  balance: number;
+  expenseCategories: ExpenseCategorySummary[];
+  incomeCategories: IncomeCategorySummary[];
 };
 
 export type ApiError = {

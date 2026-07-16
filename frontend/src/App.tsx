@@ -7,6 +7,7 @@ import {
   getDashboardSummary,
   getGoals,
   getGoalForecast,
+  getMonthlySummary,
   getTransactions,
   getRecurringTransactions,
   isApiError,
@@ -16,6 +17,7 @@ import type {
   DashboardSummaryResponse,
   GoalResponse,
   GoalForecastResponse,
+  MonthlySummaryResponse,
   RecurringTransactionResponse,
   TransactionResponse,
 } from './api/financeTypes';
@@ -25,6 +27,7 @@ import { GoalList } from './components/GoalList';
 import { TransactionForm } from './components/TransactionForm';
 import { TransactionHistory } from './components/TransactionHistory';
 import { RecurringTransactionPanel } from './components/RecurringTransactionPanel';
+import { getCurrentPeriod, PeriodPicker, type PeriodSelection } from './components/PeriodPicker';
 import { polishApiMessage } from './labels';
 
 type ApiStatus =
@@ -37,26 +40,29 @@ type ApiStatus =
       goalForecasts: GoalForecastResponse[];
       recurringTransactions: RecurringTransactionResponse[];
       dashboard: DashboardSummaryResponse;
+      monthlySummary: MonthlySummaryResponse;
     }
   | { state: 'error'; message: string };
 
 export default function App() {
   const [apiStatus, setApiStatus] = useState<ApiStatus>({ state: 'loading' });
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const [selectedPeriod, setSelectedPeriod] = useState<PeriodSelection>(getCurrentPeriod);
 
-  async function loadFinanceData(isActive = true) {
+  async function loadFinanceData(period: PeriodSelection, isActive = true) {
     try {
-      const [categories, transactions, goals, dashboard, recurringTransactions, goalForecasts] = await Promise.all([
+      const [categories, transactions, goals, dashboard, recurringTransactions, goalForecasts, monthlySummary] = await Promise.all([
         getCategories(),
-        getTransactions(),
+        getTransactions(period.year, period.month),
         getGoals(),
         getDashboardSummary(),
         getRecurringTransactions(),
         getGoalForecast(),
+        getMonthlySummary(period.year, period.month),
       ]);
 
       if (isActive) {
-        setApiStatus({ state: 'ready', categories, transactions, goals, dashboard, recurringTransactions, goalForecasts });
+        setApiStatus({ state: 'ready', categories, transactions, goals, dashboard, recurringTransactions, goalForecasts, monthlySummary });
       }
     } catch (error) {
       if (isActive) {
@@ -72,12 +78,12 @@ export default function App() {
 
   useEffect(() => {
     let isActive = true;
-    void loadFinanceData(isActive);
+    void loadFinanceData(selectedPeriod, isActive);
 
     return () => {
       isActive = false;
     };
-  }, []);
+  }, [selectedPeriod]);
 
   return (
     <main className="app-shell">
@@ -149,6 +155,7 @@ export default function App() {
             <h1>Dobry dzień, Radek</h1>
           </div>
           <div className="topbar__meta">
+            <PeriodPicker value={selectedPeriod} onChange={setSelectedPeriod} />
             <span className="topbar__date">
               {new Intl.DateTimeFormat('pl-PL', { dateStyle: 'long' }).format(new Date())}
             </span>
@@ -176,6 +183,7 @@ export default function App() {
           <section id="overview" className="dashboard-section">
             <DashboardSummary
               dashboard={apiStatus.state === 'ready' ? apiStatus.dashboard : null}
+              monthlySummary={apiStatus.state === 'ready' ? apiStatus.monthlySummary : null}
               isLoading={apiStatus.state === 'loading'}
             />
           </section>
@@ -193,7 +201,8 @@ export default function App() {
               <TransactionForm
                 categories={apiStatus.state === 'ready' ? apiStatus.categories : []}
                 disabled={apiStatus.state !== 'ready'}
-                onTransactionCreated={() => loadFinanceData()}
+                period={selectedPeriod}
+                onTransactionCreated={() => loadFinanceData(selectedPeriod)}
               />
             </div>
             <TransactionHistory
@@ -201,7 +210,7 @@ export default function App() {
               isLoading={apiStatus.state === 'loading'}
               onDeleteTransaction={async (id) => {
                 await deleteTransaction(id);
-                await loadFinanceData();
+                await loadFinanceData(selectedPeriod);
               }}
             />
           </div>
@@ -219,7 +228,8 @@ export default function App() {
             recurringTransactions={apiStatus.state === 'ready' ? apiStatus.recurringTransactions : []}
             disabled={apiStatus.state !== 'ready'}
             isLoading={apiStatus.state === 'loading'}
-            onChanged={() => loadFinanceData()}
+            period={selectedPeriod}
+            onChanged={() => loadFinanceData(selectedPeriod)}
           />
 
           <div className="section-heading section-heading--goals" id="goals">
@@ -235,7 +245,7 @@ export default function App() {
               disabled={apiStatus.state !== 'ready'}
               onGoalCreated={async (request) => {
                 await createGoal(request);
-                await loadFinanceData();
+                await loadFinanceData(selectedPeriod);
               }}
             />
             <GoalList

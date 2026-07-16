@@ -1,28 +1,33 @@
-import { FormEvent, useMemo, useState } from 'react';
+import { FormEvent, useEffect, useMemo, useState } from 'react';
 import { createTransaction, isApiError } from '../api/financeApi';
 import type { CategoryResponse, TransactionType } from '../api/financeTypes';
 import { getCategoryLabel, getTransactionTypeLabel, polishApiMessage } from '../labels';
+import { formatDateForPeriod, getLastDayOfPeriod, type PeriodSelection } from './PeriodPicker';
 
 type TransactionFormProps = {
   categories: CategoryResponse[];
   disabled: boolean;
+  period: PeriodSelection;
   onTransactionCreated: () => Promise<void> | void;
 };
-
-const today = new Date().toISOString().slice(0, 10);
 
 export function TransactionForm({
   categories,
   disabled,
+  period,
   onTransactionCreated,
 }: TransactionFormProps) {
   const [type, setType] = useState<TransactionType>('Expense');
   const [amount, setAmount] = useState('');
-  const [transactionDate, setTransactionDate] = useState(today);
+  const [transactionDate, setTransactionDate] = useState(formatDateForPeriod(period));
   const [categoryId, setCategoryId] = useState('');
   const [description, setDescription] = useState('');
   const [message, setMessage] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+
+  useEffect(() => {
+    setTransactionDate(formatDateForPeriod(period));
+  }, [period]);
 
   const availableCategories = useMemo(
     () =>
@@ -121,10 +126,12 @@ export function TransactionForm({
           <span>Data</span>
           <input
             name="transactionDate"
+            min={formatDateForPeriod(period)}
             onChange={(event) => setTransactionDate(event.target.value)}
             required
             type="date"
             value={transactionDate}
+            max={getLastDayOfPeriod(period)}
           />
         </label>
 
