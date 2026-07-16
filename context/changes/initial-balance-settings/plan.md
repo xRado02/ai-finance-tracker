@@ -1,7 +1,7 @@
 ---
 change_id: initial-balance-settings
 title: Stan początkowy konta
-status: planned
+status: implemented
 created: 2026-07-16
 updated: 2026-07-16
 ---
@@ -94,6 +94,6 @@ Uruchomić backend/frontend checks, sprawdzić migrację i zakres.
 
 ### Phase 3: Verification and closeout
 
-- [ ] 3.1 Backend build/test oraz frontend typecheck/build przechodzą
-- [ ] 3.2 Miesięczne i całkowite saldo są rozdzielone
-- [ ] 3.3 Manual smoke test jest gotowy do potwierdzenia
+- [x] 3.1 Backend build/test oraz frontend typecheck/build przechodzą — backend test 39/39, build API 0 ostrzeżeń, frontend typecheck/build — commit 15c8d7a
+- [x] 3.2 Miesięczne i całkowite saldo są rozdzielone — commit 15c8d7a
+- [x] 3.3 Manual smoke test jest gotowy do potwierdzenia; nie uruchamiano go automatycznie — commit 15c8d7a
