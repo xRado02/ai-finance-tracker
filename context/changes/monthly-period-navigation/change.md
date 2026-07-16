@@ -1,7 +1,7 @@
 ---
 change_id: monthly-period-navigation
 title: Nawigacja po miesiącach i miesięczne podsumowania
-status: planned
+status: implemented
 created: 2026-07-16
 updated: 2026-07-16
 archived_at: null

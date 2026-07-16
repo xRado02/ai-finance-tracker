@@ -112,6 +112,6 @@ Uruchomić build/test/typecheck, sprawdzić odświeżanie mutacji i przygotować
 
 ### Phase 3: Verification and closeout
 
-- [ ] 3.1 Backend build/test oraz frontend typecheck/build przechodzą
-- [ ] 3.2 Zakres nie duplikuje recurring ani goal-forecast
-- [ ] 3.3 Manual smoke test jest gotowy do potwierdzenia
+- [x] 3.1 Backend build/test oraz frontend typecheck/build przechodzą
+- [x] 3.2 Zakres nie duplikuje recurring ani goal-forecast
+- [x] 3.3 Manual smoke test jest gotowy do potwierdzenia
