@@ -1,24 +1,33 @@
 # AI Finance Tracker
 
-Lokalne MVP do ręcznego zapisywania finansów, przeglądania historii, śledzenia celów i szybkiego podsumowania sytuacji finansowej.
+Lokalna aplikacja open source do ręcznego zarządzania finansami osobistymi. Umożliwia pracę miesiąc po miesiącu, zapisywanie przychodów i wydatków, śledzenie celów oraz przeglądanie prostych podsumowań.
 
-## Zakres MVP
+## Funkcje MVP
 
-- domyślny profil lokalny bez logowania,
-- dodawanie przychodów i wydatków,
+- lokalny profil domyślny bez logowania,
+- polski interfejs z osobnymi sekcjami: Dashboard, Transakcje, Stałe transakcje, Cele finansowe i Ustawienia,
+- wybór miesiąca i roku oraz historia ograniczona do wybranego okresu,
+- dodawanie i usuwanie przychodów oraz wydatków,
 - kategorie z fallbackiem `Inne`,
-- historia i usuwanie transakcji,
-- dashboard: przychody, wydatki, saldo i największe kategorie wydatków,
-- tworzenie celów finansowych i śledzenie ich progressu,
+- stałe przychody i wydatki generowane ręcznie za wybrany miesiąc bez duplikatów,
+- saldo miesiąca i saldo całkowite z uwzględnieniem stanu początkowego konta,
+- podsumowanie kategorii przychodów i wydatków,
+- cele finansowe z postępem i prognozą terminu osiągnięcia,
 - dane przechowywane lokalnie w SQL Server LocalDB.
 
-Poza MVP pozostają AI, logowanie, chmura, import bankowy, wielu użytkowników, custom kategorie, edycja transakcji, zaawansowane wykresy, notyfikacje i realtime.
+Poza zakresem MVP pozostają AI, auth, chmura, import bankowy, wielu użytkowników, custom kategorie, edycja transakcji, zaawansowane wykresy, notyfikacje, realtime i background joby.
+
+## Stack
+
+- Backend: ASP.NET Core Web API, .NET 9, Entity Framework Core, SQL Server
+- Frontend: React, TypeScript, Vite, własny CSS
+- Testy backendu: xUnit, SQLite in-memory
 
 ## Wymagania
 
-- .NET SDK 9,
-- SQL Server LocalDB,
-- Node.js i npm.
+- .NET SDK 9
+- SQL Server LocalDB
+- Node.js i npm
 
 ## Uruchomienie backendu
 
@@ -30,7 +39,7 @@ dotnet ef database update --project .\ai-finance-tracker.csproj
 dotnet run --project .\ai-finance-tracker.csproj --launch-profile http -p:UseAppHost=false
 ```
 
-`UseAppHost=false` omija problem blokowania pliku `.exe` na Windows. Backend działa pod `http://localhost:5218`.
+Opcja `UseAppHost=false` omija problem blokowania pliku `.exe` na Windows. Backend działa pod `http://localhost:5218`.
 
 Po dodaniu nowej migracji uruchom ponownie `dotnet ef database update` przed startem aplikacji.
 
@@ -48,14 +57,14 @@ Otwórz adres pokazany przez Vite. Frontend korzysta z proxy `/api` do lokalnego
 
 ## Weryfikacja
 
-Backend:
+Backend, z katalogu głównego:
 
 ```powershell
 dotnet build .\ai-finance-tracker.csproj --no-restore -p:UseAppHost=false
 dotnet test .\tests\AiFinanceTracker.Tests\AiFinanceTracker.Tests.csproj -p:UseAppHost=false
 ```
 
-Frontend, uruchamiane z `frontend/`:
+Frontend, z katalogu `frontend/`:
 
 ```powershell
 npm run typecheck
@@ -65,11 +74,23 @@ npm run build
 ## API
 
 - `GET /api/categories`
-- `GET /api/transactions`
+- `GET /api/transactions?year=2026&month=7`
 - `POST /api/transactions`
 - `DELETE /api/transactions/{id}`
+- `GET /api/profile/settings`
+- `PATCH /api/profile/settings`
 - `GET /api/goals`
 - `POST /api/goals`
+- `GET /api/goals/forecast`
 - `GET /api/dashboard/summary`
+- `GET /api/dashboard/monthly-summary?year=2026&month=7`
+- `GET /api/recurring-transactions`
+- `POST /api/recurring-transactions`
+- `PATCH /api/recurring-transactions/{id}/status`
+- `POST /api/recurring-transactions/generate-current-month?year=2026&month=7`
 
-Wszystkie dane finansowe należą do domyślnego profilu lokalnego. API nie wysyła ich do usług zewnętrznych.
+Wszystkie dane finansowe należą do domyślnego profilu lokalnego. Aplikacja nie wysyła ich do usług zewnętrznych.
+
+## Licencja
+
+Projekt jest dostępny na licencji MIT. Szczegóły znajdują się w pliku [LICENSE](LICENSE).
