@@ -6,6 +6,8 @@ public sealed class LocalProfile
 
     public required string DisplayName { get; set; }
 
+    public decimal InitialBalance { get; set; }
+
     public ICollection<Transaction> Transactions { get; set; } = new List<Transaction>();
 
     public ICollection<Goal> Goals { get; set; } = new List<Goal>();

@@ -82,10 +82,10 @@ Uruchomić backend/frontend checks, sprawdzić migrację i zakres.
 
 ### Phase 1: Profile persistence and API
 
-- [ ] 1.1 LocalProfile, konfiguracja i migracja zawierają InitialBalance
-- [ ] 1.2 Settings GET/PATCH działają dla default profile
-- [ ] 1.3 Globalne saldo, goals i forecast uwzględniają InitialBalance
-- [ ] 1.4 Testy API pokrywają default 0, zmianę ustawienia i formułę salda
+- [x] 1.1 LocalProfile, konfiguracja i migracja zawierają InitialBalance
+- [x] 1.2 Settings GET/PATCH działają dla default profile
+- [x] 1.3 Globalne saldo, goals i forecast uwzględniają InitialBalance
+- [x] 1.4 Testy API pokrywają default 0, zmianę ustawienia i formułę salda
 
 ### Phase 2: Settings UI
 

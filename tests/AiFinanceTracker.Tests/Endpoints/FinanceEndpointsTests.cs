@@ -51,6 +51,31 @@ public sealed class FinanceEndpointsTests
     }
 
     [Fact]
+    public async Task Profile_settings_returns_default_and_persists_initial_balance()
+    {
+        using var app = new FinanceApiFactory();
+        using var client = app.CreateClient();
+
+        var initialResponse = await client.GetAsync("/api/profile/settings");
+        initialResponse.EnsureSuccessStatusCode();
+        var initialSettings = await initialResponse.Content.ReadFromJsonAsync<ProfileSettingsResponse>(JsonOptions);
+
+        Assert.NotNull(initialSettings);
+        Assert.Equal(0m, initialSettings.InitialBalance);
+
+        var updateResponse = await client.PatchAsJsonAsync(
+            "/api/profile/settings",
+            new UpdateProfileSettingsRequest(750m),
+            JsonOptions);
+
+        updateResponse.EnsureSuccessStatusCode();
+        var updatedSettings = await updateResponse.Content.ReadFromJsonAsync<ProfileSettingsResponse>(JsonOptions);
+
+        Assert.NotNull(updatedSettings);
+        Assert.Equal(750m, updatedSettings.InitialBalance);
+    }
+
+    [Fact]
     public async Task Post_transactions_creates_expense_for_default_profile()
     {
         using var app = new FinanceApiFactory();
@@ -341,6 +366,7 @@ public sealed class FinanceEndpointsTests
         response.EnsureSuccessStatusCode();
         var summary = await response.Content.ReadFromJsonAsync<DashboardSummaryResponse>(JsonOptions);
         Assert.NotNull(summary);
+        Assert.Equal(0m, summary.InitialBalance);
         Assert.Equal(1000m, summary.TotalIncome);
         Assert.Equal(200m, summary.TotalExpenses);
         Assert.Equal(800m, summary.Balance);
@@ -350,6 +376,46 @@ public sealed class FinanceEndpointsTests
         var goal = Assert.Single(summary.Goals);
         Assert.Equal(800m, goal.CurrentAmount);
         Assert.Equal(50m, goal.ProgressPercentage);
+    }
+
+    [Fact]
+    public async Task Get_dashboard_summary_includes_initial_balance_in_total_balance_and_goal_progress()
+    {
+        using var app = new FinanceApiFactory();
+        var income = CreateTransaction(
+            "30000000-0000-0000-0000-000000000033",
+            1000m,
+            new DateOnly(2026, 7, 12));
+        income.Type = TransactionType.Income;
+        income.CategoryId = FinanceDbContext.SalaryCategoryId;
+        var expense = CreateTransaction(
+            "30000000-0000-0000-0000-000000000034",
+            200m,
+            new DateOnly(2026, 7, 13));
+        await app.SeedTransactionsAsync(income, expense);
+        using var client = app.CreateClient();
+
+        await client.PatchAsJsonAsync(
+            "/api/profile/settings",
+            new UpdateProfileSettingsRequest(750m),
+            JsonOptions);
+        await client.PostAsJsonAsync(
+            "/api/goals",
+            new CreateGoalRequest("Emergency fund", 1600m),
+            JsonOptions);
+
+        var response = await client.GetAsync("/api/dashboard/summary");
+
+        response.EnsureSuccessStatusCode();
+        var summary = await response.Content.ReadFromJsonAsync<DashboardSummaryResponse>(JsonOptions);
+        Assert.NotNull(summary);
+        Assert.Equal(750m, summary.InitialBalance);
+        Assert.Equal(1000m, summary.TotalIncome);
+        Assert.Equal(200m, summary.TotalExpenses);
+        Assert.Equal(1550m, summary.Balance);
+        var goal = Assert.Single(summary.Goals);
+        Assert.Equal(1550m, goal.CurrentAmount);
+        Assert.Equal(96.88m, goal.ProgressPercentage);
     }
 
     [Fact]

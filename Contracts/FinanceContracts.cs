@@ -23,6 +23,12 @@ public sealed record CategoryResponse(
     string Name,
     TransactionType? AppliesTo);
 
+public sealed record ProfileSettingsResponse(
+    string DisplayName,
+    decimal InitialBalance);
+
+public sealed record UpdateProfileSettingsRequest(decimal InitialBalance);
+
 public sealed record CreateGoalRequest(
     string? Name,
     decimal TargetAmount);
@@ -50,6 +56,7 @@ public sealed record DashboardGoalSummary(
     decimal ProgressPercentage);
 
 public sealed record DashboardSummaryResponse(
+    decimal InitialBalance,
     decimal TotalIncome,
     decimal TotalExpenses,
     decimal Balance,

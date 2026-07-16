@@ -14,6 +14,8 @@ public static class FinanceEndpoints
         var api = endpoints.MapGroup("/api");
 
         api.MapGet("/categories", GetCategories);
+        api.MapGet("/profile/settings", GetProfileSettings);
+        api.MapPatch("/profile/settings", UpdateProfileSettings);
         api.MapPost("/transactions", CreateTransaction);
         api.MapGet("/transactions", GetTransactions);
         api.MapDelete("/transactions/{id:guid}", DeleteTransaction);
@@ -42,6 +44,36 @@ public static class FinanceEndpoints
             .ToListAsync();
 
         return TypedResults.Ok<IReadOnlyList<CategoryResponse>>(categories);
+    }
+
+    private static async Task<Ok<ProfileSettingsResponse>> GetProfileSettings(FinanceDbContext dbContext)
+    {
+        var profile = await dbContext.LocalProfiles
+            .AsNoTracking()
+            .SingleAsync(item => item.Id == FinanceDbContext.DefaultLocalProfileId);
+
+        return TypedResults.Ok(new ProfileSettingsResponse(profile.DisplayName, profile.InitialBalance));
+    }
+
+    private static async Task<Results<Ok<ProfileSettingsResponse>, ValidationProblem>> UpdateProfileSettings(
+        UpdateProfileSettingsRequest request,
+        FinanceDbContext dbContext)
+    {
+        const decimal maxBalance = 9999999999999999.99m;
+        if (request.InitialBalance < -maxBalance || request.InitialBalance > maxBalance)
+        {
+            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
+            {
+                [nameof(request.InitialBalance)] = ["InitialBalance is outside the supported range."]
+            });
+        }
+
+        var profile = await dbContext.LocalProfiles
+            .SingleAsync(item => item.Id == FinanceDbContext.DefaultLocalProfileId);
+        profile.InitialBalance = request.InitialBalance;
+        await dbContext.SaveChangesAsync();
+
+        return TypedResults.Ok(new ProfileSettingsResponse(profile.DisplayName, profile.InitialBalance));
     }
 
     private static async Task<Results<Created<TransactionResponse>, ValidationProblem, NotFound<ProblemDetails>>> CreateTransaction(
@@ -235,7 +267,8 @@ public static class FinanceEndpoints
         var totalExpenses = transactions
             .Where(item => item.Type == TransactionType.Expense)
             .Sum(item => item.Amount);
-        var currentAmount = Math.Max(0m, totalIncome - totalExpenses);
+        var initialBalance = await GetInitialBalance(dbContext);
+        var currentAmount = Math.Max(0m, initialBalance + totalIncome - totalExpenses);
         var monthlySurpluses = transactions
             .GroupBy(item => new { item.TransactionDate.Year, item.TransactionDate.Month })
             .Select(group => group.Sum(item =>
@@ -277,7 +310,8 @@ public static class FinanceEndpoints
         var totalExpenses = transactions
             .Where(transaction => transaction.Type == TransactionType.Expense)
             .Sum(transaction => transaction.Amount);
-        var balance = totalIncome - totalExpenses;
+        var initialBalance = await GetInitialBalance(dbContext);
+        var balance = initialBalance + totalIncome - totalExpenses;
         var currentAmount = Math.Max(0m, balance);
         var expenseCategories = transactions
             .Where(transaction => transaction.Type == TransactionType.Expense)
@@ -299,6 +333,7 @@ public static class FinanceEndpoints
             .ToListAsync();
 
         return TypedResults.Ok(new DashboardSummaryResponse(
+            initialBalance,
             totalIncome,
             totalExpenses,
             balance,
@@ -663,7 +698,16 @@ public static class FinanceEndpoints
                 transaction.Type == TransactionType.Expense)
             .SumAsync(transaction => transaction.Amount);
 
-        return Math.Max(0m, income - expenses);
+        var initialBalance = await GetInitialBalance(dbContext);
+        return Math.Max(0m, initialBalance + income - expenses);
+    }
+
+    private static Task<decimal> GetInitialBalance(FinanceDbContext dbContext)
+    {
+        return dbContext.LocalProfiles
+            .Where(item => item.Id == FinanceDbContext.DefaultLocalProfileId)
+            .Select(item => item.InitialBalance)
+            .SingleAsync();
     }
 
     private static decimal CalculateProgressPercentage(decimal currentAmount, decimal targetAmount)

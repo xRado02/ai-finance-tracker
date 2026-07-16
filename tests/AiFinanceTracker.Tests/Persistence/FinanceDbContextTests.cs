@@ -14,11 +14,12 @@ public sealed class FinanceDbContextTests
         using var context = CreateContext(connection);
 
         var model = context.Model;
+        var profile = model.FindEntityType(typeof(LocalProfile));
         var transaction = model.FindEntityType(typeof(Transaction));
         var goal = model.FindEntityType(typeof(Goal));
         var recurring = model.FindEntityType(typeof(RecurringTransaction));
 
-        Assert.NotNull(model.FindEntityType(typeof(LocalProfile)));
+        Assert.NotNull(profile);
         Assert.NotNull(model.FindEntityType(typeof(Category)));
         Assert.NotNull(transaction);
         Assert.NotNull(goal);
@@ -43,6 +44,11 @@ public sealed class FinanceDbContextTests
         Assert.NotNull(recurringAmount);
         Assert.Equal(18, recurringAmount.GetPrecision());
         Assert.Equal(2, recurringAmount.GetScale());
+
+        var initialBalance = profile.FindProperty(nameof(LocalProfile.InitialBalance));
+        Assert.NotNull(initialBalance);
+        Assert.Equal(18, initialBalance.GetPrecision());
+        Assert.Equal(2, initialBalance.GetScale());
     }
 
     [Fact]
@@ -56,6 +62,7 @@ public sealed class FinanceDbContextTests
 
         Assert.Equal(FinanceDbContext.DefaultLocalProfileId, profile.Id);
         Assert.Equal("Default Local Profile", profile.DisplayName);
+        Assert.Equal(0m, profile.InitialBalance);
     }
 
     [Fact]

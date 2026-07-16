@@ -35,6 +35,10 @@ public sealed class FinanceDbContext(DbContextOptions<FinanceDbContext> options)
             profile.Property(p => p.DisplayName)
                 .HasMaxLength(120)
                 .IsRequired();
+            profile.Property(p => p.InitialBalance)
+                .HasPrecision(18, 2)
+                .HasDefaultValue(0m)
+                .IsRequired();
         });
 
         modelBuilder.Entity<Category>(category =>
@@ -131,7 +135,8 @@ public sealed class FinanceDbContext(DbContextOptions<FinanceDbContext> options)
         modelBuilder.Entity<LocalProfile>().HasData(new LocalProfile
         {
             Id = DefaultLocalProfileId,
-            DisplayName = "Default Local Profile"
+            DisplayName = "Default Local Profile",
+            InitialBalance = 0m
         });
     }
 
