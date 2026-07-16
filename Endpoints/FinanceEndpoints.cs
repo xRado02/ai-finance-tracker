@@ -21,6 +21,7 @@ public static class FinanceEndpoints
         api.MapPost("/goals", CreateGoal);
         api.MapGet("/goals/forecast", GetGoalForecast);
         api.MapGet("/dashboard/summary", GetDashboardSummary);
+        api.MapGet("/dashboard/monthly-summary", GetMonthlySummary);
         api.MapGet("/recurring-transactions", GetRecurringTransactions);
         api.MapPost("/recurring-transactions", CreateRecurringTransaction);
         api.MapPatch("/recurring-transactions/{id:guid}/status", UpdateRecurringTransactionStatus);
@@ -95,23 +96,39 @@ public static class FinanceEndpoints
 
     private static async Task<Results<Ok<IReadOnlyList<TransactionResponse>>, ValidationProblem>> GetTransactions(
         FinanceDbContext dbContext,
-        int? limit)
+        int? limit,
+        int? year,
+        int? month)
     {
         const int defaultLimit = 50;
         const int maxLimit = 100;
 
         var requestedLimit = limit ?? defaultLimit;
+        var validationErrors = new Dictionary<string, string[]>();
         if (requestedLimit is < 1 or > maxLimit)
         {
-            return TypedResults.ValidationProblem(new Dictionary<string, string[]>
-            {
-                [nameof(limit)] = [$"Limit must be between 1 and {maxLimit}."]
-            });
+            validationErrors[nameof(limit)] = [$"Limit must be between 1 and {maxLimit}."];
         }
 
-        var transactions = await dbContext.Transactions
+        if (!TryGetMonthRange(year, month, out var monthStart, out var nextMonthStart, validationErrors) ||
+            validationErrors.Count > 0)
+        {
+            return TypedResults.ValidationProblem(validationErrors);
+        }
+
+        var query = dbContext.Transactions
             .AsNoTracking()
             .Where(transaction => transaction.LocalProfileId == FinanceDbContext.DefaultLocalProfileId)
+            .AsQueryable();
+
+        if (monthStart is not null && nextMonthStart is not null)
+        {
+            query = query.Where(transaction =>
+                transaction.TransactionDate >= monthStart.Value &&
+                transaction.TransactionDate < nextMonthStart.Value);
+        }
+
+        var transactions = await query
             .OrderByDescending(transaction => transaction.TransactionDate)
             .ThenByDescending(transaction => transaction.Id)
             .Include(transaction => transaction.Category)
@@ -289,6 +306,62 @@ public static class FinanceEndpoints
             goals));
     }
 
+    private static async Task<Results<Ok<MonthlySummaryResponse>, ValidationProblem>> GetMonthlySummary(
+        FinanceDbContext dbContext,
+        int? year,
+        int? month)
+    {
+        var validationErrors = new Dictionary<string, string[]>();
+        if (!TryGetMonthRange(year, month, out var monthStart, out var nextMonthStart, validationErrors))
+        {
+            return TypedResults.ValidationProblem(validationErrors);
+        }
+
+        var transactions = await dbContext.Transactions
+            .AsNoTracking()
+            .Where(transaction =>
+                transaction.LocalProfileId == FinanceDbContext.DefaultLocalProfileId &&
+                transaction.TransactionDate >= monthStart!.Value &&
+                transaction.TransactionDate < nextMonthStart!.Value)
+            .Select(transaction => new
+            {
+                transaction.Amount,
+                transaction.Type,
+                CategoryName = transaction.Category!.Name
+            })
+            .ToListAsync();
+
+        var totalIncome = transactions
+            .Where(transaction => transaction.Type == TransactionType.Income)
+            .Sum(transaction => transaction.Amount);
+        var totalExpenses = transactions
+            .Where(transaction => transaction.Type == TransactionType.Expense)
+            .Sum(transaction => transaction.Amount);
+        var expenseCategories = transactions
+            .Where(transaction => transaction.Type == TransactionType.Expense)
+            .GroupBy(transaction => transaction.CategoryName)
+            .Select(group => new ExpenseCategorySummary(group.Key, group.Sum(item => item.Amount)))
+            .OrderByDescending(category => category.Amount)
+            .ThenBy(category => category.CategoryName)
+            .ToList();
+        var incomeCategories = transactions
+            .Where(transaction => transaction.Type == TransactionType.Income)
+            .GroupBy(transaction => transaction.CategoryName)
+            .Select(group => new IncomeCategorySummary(group.Key, group.Sum(item => item.Amount)))
+            .OrderByDescending(category => category.Amount)
+            .ThenBy(category => category.CategoryName)
+            .ToList();
+
+        return TypedResults.Ok(new MonthlySummaryResponse(
+            year!.Value,
+            month!.Value,
+            totalIncome,
+            totalExpenses,
+            totalIncome - totalExpenses,
+            expenseCategories,
+            incomeCategories));
+    }
+
     private static async Task<Ok<IReadOnlyList<RecurringTransactionResponse>>> GetRecurringTransactions(
         FinanceDbContext dbContext)
     {
@@ -388,12 +461,20 @@ public static class FinanceEndpoints
         return TypedResults.Ok(ToRecurringTransactionResponse(recurring, recurring.Category!.Name));
     }
 
-    private static async Task<Ok<GenerateRecurringTransactionsResponse>> GenerateCurrentMonthRecurringTransactions(
-        FinanceDbContext dbContext)
+    private static async Task<Results<Ok<GenerateRecurringTransactionsResponse>, ValidationProblem>> GenerateCurrentMonthRecurringTransactions(
+        FinanceDbContext dbContext,
+        int? year,
+        int? month)
     {
+        var validationErrors = new Dictionary<string, string[]>();
+        if (!TryGetMonthRange(year, month, out var requestedMonthStart, out var requestedNextMonthStart, validationErrors))
+        {
+            return TypedResults.ValidationProblem(validationErrors);
+        }
+
         var today = DateOnly.FromDateTime(DateTime.Today);
-        var monthStart = new DateOnly(today.Year, today.Month, 1);
-        var nextMonthStart = monthStart.AddMonths(1);
+        var monthStart = requestedMonthStart ?? new DateOnly(today.Year, today.Month, 1);
+        var nextMonthStart = requestedNextMonthStart ?? monthStart.AddMonths(1);
 
         var recurringTransactions = await dbContext.RecurringTransactions
             .Where(item =>
@@ -524,6 +605,49 @@ public static class FinanceEndpoints
         }
 
         return errors;
+    }
+
+    private static bool TryGetMonthRange(
+        int? year,
+        int? month,
+        out DateOnly? monthStart,
+        out DateOnly? nextMonthStart,
+        Dictionary<string, string[]> errors)
+    {
+        monthStart = null;
+        nextMonthStart = null;
+
+        if (year is null && month is null)
+        {
+            return true;
+        }
+
+        if (year is null)
+        {
+            errors[nameof(year)] = ["Year is required when month is provided."];
+        }
+        else if (year is < 2000 or > 2100)
+        {
+            errors[nameof(year)] = ["Year must be between 2000 and 2100."];
+        }
+
+        if (month is null)
+        {
+            errors[nameof(month)] = ["Month is required when year is provided."];
+        }
+        else if (month is < 1 or > 12)
+        {
+            errors[nameof(month)] = ["Month must be between 1 and 12."];
+        }
+
+        if (errors.ContainsKey(nameof(year)) || errors.ContainsKey(nameof(month)))
+        {
+            return false;
+        }
+
+        monthStart = new DateOnly(year!.Value, month!.Value, 1);
+        nextMonthStart = monthStart.Value.AddMonths(1);
+        return true;
     }
 
     private static async Task<decimal> GetCurrentAmount(FinanceDbContext dbContext)

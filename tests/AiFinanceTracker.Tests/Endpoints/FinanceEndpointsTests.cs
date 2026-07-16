@@ -105,6 +105,42 @@ public sealed class FinanceEndpointsTests
         Assert.All(transactions, transaction => Assert.Equal("Food", transaction.CategoryName));
     }
 
+    [Fact]
+    public async Task Get_transactions_filters_selected_month_without_leaking_boundary_dates()
+    {
+        using var app = new FinanceApiFactory();
+        await app.SeedTransactionsAsync(
+            CreateTransaction("30000000-0000-0000-0000-000000000005", 10m, new DateOnly(2026, 6, 30)),
+            CreateTransaction("30000000-0000-0000-0000-000000000006", 20m, new DateOnly(2026, 7, 1)),
+            CreateTransaction("30000000-0000-0000-0000-000000000007", 30m, new DateOnly(2026, 7, 31)),
+            CreateTransaction("30000000-0000-0000-0000-000000000008", 40m, new DateOnly(2026, 8, 1)));
+        using var client = app.CreateClient();
+
+        var transactions = await client.GetFromJsonAsync<List<TransactionResponse>>(
+            "/api/transactions?year=2026&month=7",
+            JsonOptions);
+
+        Assert.NotNull(transactions);
+        Assert.Equal(
+            [new DateOnly(2026, 7, 31), new DateOnly(2026, 7, 1)],
+            transactions.Select(item => item.TransactionDate).ToList());
+    }
+
+    [Theory]
+    [InlineData("/api/transactions?year=2026&month=0", "month")]
+    [InlineData("/api/transactions?year=2026", "month")]
+    [InlineData("/api/dashboard/monthly-summary?year=2026&month=13", "month")]
+    public async Task Monthly_period_endpoints_reject_invalid_period(string path, string errorKey)
+    {
+        using var app = new FinanceApiFactory();
+        using var client = app.CreateClient();
+
+        var response = await client.GetAsync(path);
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        await AssertValidationProblemAsync(response, errorKey);
+    }
+
     [Theory]
     [InlineData(0)]
     [InlineData(101)]
@@ -314,6 +350,37 @@ public sealed class FinanceEndpointsTests
         var goal = Assert.Single(summary.Goals);
         Assert.Equal(800m, goal.CurrentAmount);
         Assert.Equal(50m, goal.ProgressPercentage);
+    }
+
+    [Fact]
+    public async Task Get_monthly_summary_returns_totals_and_income_expense_categories()
+    {
+        using var app = new FinanceApiFactory();
+        var salary = CreateTransaction("30000000-0000-0000-0000-000000000035", 1000m, new DateOnly(2026, 7, 10));
+        salary.Type = TransactionType.Income;
+        salary.CategoryId = FinanceDbContext.SalaryCategoryId;
+        var otherIncome = CreateTransaction("30000000-0000-0000-0000-000000000036", 250m, new DateOnly(2026, 7, 11));
+        otherIncome.Type = TransactionType.Income;
+        otherIncome.CategoryId = FinanceDbContext.OtherIncomeCategoryId;
+        var food = CreateTransaction("30000000-0000-0000-0000-000000000037", 300m, new DateOnly(2026, 7, 12));
+        var transport = CreateTransaction("30000000-0000-0000-0000-000000000038", 100m, new DateOnly(2026, 7, 13));
+        transport.CategoryId = FinanceDbContext.TransportCategoryId;
+        var previousMonth = CreateTransaction("30000000-0000-0000-0000-000000000039", 999m, new DateOnly(2026, 6, 30));
+        await app.SeedTransactionsAsync(salary, otherIncome, food, transport, previousMonth);
+        using var client = app.CreateClient();
+
+        var response = await client.GetAsync("/api/dashboard/monthly-summary?year=2026&month=7");
+
+        response.EnsureSuccessStatusCode();
+        var summary = await response.Content.ReadFromJsonAsync<MonthlySummaryResponse>(JsonOptions);
+        Assert.NotNull(summary);
+        Assert.Equal(2026, summary.Year);
+        Assert.Equal(7, summary.Month);
+        Assert.Equal(1250m, summary.TotalIncome);
+        Assert.Equal(400m, summary.TotalExpenses);
+        Assert.Equal(850m, summary.Balance);
+        Assert.Equal(["Food", "Transport"], summary.ExpenseCategories.Select(item => item.CategoryName).ToList());
+        Assert.Equal(["Salary", "Other Income"], summary.IncomeCategories.Select(item => item.CategoryName).ToList());
     }
 
     [Fact]
@@ -540,6 +607,31 @@ public sealed class FinanceEndpointsTests
         Assert.Equal(1, await dbContext.Transactions.CountAsync());
         var monthStart = new DateOnly(DateTime.Today.Year, DateTime.Today.Month, 1);
         Assert.Equal(monthStart, (await dbContext.Transactions.SingleAsync()).TransactionDate);
+    }
+
+    [Fact]
+    public async Task Generate_recurring_transactions_targets_selected_month()
+    {
+        using var app = new FinanceApiFactory();
+        var recurring = CreateRecurringTransaction(
+            "60000000-0000-0000-0000-000000000005",
+            500m,
+            FinanceDbContext.SalaryCategoryId,
+            true);
+        recurring.Type = TransactionType.Income;
+        await app.SeedRecurringTransactionsAsync(recurring);
+        using var client = app.CreateClient();
+
+        var response = await client.PostAsync(
+            "/api/recurring-transactions/generate-current-month?year=2026&month=5",
+            null);
+
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<GenerateRecurringTransactionsResponse>(JsonOptions);
+        Assert.NotNull(result);
+        Assert.Equal("2026-05", result.Month);
+        var transaction = Assert.Single(result.Transactions);
+        Assert.Equal(new DateOnly(2026, 5, 1), transaction.TransactionDate);
     }
 
     [Fact]

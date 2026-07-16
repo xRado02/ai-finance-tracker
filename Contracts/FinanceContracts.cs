@@ -38,6 +38,10 @@ public sealed record ExpenseCategorySummary(
     string CategoryName,
     decimal Amount);
 
+public sealed record IncomeCategorySummary(
+    string CategoryName,
+    decimal Amount);
+
 public sealed record DashboardGoalSummary(
     Guid Id,
     string Name,
@@ -51,6 +55,15 @@ public sealed record DashboardSummaryResponse(
     decimal Balance,
     IReadOnlyList<ExpenseCategorySummary> ExpenseCategories,
     IReadOnlyList<DashboardGoalSummary> Goals);
+
+public sealed record MonthlySummaryResponse(
+    int Year,
+    int Month,
+    decimal TotalIncome,
+    decimal TotalExpenses,
+    decimal Balance,
+    IReadOnlyList<ExpenseCategorySummary> ExpenseCategories,
+    IReadOnlyList<IncomeCategorySummary> IncomeCategories);
 
 public sealed record CreateRecurringTransactionRequest(
     decimal Amount,

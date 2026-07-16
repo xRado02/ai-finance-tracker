@@ -99,10 +99,10 @@ Uruchomić build/test/typecheck, sprawdzić odświeżanie mutacji i przygotować
 
 ### Phase 1: Monthly API and recurring period
 
-- [ ] 1.1 Filtrowanie transakcji i walidacja okresu są dodane
-- [ ] 1.2 Monthly summary zwraca sumy i kategorie dla wybranego miesiąca
-- [ ] 1.3 Istniejące recurring generation obsługuje wybrany okres
-- [ ] 1.4 Testy API pokrywają zakres dat, kategorie, recurring i izolację profilu
+- [x] 1.1 Filtrowanie transakcji i walidacja okresu są dodane
+- [x] 1.2 Monthly summary zwraca sumy i kategorie dla wybranego miesiąca
+- [x] 1.3 Istniejące recurring generation obsługuje wybrany okres
+- [x] 1.4 Testy API pokrywają zakres dat, kategorie, recurring i izolację profilu
 
 ### Phase 2: Period-aware frontend
 
