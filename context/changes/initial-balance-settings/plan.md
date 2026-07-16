@@ -89,8 +89,8 @@ Uruchomić backend/frontend checks, sprawdzić migrację i zakres.
 
 ### Phase 2: Settings UI
 
-- [ ] 2.1 API client, App state i polski panel ustawień są dodane
-- [ ] 2.2 Zapis ustawienia odświeża dashboard i istniejące dane
+- [x] 2.1 API client, App state i polski panel ustawień są dodane
+- [x] 2.2 Zapis ustawienia odświeża dashboard i istniejące dane
 
 ### Phase 3: Verification and closeout
 

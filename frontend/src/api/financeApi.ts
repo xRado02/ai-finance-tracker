@@ -9,6 +9,7 @@ import type {
   GoalForecastResponse,
   GoalResponse,
   MonthlySummaryResponse,
+  ProfileSettingsResponse,
   RecurringTransactionResponse,
   TransactionResponse,
   UpdateRecurringTransactionStatusRequest,
@@ -23,6 +24,20 @@ type ProblemDetails = {
 
 export async function getCategories(): Promise<CategoryResponse[]> {
   return getJson<CategoryResponse[]>('/api/categories');
+}
+
+export async function getProfileSettings(): Promise<ProfileSettingsResponse> {
+  return getJson<ProfileSettingsResponse>('/api/profile/settings');
+}
+
+export async function updateProfileSettings(initialBalance: number): Promise<ProfileSettingsResponse> {
+  return getJson<ProfileSettingsResponse>('/api/profile/settings', {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ initialBalance }),
+  });
 }
 
 export async function getTransactions(

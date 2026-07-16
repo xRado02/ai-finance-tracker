@@ -6,6 +6,11 @@ export type CategoryResponse = {
   appliesTo: TransactionType | null;
 };
 
+export type ProfileSettingsResponse = {
+  displayName: string;
+  initialBalance: number;
+};
+
 export type CreateTransactionRequest = {
   amount: number;
   type: TransactionType;
@@ -90,6 +95,7 @@ export type IncomeCategorySummary = ExpenseCategorySummary;
 export type DashboardGoalSummary = GoalResponse;
 
 export type DashboardSummaryResponse = {
+  initialBalance: number;
   totalIncome: number;
   totalExpenses: number;
   balance: number;

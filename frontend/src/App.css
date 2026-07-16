@@ -828,6 +828,7 @@
 .metric-card--income { border-top: 2px solid var(--mint); }
 .metric-card--expense { border-top: 2px solid var(--coral); }
 .metric-card--balance { border-top: 2px solid var(--lime); }
+.metric-card--total-balance { border-top: 2px solid #bba7ff; }
 
 .dashboard__details {
   display: grid;
@@ -908,6 +909,9 @@
 .panel h2 { margin: 0; color: var(--ink); font-size: 1rem; }
 .panel p, .goal-row p { color: var(--muted); line-height: 1.55; }
 .panel__header { margin-bottom: 20px; }
+.settings-panel { max-width: 620px; }
+.settings-panel__hint { margin: -4px 0 0; font-size: 0.82rem; }
+.section-heading--settings { margin-top: 48px; }
 
 .transaction-form { display: grid; gap: 16px; }
 

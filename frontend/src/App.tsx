@@ -10,6 +10,8 @@ import {
   getMonthlySummary,
   getTransactions,
   getRecurringTransactions,
+  getProfileSettings,
+  updateProfileSettings,
   isApiError,
 } from './api/financeApi';
 import type {
@@ -18,6 +20,7 @@ import type {
   GoalResponse,
   GoalForecastResponse,
   MonthlySummaryResponse,
+  ProfileSettingsResponse,
   RecurringTransactionResponse,
   TransactionResponse,
 } from './api/financeTypes';
@@ -28,6 +31,7 @@ import { TransactionForm } from './components/TransactionForm';
 import { TransactionHistory } from './components/TransactionHistory';
 import { RecurringTransactionPanel } from './components/RecurringTransactionPanel';
 import { getCurrentPeriod, PeriodPicker, type PeriodSelection } from './components/PeriodPicker';
+import { SettingsPanel } from './components/SettingsPanel';
 import { polishApiMessage } from './labels';
 
 type ApiStatus =
@@ -41,6 +45,7 @@ type ApiStatus =
       recurringTransactions: RecurringTransactionResponse[];
       dashboard: DashboardSummaryResponse;
       monthlySummary: MonthlySummaryResponse;
+      profileSettings: ProfileSettingsResponse;
     }
   | { state: 'error'; message: string };
 
@@ -51,7 +56,7 @@ export default function App() {
 
   async function loadFinanceData(period: PeriodSelection, isActive = true) {
     try {
-      const [categories, transactions, goals, dashboard, recurringTransactions, goalForecasts, monthlySummary] = await Promise.all([
+      const [categories, transactions, goals, dashboard, recurringTransactions, goalForecasts, monthlySummary, profileSettings] = await Promise.all([
         getCategories(),
         getTransactions(period.year, period.month),
         getGoals(),
@@ -59,10 +64,11 @@ export default function App() {
         getRecurringTransactions(),
         getGoalForecast(),
         getMonthlySummary(period.year, period.month),
+        getProfileSettings(),
       ]);
 
       if (isActive) {
-        setApiStatus({ state: 'ready', categories, transactions, goals, dashboard, recurringTransactions, goalForecasts, monthlySummary });
+        setApiStatus({ state: 'ready', categories, transactions, goals, dashboard, recurringTransactions, goalForecasts, monthlySummary, profileSettings });
       }
     } catch (error) {
       if (isActive) {
@@ -120,6 +126,10 @@ export default function App() {
           <a className="sidebar__link" href="#goals" onClick={() => setIsNavOpen(false)}>
             <span aria-hidden="true">◎</span>
             Cele finansowe
+          </a>
+          <a className="sidebar__link" href="#settings" onClick={() => setIsNavOpen(false)}>
+            <span aria-hidden="true">⚙</span>
+            Ustawienia
           </a>
         </nav>
 
@@ -254,6 +264,23 @@ export default function App() {
               isLoading={apiStatus.state === 'loading'}
             />
           </div>
+
+          <div className="section-heading section-heading--settings" id="settings">
+            <div>
+              <span className="section-heading__eyebrow">Profil lokalny</span>
+              <h2>Ustawienia</h2>
+            </div>
+            <span>Saldo początkowe konta</span>
+          </div>
+
+          <SettingsPanel
+            settings={apiStatus.state === 'ready' ? apiStatus.profileSettings : null}
+            disabled={apiStatus.state !== 'ready'}
+            onSaved={async (initialBalance) => {
+              await updateProfileSettings(initialBalance);
+              await loadFinanceData(selectedPeriod);
+            }}
+          />
         </div>
       </div>
     </main>

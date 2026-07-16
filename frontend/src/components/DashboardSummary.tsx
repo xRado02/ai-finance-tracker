@@ -50,6 +50,10 @@ export function DashboardSummary({ dashboard, monthlySummary, isLoading }: Dashb
           <span>Saldo miesiąca</span>
           <strong>{moneyFormatter.format(monthlySummary.balance)}</strong>
         </article>
+        <article className="metric-card metric-card--total-balance">
+          <span>Saldo całkowite</span>
+          <strong>{moneyFormatter.format(dashboard.balance)}</strong>
+        </article>
       </div>
 
       <div className="dashboard__details">
