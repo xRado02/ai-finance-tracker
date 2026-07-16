@@ -68,8 +68,8 @@ Uruchomić testy backendu, typecheck/build frontendu, sprawdzić zakres i przygo
 
 ### Phase 2: Dashboard and responsive layout polish
 
-- [ ] 2.1 Dashboard jest domyślnym, osobnym widokiem z saldem miesięcznym i całkowitym
-- [ ] 2.2 Sidebar/topbar i mobile menu są spójne z przełączaniem sekcji
+- [x] 2.1 Dashboard jest domyślnym, osobnym widokiem z saldem miesięcznym i całkowitym
+- [x] 2.2 Sidebar/topbar i mobile menu są spójne z przełączaniem sekcji
 
 ### Phase 3: Verification and closeout
 

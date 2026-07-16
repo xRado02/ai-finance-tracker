@@ -51,6 +51,14 @@ type ApiStatus =
 
 type SectionId = 'dashboard' | 'transactions' | 'recurring' | 'goals' | 'settings';
 
+const sectionMeta: Record<SectionId, { eyebrow: string; title: string }> = {
+  dashboard: { eyebrow: 'Twój portfel', title: 'Podsumowanie' },
+  transactions: { eyebrow: 'Aktywność', title: 'Transakcje' },
+  recurring: { eyebrow: 'Powtarzalne', title: 'Stałe transakcje' },
+  goals: { eyebrow: 'Plan na przyszłość', title: 'Cele finansowe' },
+  settings: { eyebrow: 'Profil lokalny', title: 'Ustawienia' },
+};
+
 export default function App() {
   const [apiStatus, setApiStatus] = useState<ApiStatus>({ state: 'loading' });
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -169,8 +177,8 @@ export default function App() {
             <span aria-hidden="true">☰</span>
           </button>
           <div className="topbar__heading">
-            <p className="workspace__eyebrow">Twój portfel</p>
-            <h1>Dobry dzień, Radek</h1>
+            <p className="workspace__eyebrow">{sectionMeta[activeSection].eyebrow}</p>
+            <h1>{sectionMeta[activeSection].title}</h1>
           </div>
           <div className="topbar__meta">
             <PeriodPicker value={selectedPeriod} onChange={setSelectedPeriod} />

@@ -615,6 +615,13 @@
   color: var(--lime);
 }
 
+.sidebar__link:focus-visible,
+.sidebar__quick-action:focus-visible,
+.menu-toggle:focus-visible {
+  outline: 2px solid var(--lime);
+  outline-offset: 3px;
+}
+
 .sidebar__link--active span {
   color: var(--lime);
 }
