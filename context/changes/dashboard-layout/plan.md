@@ -1,7 +1,7 @@
 ---
 change_id: dashboard-layout
 title: Osobne sekcje dashboardu i nawigacja aplikacji
-status: planned
+status: implemented
 created: 2026-07-16
 updated: 2026-07-16
 ---
@@ -73,6 +73,6 @@ Uruchomić testy backendu, typecheck/build frontendu, sprawdzić zakres i przygo
 
 ### Phase 3: Verification and closeout
 
-- [ ] 3.1 Backend test/build oraz frontend typecheck/build przechodzą
-- [ ] 3.2 Zakres nie zawiera nowych endpointów ani duplikacji goals/forecast/recurring
-- [ ] 3.3 Manual smoke test jest gotowy do wykonania ręcznie
+- [x] 3.1 Backend test/build oraz frontend typecheck/build przechodzą — testy 39/39, build API 0 ostrzeżeń, frontend typecheck/build — commit baac6d8
+- [x] 3.2 Zakres nie zawiera nowych endpointów ani duplikacji goals/forecast/recurring — commit baac6d8
+- [x] 3.3 Manual smoke test jest gotowy do wykonania ręcznie; nie uruchamiano go automatycznie — commit baac6d8

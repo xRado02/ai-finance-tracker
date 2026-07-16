@@ -1,7 +1,7 @@
 ---
 change_id: dashboard-layout
 title: Osobne sekcje dashboardu i nawigacja aplikacji
-status: plan_reviewed
+status: implemented
 created: 2026-07-16
 updated: 2026-07-16
 archived_at: null
