@@ -62,9 +62,9 @@ Uruchomić testy backendu, typecheck/build frontendu, sprawdzić zakres i przygo
 
 ### Phase 1: Section navigation and composition
 
-- [ ] 1.1 App ma stan aktywnej sekcji i nawigacja przełącza pięć widoków
-- [ ] 1.2 Istniejące komponenty są renderowane tylko w odpowiednich sekcjach bez duplikowania logiki
-- [ ] 1.3 Wspólny wybór okresu i odświeżanie danych działają we wszystkich zależnych widokach
+- [x] 1.1 App ma stan aktywnej sekcji i nawigacja przełącza pięć widoków
+- [x] 1.2 Istniejące komponenty są renderowane tylko w odpowiednich sekcjach bez duplikowania logiki
+- [x] 1.3 Wspólny wybór okresu i odświeżanie danych działają we wszystkich zależnych widokach
 
 ### Phase 2: Dashboard and responsive layout polish
 

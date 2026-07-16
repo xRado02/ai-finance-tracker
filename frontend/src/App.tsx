@@ -49,10 +49,18 @@ type ApiStatus =
     }
   | { state: 'error'; message: string };
 
+type SectionId = 'dashboard' | 'transactions' | 'recurring' | 'goals' | 'settings';
+
 export default function App() {
   const [apiStatus, setApiStatus] = useState<ApiStatus>({ state: 'loading' });
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<SectionId>('dashboard');
   const [selectedPeriod, setSelectedPeriod] = useState<PeriodSelection>(getCurrentPeriod);
+
+  function selectSection(section: SectionId) {
+    setActiveSection(section);
+    setIsNavOpen(false);
+  }
 
   async function loadFinanceData(period: PeriodSelection, isActive = true) {
     try {
@@ -111,32 +119,32 @@ export default function App() {
 
         <nav className="sidebar__nav" aria-label="Główna nawigacja">
           <span className="sidebar__label">Workspace</span>
-          <a className="sidebar__link sidebar__link--active" href="#overview" onClick={() => setIsNavOpen(false)}>
+          <button className={`sidebar__link ${activeSection === 'dashboard' ? 'sidebar__link--active' : ''}`} onClick={() => selectSection('dashboard')} type="button">
             <span aria-hidden="true">⌂</span>
             Przegląd
-          </a>
-          <a className="sidebar__link" href="#transactions" onClick={() => setIsNavOpen(false)}>
+          </button>
+          <button className={`sidebar__link ${activeSection === 'transactions' ? 'sidebar__link--active' : ''}`} onClick={() => selectSection('transactions')} type="button">
             <span aria-hidden="true">↗</span>
             Transakcje
-          </a>
-          <a className="sidebar__link" href="#recurring" onClick={() => setIsNavOpen(false)}>
+          </button>
+          <button className={`sidebar__link ${activeSection === 'recurring' ? 'sidebar__link--active' : ''}`} onClick={() => selectSection('recurring')} type="button">
             <span aria-hidden="true">↻</span>
             Stałe transakcje
-          </a>
-          <a className="sidebar__link" href="#goals" onClick={() => setIsNavOpen(false)}>
+          </button>
+          <button className={`sidebar__link ${activeSection === 'goals' ? 'sidebar__link--active' : ''}`} onClick={() => selectSection('goals')} type="button">
             <span aria-hidden="true">◎</span>
             Cele finansowe
-          </a>
-          <a className="sidebar__link" href="#settings" onClick={() => setIsNavOpen(false)}>
+          </button>
+          <button className={`sidebar__link ${activeSection === 'settings' ? 'sidebar__link--active' : ''}`} onClick={() => selectSection('settings')} type="button">
             <span aria-hidden="true">⚙</span>
             Ustawienia
-          </a>
+          </button>
         </nav>
 
-        <a className="sidebar__quick-action" href="#add-transaction" onClick={() => setIsNavOpen(false)}>
+        <button className="sidebar__quick-action" onClick={() => selectSection('transactions')} type="button">
           <span aria-hidden="true">+</span>
           Dodaj transakcję
-        </a>
+        </button>
 
         <div className="sidebar__footer">
           <div className="local-profile">
@@ -190,97 +198,115 @@ export default function App() {
               `Synchronizacja zakończona · ${apiStatus.categories.length} kategorii · ${apiStatus.transactions.length} transakcji`}
           </section>
 
-          <section id="overview" className="dashboard-section">
-            <DashboardSummary
-              dashboard={apiStatus.state === 'ready' ? apiStatus.dashboard : null}
-              monthlySummary={apiStatus.state === 'ready' ? apiStatus.monthlySummary : null}
-              isLoading={apiStatus.state === 'loading'}
-            />
-          </section>
-
-          <div className="section-heading" id="transactions">
-            <div>
-              <span className="section-heading__eyebrow">Aktywność</span>
-              <h2>Transakcje</h2>
-            </div>
-            <span>Dodawaj i kontroluj swoje wpisy</span>
-          </div>
-
-          <div className="workspace__grid">
-            <div id="add-transaction">
-              <TransactionForm
-                categories={apiStatus.state === 'ready' ? apiStatus.categories : []}
-                disabled={apiStatus.state !== 'ready'}
-                period={selectedPeriod}
-                onTransactionCreated={() => loadFinanceData(selectedPeriod)}
+          {activeSection === 'dashboard' && (
+            <section id="overview" className="section-view dashboard-section">
+              <DashboardSummary
+                dashboard={apiStatus.state === 'ready' ? apiStatus.dashboard : null}
+                monthlySummary={apiStatus.state === 'ready' ? apiStatus.monthlySummary : null}
+                isLoading={apiStatus.state === 'loading'}
               />
-            </div>
-            <TransactionHistory
-              transactions={apiStatus.state === 'ready' ? apiStatus.transactions : []}
-              isLoading={apiStatus.state === 'loading'}
-              onDeleteTransaction={async (id) => {
-                await deleteTransaction(id);
-                await loadFinanceData(selectedPeriod);
-              }}
-            />
-          </div>
+            </section>
+          )}
 
-          <div className="section-heading section-heading--recurring" id="recurring">
-            <div>
-              <span className="section-heading__eyebrow">Powtarzalne</span>
-              <h2>Stałe transakcje</h2>
-            </div>
-            <span>Generuj ręcznie raz na miesiąc</span>
-          </div>
+          {activeSection === 'transactions' && (
+            <section className="section-view" aria-labelledby="transactions-title">
+              <div className="section-heading" id="transactions">
+                <div>
+                  <span className="section-heading__eyebrow">Aktywność</span>
+                  <h2 id="transactions-title">Transakcje</h2>
+                </div>
+                <span>Dodawaj i kontroluj swoje wpisy</span>
+              </div>
 
-          <RecurringTransactionPanel
-            categories={apiStatus.state === 'ready' ? apiStatus.categories : []}
-            recurringTransactions={apiStatus.state === 'ready' ? apiStatus.recurringTransactions : []}
-            disabled={apiStatus.state !== 'ready'}
-            isLoading={apiStatus.state === 'loading'}
-            period={selectedPeriod}
-            onChanged={() => loadFinanceData(selectedPeriod)}
-          />
+              <div className="workspace__grid">
+                <div id="add-transaction">
+                  <TransactionForm
+                    categories={apiStatus.state === 'ready' ? apiStatus.categories : []}
+                    disabled={apiStatus.state !== 'ready'}
+                    period={selectedPeriod}
+                    onTransactionCreated={() => loadFinanceData(selectedPeriod)}
+                  />
+                </div>
+                <TransactionHistory
+                  transactions={apiStatus.state === 'ready' ? apiStatus.transactions : []}
+                  isLoading={apiStatus.state === 'loading'}
+                  onDeleteTransaction={async (id) => {
+                    await deleteTransaction(id);
+                    await loadFinanceData(selectedPeriod);
+                  }}
+                />
+              </div>
+            </section>
+          )}
 
-          <div className="section-heading section-heading--goals" id="goals">
-            <div>
-              <span className="section-heading__eyebrow">Plan na przyszłość</span>
-              <h2>Cele finansowe</h2>
-            </div>
-            <span>Małe kroki, konkretny progress</span>
-          </div>
+          {activeSection === 'recurring' && (
+            <section className="section-view" aria-labelledby="recurring-title">
+              <div className="section-heading section-heading--recurring" id="recurring">
+                <div>
+                  <span className="section-heading__eyebrow">Powtarzalne</span>
+                  <h2 id="recurring-title">Stałe transakcje</h2>
+                </div>
+                <span>Generuj ręcznie raz na miesiąc</span>
+              </div>
 
-          <div className="goals__grid">
-            <GoalForm
-              disabled={apiStatus.state !== 'ready'}
-              onGoalCreated={async (request) => {
-                await createGoal(request);
-                await loadFinanceData(selectedPeriod);
-              }}
-            />
-            <GoalList
-              goals={apiStatus.state === 'ready' ? apiStatus.goals : []}
-              forecasts={apiStatus.state === 'ready' ? apiStatus.goalForecasts : []}
-              isLoading={apiStatus.state === 'loading'}
-            />
-          </div>
+              <RecurringTransactionPanel
+                categories={apiStatus.state === 'ready' ? apiStatus.categories : []}
+                recurringTransactions={apiStatus.state === 'ready' ? apiStatus.recurringTransactions : []}
+                disabled={apiStatus.state !== 'ready'}
+                isLoading={apiStatus.state === 'loading'}
+                period={selectedPeriod}
+                onChanged={() => loadFinanceData(selectedPeriod)}
+              />
+            </section>
+          )}
 
-          <div className="section-heading section-heading--settings" id="settings">
-            <div>
-              <span className="section-heading__eyebrow">Profil lokalny</span>
-              <h2>Ustawienia</h2>
-            </div>
-            <span>Saldo początkowe konta</span>
-          </div>
+          {activeSection === 'goals' && (
+            <section className="section-view" aria-labelledby="goals-title">
+              <div className="section-heading section-heading--goals" id="goals">
+                <div>
+                  <span className="section-heading__eyebrow">Plan na przyszłość</span>
+                  <h2 id="goals-title">Cele finansowe</h2>
+                </div>
+                <span>Małe kroki, konkretny progress</span>
+              </div>
 
-          <SettingsPanel
-            settings={apiStatus.state === 'ready' ? apiStatus.profileSettings : null}
-            disabled={apiStatus.state !== 'ready'}
-            onSaved={async (initialBalance) => {
-              await updateProfileSettings(initialBalance);
-              await loadFinanceData(selectedPeriod);
-            }}
-          />
+              <div className="goals__grid">
+                <GoalForm
+                  disabled={apiStatus.state !== 'ready'}
+                  onGoalCreated={async (request) => {
+                    await createGoal(request);
+                    await loadFinanceData(selectedPeriod);
+                  }}
+                />
+                <GoalList
+                  goals={apiStatus.state === 'ready' ? apiStatus.goals : []}
+                  forecasts={apiStatus.state === 'ready' ? apiStatus.goalForecasts : []}
+                  isLoading={apiStatus.state === 'loading'}
+                />
+              </div>
+            </section>
+          )}
+
+          {activeSection === 'settings' && (
+            <section className="section-view" aria-labelledby="settings-title">
+              <div className="section-heading section-heading--settings" id="settings">
+                <div>
+                  <span className="section-heading__eyebrow">Profil lokalny</span>
+                  <h2 id="settings-title">Ustawienia</h2>
+                </div>
+                <span>Saldo początkowe konta</span>
+              </div>
+
+              <SettingsPanel
+                settings={apiStatus.state === 'ready' ? apiStatus.profileSettings : null}
+                disabled={apiStatus.state !== 'ready'}
+                onSaved={async (initialBalance) => {
+                  await updateProfileSettings(initialBalance);
+                  await loadFinanceData(selectedPeriod);
+                }}
+              />
+            </section>
+          )}
         </div>
       </div>
     </main>
