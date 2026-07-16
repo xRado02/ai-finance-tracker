@@ -20,12 +20,6 @@ namespace AiFinanceTracker.Migrations
                 nullable: false,
                 defaultValue: 0m);
 
-            migrationBuilder.UpdateData(
-                table: "LocalProfiles",
-                keyColumn: "Id",
-                keyValue: new Guid("11111111-1111-1111-1111-111111111111"),
-                columns: new string[0],
-                values: new object[0]);
         }
 
         /// <inheritdoc />
