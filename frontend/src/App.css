@@ -793,6 +793,33 @@
   box-shadow: 0 0 0 4px rgba(255, 145, 124, 0.1);
 }
 
+.api-status__message {
+  min-width: 0;
+}
+
+.api-status__retry {
+  min-height: 32px;
+  margin-left: auto;
+  padding: 0 12px;
+  border: 1px solid rgba(255, 145, 124, 0.35);
+  border-radius: 7px;
+  background: rgba(255, 145, 124, 0.08);
+  color: var(--coral);
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.api-status__retry:hover {
+  background: rgba(255, 145, 124, 0.16);
+}
+
+.api-status__retry:focus-visible {
+  outline: 2px solid var(--coral);
+  outline-offset: 3px;
+}
+
 .dashboard {
   display: grid;
   gap: 20px;
@@ -1078,6 +1105,8 @@
   .section-heading > span { display: none; }
   .transaction-row { align-items: flex-start; flex-direction: column; gap: 10px; }
   .transaction-row__amount { justify-items: start; }
+  .api-status { flex-wrap: wrap; }
+  .api-status__retry { margin-left: 17px; }
 }
 
 .period-picker {

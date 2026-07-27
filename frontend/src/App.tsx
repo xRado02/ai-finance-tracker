@@ -98,6 +98,15 @@ export default function App() {
     }
   }
 
+  async function retryFinanceData() {
+    if (apiStatus.state !== 'error') {
+      return;
+    }
+
+    setApiStatus({ state: 'loading' });
+    await loadFinanceData(selectedPeriod);
+  }
+
   useEffect(() => {
     let isActive = true;
     void loadFinanceData(selectedPeriod, isActive);
@@ -198,10 +207,17 @@ export default function App() {
             <span className="welcome-strip__privacy">Dane nie opuszczają urządzenia</span>
           </section>
 
-          <section className={`api-status api-status--${apiStatus.state}`}>
+          <section className={`api-status api-status--${apiStatus.state}`} aria-live="polite">
             <span className="status-dot" />
             {apiStatus.state === 'loading' && 'Ładowanie lokalnego API finansowego...'}
-            {apiStatus.state === 'error' && apiStatus.message}
+            {apiStatus.state === 'error' && (
+              <>
+                <span className="api-status__message">{apiStatus.message}</span>
+                <button className="api-status__retry" onClick={() => void retryFinanceData()} type="button">
+                  Spróbuj ponownie
+                </button>
+              </>
+            )}
             {apiStatus.state === 'ready' &&
               `Synchronizacja zakończona · ${apiStatus.categories.length} kategorii · ${apiStatus.transactions.length} transakcji`}
           </section>
