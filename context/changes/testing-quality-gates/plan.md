@@ -83,6 +83,6 @@ Brak zmian bazy danych.
 
 #### Automated
 
-- [x] 1.1 `scripts/verify.ps1` uruchamia pełny zestaw lokalnych bramek.
-- [x] 1.2 Dokumentacja opisuje CI i opcjonalny model hooka bez nowych zależności.
-- [x] 1.3 Skrypt oraz `git diff --check` przechodzą.
+- [x] 1.1 `scripts/verify.ps1` uruchamia pełny zestaw lokalnych bramek. - 8e1cf86
+- [x] 1.2 Dokumentacja opisuje CI i opcjonalny model hooka bez nowych zależności. - 8e1cf86
+- [x] 1.3 Skrypt oraz `git diff --check` przechodzą. - 8e1cf86
