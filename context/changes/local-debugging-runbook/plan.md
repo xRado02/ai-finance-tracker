@@ -32,6 +32,6 @@ migracji, portów i lokalnego smoke testu.
 
 #### Automated
 
-- [x] 1.1 Dokument obejmuje logi backendu, konsolę i Network frontendu.
-- [x] 1.2 Dokument obejmuje EF Core, migracje, LocalDB i porty.
-- [x] 1.3 Dokument obejmuje smoke test i odzyskiwanie po braku backendu.
+- [x] 1.1 Dokument obejmuje logi backendu, konsolę i Network frontendu. - 314b93f
+- [x] 1.2 Dokument obejmuje EF Core, migracje, LocalDB i porty. - 314b93f
+- [x] 1.3 Dokument obejmuje smoke test i odzyskiwanie po braku backendu. - 314b93f
