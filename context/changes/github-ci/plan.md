@@ -110,13 +110,13 @@ Brak zmian bazy danych i migracji. Wycofanie polega na usunięciu nowego workflo
 
 #### Automated
 
-- [x] 1.1 Restore backendu przechodzi: `dotnet restore .\ai-finance-tracker.csproj`.
-- [x] 1.2 Build backendu przechodzi: `dotnet build .\ai-finance-tracker.csproj --no-restore -p:UseAppHost=false`.
-- [x] 1.3 Testy backendu przechodzą: `dotnet test .\tests\AiFinanceTracker.Tests\AiFinanceTracker.Tests.csproj -p:UseAppHost=false`.
-- [x] 1.4 Instalacja frontendu z lockfile przechodzi: `npm ci --no-audit --no-fund` w `frontend/`.
-- [x] 1.5 Typecheck frontendu przechodzi: `npm run typecheck` w `frontend/`.
-- [x] 1.6 Build frontendu przechodzi: `npm run build` w `frontend/`.
+- [x] 1.1 Restore backendu przechodzi: `dotnet restore .\ai-finance-tracker.csproj`. — 504e920
+- [x] 1.2 Build backendu przechodzi: `dotnet build .\ai-finance-tracker.csproj --no-restore -p:UseAppHost=false`. — 504e920
+- [x] 1.3 Testy backendu przechodzą: `dotnet test .\tests\AiFinanceTracker.Tests\AiFinanceTracker.Tests.csproj -p:UseAppHost=false`. — 504e920
+- [x] 1.4 Instalacja frontendu z lockfile przechodzi: `npm ci --no-audit --no-fund` w `frontend/`. — 504e920
+- [x] 1.5 Typecheck frontendu przechodzi: `npm run typecheck` w `frontend/`. — 504e920
+- [x] 1.6 Build frontendu przechodzi: `npm run build` w `frontend/`. — 504e920
 
 #### Manual
 
-- [ ] 1.7 Po wypchnięciu gałęzi lub otwarciu PR GitHub pokazuje zakończone powodzeniem joby backend i frontend, bez żądania sekretów lub usługi bazodanowej.
+- [x] 1.7 Po wypchnięciu gałęzi lub otwarciu PR GitHub pokazuje zakończone powodzeniem joby backend i frontend, bez żądania sekretów lub usługi bazodanowej. — 504e920

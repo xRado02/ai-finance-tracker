@@ -1,7 +1,7 @@
 ---
 change_id: github-ci
 title: Automatyczna weryfikacja projektu na GitHub Actions
-status: implementing
+status: implemented
 created: 2026-07-17
 updated: 2026-07-27
 archived_at: null
