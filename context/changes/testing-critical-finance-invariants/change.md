@@ -1,7 +1,7 @@
 ---
 change_id: testing-critical-finance-invariants
 title: Krytyczne inwarianty finansowe
-status: implementing
+status: implemented
 created: 2026-07-27
 updated: 2026-07-27
 archived_at: null

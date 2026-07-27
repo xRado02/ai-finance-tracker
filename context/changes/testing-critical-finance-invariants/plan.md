@@ -162,9 +162,9 @@ Brak zmian schematu i migracji. Testy nie używają connection stringa aplikacji
 
 #### Automated
 
-- [x] 1.1 RED: brak pełnego okresu dla miesięcznego podsumowania ma test reprodukujący odpowiedź inną niż `400`.
-- [x] 1.2 GREEN: miesięczne podsumowanie odrzuca brakujący rok lub miesiąc przez `ValidationProblem`.
-- [x] 1.3 Test przekrojowy rozdziela saldo początkowe, saldo miesiąca i średnią nadwyżkę prognozy.
-- [x] 1.4 Testy miesięcznych kategorii i recurring potwierdzają kwoty oraz idempotencję per okres.
-- [x] 1.5 Testy walidacji odrzucają nieznany `TransactionType`.
-- [x] 1.6 Pełny `dotnet test` i `dotnet build` przechodzą.
+- [x] 1.1 RED: brak pełnego okresu dla miesięcznego podsumowania ma test reprodukujący odpowiedź inną niż `400`. - 59eeffc
+- [x] 1.2 GREEN: miesięczne podsumowanie odrzuca brakujący rok lub miesiąc przez `ValidationProblem`. - 59eeffc
+- [x] 1.3 Test przekrojowy rozdziela saldo początkowe, saldo miesiąca i średnią nadwyżkę prognozy. - 59eeffc
+- [x] 1.4 Testy miesięcznych kategorii i recurring potwierdzają kwoty oraz idempotencję per okres. - 59eeffc
+- [x] 1.5 Testy walidacji odrzucają nieznany `TransactionType`. - 59eeffc
+- [x] 1.6 Pełny `dotnet test` i `dotnet build` przechodzą. - 59eeffc
