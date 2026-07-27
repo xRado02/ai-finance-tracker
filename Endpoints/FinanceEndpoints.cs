@@ -347,6 +347,13 @@ public static class FinanceEndpoints
         int? month)
     {
         var validationErrors = new Dictionary<string, string[]>();
+        if (year is null && month is null)
+        {
+            validationErrors[nameof(year)] = ["Year is required."];
+            validationErrors[nameof(month)] = ["Month is required."];
+            return TypedResults.ValidationProblem(validationErrors);
+        }
+
         if (!TryGetMonthRange(year, month, out var monthStart, out var nextMonthStart, validationErrors))
         {
             return TypedResults.ValidationProblem(validationErrors);
