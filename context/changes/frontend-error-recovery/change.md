@@ -1,7 +1,7 @@
 ---
 change_id: frontend-error-recovery
 title: Ponawianie połączenia z lokalnym API
-status: implementing
+status: implemented
 created: 2026-07-17
 updated: 2026-07-27
 archived_at: null

@@ -122,10 +122,10 @@ Brak zmian bazy danych, migracji i kontraktów API. Wycofanie polega na usunięc
 
 #### Automated
 
-- [x] 1.1 Typecheck frontendu przechodzi: `npm run typecheck` w `frontend/`.
-- [x] 1.2 Build frontendu przechodzi: `npm run build` w `frontend/`.
-- [x] 1.3 Diff implementacyjny nie zawiera zmian poza `frontend/src/App.tsx` i `frontend/src/App.css`.
+- [x] 1.1 Typecheck frontendu przechodzi: `npm run typecheck` w `frontend/`. — a6ec1cf
+- [x] 1.2 Build frontendu przechodzi: `npm run build` w `frontend/`. — a6ec1cf
+- [x] 1.3 Diff implementacyjny nie zawiera zmian poza `frontend/src/App.tsx` i `frontend/src/App.css`. — a6ec1cf
 
 #### Manual
 
-- [x] 1.4 Gdy backend jest niedostępny, aplikacja pokazuje polski błąd i przycisk „Spróbuj ponownie”; po uruchomieniu backendu kliknięcie odzyskuje dane wybranego miesiąca bez przeładowania strony i bez wielokrotnych równoległych prób.
+- [x] 1.4 Gdy backend jest niedostępny, aplikacja pokazuje polski błąd i przycisk „Spróbuj ponownie”; po uruchomieniu backendu kliknięcie odzyskuje dane wybranego miesiąca bez przeładowania strony i bez wielokrotnych równoległych prób. — a6ec1cf
