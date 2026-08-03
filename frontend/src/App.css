@@ -814,6 +814,90 @@
   gap: 14px;
 }
 
+.spending-budget {
+  display: grid;
+  gap: 16px;
+  padding: 22px;
+  border: 1px solid rgba(185, 236, 114, 0.3);
+  border-radius: 10px;
+  background: linear-gradient(110deg, rgba(185, 236, 114, 0.1), rgba(112, 224, 195, 0.04));
+}
+
+.spending-budget__summary,
+.spending-budget__footer {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.spending-budget__eyebrow {
+  color: var(--lime);
+  font-size: 0.72rem;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.spending-budget h3 {
+  margin: 7px 0 3px;
+  color: var(--ink);
+  font-size: 1.15rem;
+}
+
+.spending-budget p,
+.spending-budget__amount span,
+.spending-budget__footer {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.spending-budget__amount {
+  display: grid;
+  justify-items: end;
+  gap: 3px;
+  text-align: right;
+}
+
+.spending-budget__amount strong {
+  color: var(--lime);
+  font-size: clamp(1.65rem, 3vw, 2.3rem);
+  line-height: 1;
+}
+
+.spending-budget__track {
+  height: 8px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.spending-budget__bar {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--mint), var(--lime));
+  transition: width 180ms ease;
+}
+
+.spending-budget__footer {
+  align-items: center;
+}
+
+.spending-budget--over {
+  border-color: rgba(255, 145, 124, 0.42);
+  background: rgba(255, 145, 124, 0.07);
+}
+
+.spending-budget--over .spending-budget__eyebrow,
+.spending-budget--over .spending-budget__amount strong {
+  color: var(--coral);
+}
+
+.spending-budget--over .spending-budget__bar {
+  background: var(--coral);
+}
+
 .metric-card,
 .dashboard__detail,
 .panel {
@@ -1131,6 +1215,8 @@
   .period-picker { max-width: 210px; }
   .period-picker select { max-width: 80px; }
   .dashboard__details { grid-template-columns: 1fr; }
+  .spending-budget__summary { align-items: flex-start; flex-direction: column; }
+  .spending-budget__amount { justify-items: start; text-align: left; }
 }
 
 .goal-forecast {

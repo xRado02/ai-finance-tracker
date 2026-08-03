@@ -27,6 +27,10 @@ export function DashboardSummary({ dashboard, monthlySummary, isLoading }: Dashb
   }
 
   const selectedPeriod = monthFormatter.format(new Date(monthlySummary.year, monthlySummary.month - 1, 1));
+  const spendingLimit = getMonthlySpendingLimit(monthlySummary.month);
+  const remainingSpending = spendingLimit - monthlySummary.totalExpenses;
+  const isOverSpendingLimit = remainingSpending < 0;
+  const spendingProgress = Math.min((monthlySummary.totalExpenses / spendingLimit) * 100, 100);
 
   return (
     <section className="dashboard" aria-labelledby="dashboard-title">
@@ -36,6 +40,39 @@ export function DashboardSummary({ dashboard, monthlySummary, isLoading }: Dashb
           <h2 id="dashboard-title">{selectedPeriod}</h2>
         </div>
       </div>
+
+      <section
+        className={`spending-budget${isOverSpendingLimit ? ' spending-budget--over' : ''}`}
+        aria-labelledby="spending-budget-title"
+      >
+        <div className="spending-budget__summary">
+          <div>
+            <span className="spending-budget__eyebrow">Miesięczny budżet wydatków</span>
+            <h3 id="spending-budget-title">
+              {isOverSpendingLimit ? 'Przekroczono limit' : 'Możesz jeszcze wydać'}
+            </h3>
+            <p>Limit na {selectedPeriod}: {moneyFormatter.format(spendingLimit)}</p>
+          </div>
+          <div className="spending-budget__amount">
+            <strong>{moneyFormatter.format(Math.abs(remainingSpending))}</strong>
+            <span>{isOverSpendingLimit ? 'ponad limit' : 'do końca miesiąca'}</span>
+          </div>
+        </div>
+        <div
+          className="spending-budget__track"
+          role="progressbar"
+          aria-label="Wykorzystanie miesięcznego budżetu wydatków"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={Math.round(spendingProgress)}
+        >
+          <div className="spending-budget__bar" style={{ width: `${spendingProgress}%` }} />
+        </div>
+        <div className="spending-budget__footer">
+          <span>Wydano {moneyFormatter.format(monthlySummary.totalExpenses)}</span>
+          <span>{Math.round((monthlySummary.totalExpenses / spendingLimit) * 100)}% limitu</span>
+        </div>
+      </section>
 
       <div className="dashboard__metrics">
         <article className="metric-card metric-card--income">
@@ -94,6 +131,10 @@ export function DashboardSummary({ dashboard, monthlySummary, isLoading }: Dashb
       </div>
     </section>
   );
+}
+
+function getMonthlySpendingLimit(month: number): number {
+  return [8, 9, 12].includes(month) ? 2000 : 1500;
 }
 
 type CategorySummaryProps = {
