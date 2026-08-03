@@ -474,30 +474,32 @@ public sealed class FinanceEndpointsTests
     }
 
     [Fact]
-    public async Task Initial_balance_affects_total_and_forecast_but_not_monthly_balance_or_surplus()
+    public async Task Initial_balance_and_history_affect_total_but_not_current_month_surplus()
     {
         using var app = new FinanceApiFactory();
-        var mayIncome = CreateTransaction(
+        var currentMonth = new DateOnly(DateTime.Today.Year, DateTime.Today.Month, 1);
+        var previousMonth = currentMonth.AddMonths(-1);
+        var previousIncome = CreateTransaction(
             "30000000-0000-0000-0000-000000000047",
             1000m,
-            new DateOnly(2026, 5, 10));
-        mayIncome.Type = TransactionType.Income;
-        mayIncome.CategoryId = FinanceDbContext.SalaryCategoryId;
-        var mayExpense = CreateTransaction(
+            previousMonth);
+        previousIncome.Type = TransactionType.Income;
+        previousIncome.CategoryId = FinanceDbContext.SalaryCategoryId;
+        var previousExpense = CreateTransaction(
             "30000000-0000-0000-0000-000000000048",
             200m,
-            new DateOnly(2026, 5, 11));
-        var juneIncome = CreateTransaction(
+            previousMonth);
+        var currentIncome = CreateTransaction(
             "30000000-0000-0000-0000-000000000049",
             1000m,
-            new DateOnly(2026, 6, 10));
-        juneIncome.Type = TransactionType.Income;
-        juneIncome.CategoryId = FinanceDbContext.SalaryCategoryId;
-        var juneExpense = CreateTransaction(
+            currentMonth);
+        currentIncome.Type = TransactionType.Income;
+        currentIncome.CategoryId = FinanceDbContext.SalaryCategoryId;
+        var currentExpense = CreateTransaction(
             "30000000-0000-0000-0000-000000000050",
             400m,
-            new DateOnly(2026, 6, 11));
-        await app.SeedTransactionsAsync(mayIncome, mayExpense, juneIncome, juneExpense);
+            currentMonth);
+        await app.SeedTransactionsAsync(previousIncome, previousExpense, currentIncome, currentExpense);
         using var client = app.CreateClient();
 
         (await client.PatchAsJsonAsync(
@@ -510,7 +512,7 @@ public sealed class FinanceEndpointsTests
             JsonOptions)).EnsureSuccessStatusCode();
 
         var monthly = await client.GetFromJsonAsync<MonthlySummaryResponse>(
-            "/api/dashboard/monthly-summary?year=2026&month=5",
+            $"/api/dashboard/monthly-summary?year={currentMonth.Year}&month={currentMonth.Month}",
             JsonOptions);
         var dashboard = await client.GetFromJsonAsync<DashboardSummaryResponse>(
             "/api/dashboard/summary",
@@ -521,8 +523,8 @@ public sealed class FinanceEndpointsTests
 
         Assert.NotNull(monthly);
         Assert.Equal(1000m, monthly.TotalIncome);
-        Assert.Equal(200m, monthly.TotalExpenses);
-        Assert.Equal(800m, monthly.Balance);
+        Assert.Equal(400m, monthly.TotalExpenses);
+        Assert.Equal(600m, monthly.Balance);
 
         Assert.NotNull(dashboard);
         Assert.Equal(500m, dashboard.InitialBalance);
@@ -533,8 +535,8 @@ public sealed class FinanceEndpointsTests
         var forecast = Assert.Single(forecasts ?? []);
         Assert.Equal(1900m, forecast.CurrentAmount);
         Assert.Equal(2100m, forecast.RemainingAmount);
-        Assert.Equal(700m, forecast.AverageMonthlySurplus);
-        Assert.Equal(3, forecast.EstimatedMonths);
+        Assert.Equal(600m, forecast.CurrentMonthSurplus);
+        Assert.Equal(4, forecast.EstimatedMonths);
     }
 
     [Fact]
@@ -574,32 +576,34 @@ public sealed class FinanceEndpointsTests
     }
 
     [Fact]
-    public async Task Get_goal_forecast_calculates_average_surplus_months_and_date()
+    public async Task Get_goal_forecast_uses_only_current_month_surplus()
     {
         using var app = new FinanceApiFactory();
-        var firstIncome = CreateTransaction(
+        var currentMonth = new DateOnly(DateTime.Today.Year, DateTime.Today.Month, 1);
+        var previousMonth = currentMonth.AddMonths(-1);
+        var previousIncome = CreateTransaction(
             "30000000-0000-0000-0000-000000000040",
-            1000m,
-            new DateOnly(2026, 5, 10));
-        firstIncome.Type = TransactionType.Income;
-        firstIncome.CategoryId = FinanceDbContext.SalaryCategoryId;
-        var firstExpense = CreateTransaction(
+            500m,
+            previousMonth);
+        previousIncome.Type = TransactionType.Income;
+        previousIncome.CategoryId = FinanceDbContext.SalaryCategoryId;
+        var previousExpense = CreateTransaction(
             "30000000-0000-0000-0000-000000000041",
-            200m,
-            new DateOnly(2026, 5, 11));
-        var secondIncome = CreateTransaction(
+            300m,
+            previousMonth);
+        var currentIncome = CreateTransaction(
             "30000000-0000-0000-0000-000000000042",
             1200m,
-            new DateOnly(2026, 6, 10));
-        secondIncome.Type = TransactionType.Income;
-        secondIncome.CategoryId = FinanceDbContext.SalaryCategoryId;
-        var secondExpense = CreateTransaction(
+            currentMonth);
+        currentIncome.Type = TransactionType.Income;
+        currentIncome.CategoryId = FinanceDbContext.SalaryCategoryId;
+        var currentExpense = CreateTransaction(
             "30000000-0000-0000-0000-000000000043",
             400m,
-            new DateOnly(2026, 6, 11));
-        await app.SeedTransactionsAsync(firstIncome, firstExpense, secondIncome, secondExpense);
+            currentMonth);
+        await app.SeedTransactionsAsync(previousIncome, previousExpense, currentIncome, currentExpense);
         using var client = app.CreateClient();
-        await client.PostAsJsonAsync("/api/goals", new CreateGoalRequest("Travel", 4000m), JsonOptions);
+        await client.PostAsJsonAsync("/api/goals", new CreateGoalRequest("Travel", 3400m), JsonOptions);
 
         var response = await client.GetAsync("/api/goals/forecast");
 
@@ -607,9 +611,9 @@ public sealed class FinanceEndpointsTests
         var forecasts = await response.Content.ReadFromJsonAsync<List<GoalForecastResponse>>(JsonOptions);
         Assert.NotNull(forecasts);
         var forecast = Assert.Single(forecasts);
-        Assert.Equal(1600m, forecast.CurrentAmount);
+        Assert.Equal(1000m, forecast.CurrentAmount);
         Assert.Equal(2400m, forecast.RemainingAmount);
-        Assert.Equal(800m, forecast.AverageMonthlySurplus);
+        Assert.Equal(800m, forecast.CurrentMonthSurplus);
         Assert.Equal(3, forecast.EstimatedMonths);
         Assert.Equal(DateOnly.FromDateTime(DateTime.Today).AddMonths(3), forecast.EstimatedDate);
         Assert.Equal(GoalForecastStatus.Forecastable, forecast.Status);
@@ -646,6 +650,12 @@ public sealed class FinanceEndpointsTests
     {
         using var app = new FinanceApiFactory();
         using var client = app.CreateClient();
+        var currentMonth = new DateOnly(DateTime.Today.Year, DateTime.Today.Month, 1);
+        var historicalExpense = CreateTransaction(
+            "30000000-0000-0000-0000-000000000051",
+            50m,
+            currentMonth.AddMonths(-1));
+        await app.SeedTransactionsAsync(historicalExpense);
         await client.PostAsJsonAsync("/api/goals", new CreateGoalRequest("No data", 500m), JsonOptions);
 
         var noDataResponse = await client.GetAsync("/api/goals/forecast");
@@ -654,12 +664,12 @@ public sealed class FinanceEndpointsTests
         var noDataForecast = Assert.Single(
             await noDataResponse.Content.ReadFromJsonAsync<List<GoalForecastResponse>>(JsonOptions) ?? []);
         Assert.Equal(GoalForecastStatus.NoData, noDataForecast.Status);
-        Assert.Null(noDataForecast.AverageMonthlySurplus);
+        Assert.Null(noDataForecast.CurrentMonthSurplus);
 
         var expense = CreateTransaction(
             "30000000-0000-0000-0000-000000000045",
             900m,
-            new DateOnly(2026, 7, 14));
+            currentMonth);
         await app.SeedTransactionsAsync(expense);
         await client.PostAsJsonAsync("/api/goals", new CreateGoalRequest("Negative", 500m), JsonOptions);
 
@@ -670,7 +680,7 @@ public sealed class FinanceEndpointsTests
         Assert.NotNull(negativeForecasts);
         Assert.Equal(2, negativeForecasts.Count);
         Assert.All(negativeForecasts, forecast => Assert.Equal(GoalForecastStatus.NoPositiveSurplus, forecast.Status));
-        Assert.All(negativeForecasts, forecast => Assert.True(forecast.AverageMonthlySurplus <= 0m));
+        Assert.All(negativeForecasts, forecast => Assert.True(forecast.CurrentMonthSurplus <= 0m));
     }
 
     [Fact]

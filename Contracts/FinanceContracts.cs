@@ -102,7 +102,7 @@ public sealed record GoalForecastResponse(
     decimal TargetAmount,
     decimal CurrentAmount,
     decimal RemainingAmount,
-    decimal? AverageMonthlySurplus,
+    decimal? CurrentMonthSurplus,
     int? EstimatedMonths,
     DateOnly? EstimatedDate,
     GoalForecastStatus Status);

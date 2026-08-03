@@ -269,14 +269,15 @@ public static class FinanceEndpoints
             .Sum(item => item.Amount);
         var initialBalance = await GetInitialBalance(dbContext);
         var currentAmount = Math.Max(0m, initialBalance + totalIncome - totalExpenses);
-        var monthlySurpluses = transactions
-            .GroupBy(item => new { item.TransactionDate.Year, item.TransactionDate.Month })
-            .Select(group => group.Sum(item =>
-                item.Type == TransactionType.Income ? item.Amount : -item.Amount))
+        var currentMonthStart = new DateOnly(DateTime.Today.Year, DateTime.Today.Month, 1);
+        var nextMonthStart = currentMonthStart.AddMonths(1);
+        var currentMonthTransactions = transactions
+            .Where(item => item.TransactionDate >= currentMonthStart && item.TransactionDate < nextMonthStart)
             .ToList();
-        decimal? averageMonthlySurplus = monthlySurpluses.Count == 0
+        decimal? currentMonthSurplus = currentMonthTransactions.Count == 0
             ? null
-            : monthlySurpluses.Average();
+            : currentMonthTransactions.Sum(item =>
+                item.Type == TransactionType.Income ? item.Amount : -item.Amount);
 
         var goals = await dbContext.Goals
             .AsNoTracking()
@@ -285,7 +286,11 @@ public static class FinanceEndpoints
             .ToListAsync();
 
         var forecasts = goals
-            .Select(goal => BuildGoalForecastResponse(goal, currentAmount, averageMonthlySurplus, transactions.Count))
+            .Select(goal => BuildGoalForecastResponse(
+                goal,
+                currentAmount,
+                currentMonthSurplus,
+                currentMonthTransactions.Count))
             .ToList();
 
         return TypedResults.Ok<IReadOnlyList<GoalForecastResponse>>(forecasts);
@@ -771,8 +776,8 @@ public static class FinanceEndpoints
     private static GoalForecastResponse BuildGoalForecastResponse(
         Goal goal,
         decimal currentAmount,
-        decimal? averageMonthlySurplus,
-        int transactionCount)
+        decimal? currentMonthSurplus,
+        int currentMonthTransactionCount)
     {
         var remainingAmount = Math.Max(0m, goal.TargetAmount - currentAmount);
         if (remainingAmount == 0m)
@@ -783,13 +788,13 @@ public static class FinanceEndpoints
                 goal.TargetAmount,
                 currentAmount,
                 remainingAmount,
-                averageMonthlySurplus,
+                currentMonthSurplus,
                 null,
                 null,
                 GoalForecastStatus.Achieved);
         }
 
-        if (transactionCount == 0)
+        if (currentMonthTransactionCount == 0)
         {
             return new GoalForecastResponse(
                 goal.Id,
@@ -803,7 +808,7 @@ public static class FinanceEndpoints
                 GoalForecastStatus.NoData);
         }
 
-        if (averageMonthlySurplus is null or <= 0m)
+        if (currentMonthSurplus is null or <= 0m)
         {
             return new GoalForecastResponse(
                 goal.Id,
@@ -811,13 +816,13 @@ public static class FinanceEndpoints
                 goal.TargetAmount,
                 currentAmount,
                 remainingAmount,
-                averageMonthlySurplus,
+                currentMonthSurplus,
                 null,
                 null,
                 GoalForecastStatus.NoPositiveSurplus);
         }
 
-        var estimatedMonths = (int)Math.Ceiling(remainingAmount / averageMonthlySurplus.Value);
+        var estimatedMonths = (int)Math.Ceiling(remainingAmount / currentMonthSurplus.Value);
         var estimatedDate = DateOnly.FromDateTime(DateTime.Today).AddMonths(estimatedMonths);
 
         return new GoalForecastResponse(
@@ -826,7 +831,7 @@ public static class FinanceEndpoints
             goal.TargetAmount,
             currentAmount,
             remainingAmount,
-            averageMonthlySurplus,
+            currentMonthSurplus,
             estimatedMonths,
             estimatedDate,
             GoalForecastStatus.Forecastable);

@@ -91,9 +91,9 @@ function GoalForecast({ forecast, progress }: { forecast: GoalForecastResponse; 
       <p className={`goal-forecast__message goal-forecast__message--${forecast.status.toLowerCase()}`}>
         {message}
       </p>
-      {forecast.averageMonthlySurplus !== null && forecast.status !== 'Achieved' && (
+      {forecast.currentMonthSurplus !== null && forecast.status !== 'Achieved' && (
         <span className="goal-forecast__average">
-          Średnia miesięczna nadwyżka: {formatMoney(forecast.averageMonthlySurplus)}
+          Nadwyżka bieżącego miesiąca: {formatMoney(forecast.currentMonthSurplus)}
           {estimatedDate ? ` · Termin: ${estimatedDate}` : ''}
         </span>
       )}
@@ -107,7 +107,7 @@ function getForecastMessage(forecast: GoalForecastResponse): string {
   }
 
   if (forecast.status === 'NoData') {
-    return 'Brak danych do oszacowania terminu.';
+    return 'Brak transakcji w bieżącym miesiącu do oszacowania terminu.';
   }
 
   if (forecast.status === 'NoPositiveSurplus') {
@@ -116,5 +116,5 @@ function getForecastMessage(forecast: GoalForecastResponse): string {
 
   const months = forecast.estimatedMonths ?? 0;
   const monthsLabel = months === 1 ? 'miesiąc' : months >= 2 && months <= 4 ? 'miesiące' : 'miesięcy';
-  return `Przy obecnym tempie osiągniesz cel za około ${months} ${monthsLabel}.`;
+  return `Przy wyniku z bieżącego miesiąca osiągniesz cel za około ${months} ${monthsLabel}.`;
 }

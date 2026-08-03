@@ -79,7 +79,7 @@ export type GoalForecastResponse = {
   targetAmount: number;
   currentAmount: number;
   remainingAmount: number;
-  averageMonthlySurplus: number | null;
+  currentMonthSurplus: number | null;
   estimatedMonths: number | null;
   estimatedDate: string | null;
   status: GoalForecastStatus;
