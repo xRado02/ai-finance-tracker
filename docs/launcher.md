@@ -1,7 +1,8 @@
 # Launcher Windows
 
 Launcher pozwala uruchomić aplikację bez ręcznego otwierania dwóch terminali.
-Nie zmienia danych ani nie uruchamia automatycznie migracji.
+Nie zmienia danych, nie uruchamia automatycznie migracji i nie otwiera
+przeglądarki.
 
 ## Uruchomienie
 
@@ -11,19 +12,17 @@ Kliknij dwukrotnie:
 
 Launcher:
 
-1. sprawdza dostępność .NET, npm i zależności frontendu,
-2. uruchamia backend i frontend w ukrytych procesach,
-3. czeka na gotowość obu części,
-4. otwiera `http://127.0.0.1:5173` w domyślnej przeglądarce.
+1. otwiera terminal backendu,
+2. otwiera terminal frontendu,
+3. uruchamia oba procesy odpowiednimi komendami.
+
+Przeglądarkę otwórz ręcznie pod adresem pokazanym w terminalu Vite, zwykle:
+
+`http://localhost:5173`
 
 ## Zatrzymanie
 
-Kliknij dwukrotnie:
-
-`Stop AI Finance Tracker.cmd`
-
-Zatrzymywane są tylko procesy zapisane przez launcher. Ręcznie uruchomione
-procesy `dotnet` i `node` nie są zamykane.
+W obu otwartych terminalach naciśnij `Ctrl+C` albo zamknij ich okna.
 
 ## Pierwsze uruchomienie
 
@@ -40,13 +39,10 @@ Jeśli lokalna baza wymaga migracji:
 dotnet ef database update --project .\ai-finance-tracker.csproj
 ```
 
-## Diagnostyka
-
-W przypadku błędu launcher pokazuje komunikat. Logi znajdują się w:
-
-`%LOCALAPPDATA%\AI Finance Tracker\launcher`
-
-Launcher korzysta ze stałych portów:
+## Porty
 
 - backend: `5218`,
-- frontend: `5173`.
+- frontend: zwykle `5173`; jeśli port jest zajęty, Vite pokaże inny adres.
+
+Ewentualny błąd pozostaje widoczny w odpowiednim terminalu, dzięki czemu nie
+trzeba szukać ukrytych logów.
